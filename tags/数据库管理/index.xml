@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>数据库管理 - 标签 - @Qian Sun</title>
+        <link>https://dcoliversun.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%AE%A1%E7%90%86/</link>
+        <description>数据库管理 - 标签 - @Qian Sun</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Fri, 22 Jan 2021 17:52:32 &#43;0800</lastBuildDate><atom:link href="https://dcoliversun.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%AE%A1%E7%90%86/" rel="self" type="application/rss+xml" /><item>
+    <title>自治数据库管理系统</title>
+    <link>https://dcoliversun.github.io/self-driving-dbms/</link>
+    <pubDate>Fri, 22 Jan 2021 17:52:32 &#43;0800</pubDate>
+    <author>author</author>
+    <guid>https://dcoliversun.github.io/self-driving-dbms/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/202101/self-driving-dbms/database.jpg" referrerpolicy="no-referrer">
+            </div>自治DBMS可以降低DBA工作负担，为企业带来数据驱动决策的便利。该文提出Peloton DBMS自治架构，并认为在深度神经网络、新硬件和高性能数据库架构下，自治DBMS是可以实现的]]></description>
+</item></channel>
+</rss>

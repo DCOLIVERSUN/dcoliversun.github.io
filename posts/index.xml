@@ -1,0 +1,79 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>所有文章 - @Qian Sun</title>
+        <link>https://dcoliversun.github.io/posts/</link>
+        <description>所有文章 | @Qian Sun</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Wed, 31 Mar 2021 13:59:38 &#43;0800</lastBuildDate><atom:link href="https://dcoliversun.github.io/posts/" rel="self" type="application/rss+xml" /><item>
+    <title>LCTT项目序言</title>
+    <link>https://dcoliversun.github.io/lctt-foreword/</link>
+    <pubDate>Wed, 31 Mar 2021 13:59:38 &#43;0800</pubDate>
+    <author>author</author>
+    <guid>https://dcoliversun.github.io/lctt-foreword/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/202103/lctt-foreword/preview.png" referrerpolicy="no-referrer">
+            </div>开启技术翻译道路]]></description>
+</item><item>
+    <title>配置 Java 线程池</title>
+    <link>https://dcoliversun.github.io/java-concurrency-3/</link>
+    <pubDate>Tue, 30 Mar 2021 14:47:05 &#43;0800</pubDate>
+    <author>author</author>
+    <guid>https://dcoliversun.github.io/java-concurrency-3/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/202103/Java-concurrency-3/preview.png" referrerpolicy="no-referrer">
+            </div>本文介绍了 Java 线程池中所有参数配置项与要求，针对不同业务场景提供对应的配置建议]]></description>
+</item><item>
+    <title>任务执行策略与线程池性能</title>
+    <link>https://dcoliversun.github.io/java-concurrency-2/</link>
+    <pubDate>Fri, 19 Mar 2021 09:40:15 &#43;0800</pubDate>
+    <author>author</author>
+    <guid>https://dcoliversun.github.io/java-concurrency-2/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/202103/Java-concurrency-2/preview.png" referrerpolicy="no-referrer">
+            </div>Executor框架的执行策略对线程池性能造成的影响随着业务场景不同而变化，本文介绍了四类任务对执行策略、线程池性能的影响]]></description>
+</item><item>
+    <title>应届生租房注意事项（持续更新）</title>
+    <link>https://dcoliversun.github.io/house-renting/</link>
+    <pubDate>Mon, 15 Mar 2021 21:31:32 &#43;0800</pubDate>
+    <author>author</author>
+    <guid>https://dcoliversun.github.io/house-renting/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/202103/house-renting/preview.png" referrerpolicy="no-referrer">
+            </div>避免租房踩坑]]></description>
+</item><item>
+    <title>Executor与线程池</title>
+    <link>https://dcoliversun.github.io/java-concurrency-1/</link>
+    <pubDate>Fri, 12 Mar 2021 19:48:22 &#43;0800</pubDate>
+    <author>author</author>
+    <guid>https://dcoliversun.github.io/java-concurrency-1/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/202103/Java-concurrency-1/preview.png" referrerpolicy="no-referrer">
+            </div>本文介绍了Executor框架，框架采用了任务提交、执行的解耦方案。为了让该方案适配不同场景，需要将多种因素考虑进执行策略中。不同的执行策略也衍生出不同的线程池，我们在使用前需要分析真实环境去选择适当的线程池。线程池异步执行多个任务，导致任务可能处于不同的状态。为了管理整个线程池的生命周期，ExecutorService提供了多种方法，一般采取awaitTermination、shutdown组合使用的方式，达到同步关闭的效果。最后，本文介绍了ScheduledThreadPool在延迟任务、周期任务的优越性，如果构建调度服务，可以采用DelayQueue。]]></description>
+</item><item>
+    <title>《六顶思考帽》读书笔记</title>
+    <link>https://dcoliversun.github.io/six-thinking-hats/</link>
+    <pubDate>Sun, 14 Feb 2021 16:52:58 &#43;0800</pubDate>
+    <author>author</author>
+    <guid>https://dcoliversun.github.io/six-thinking-hats/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/202102/six-thinking-hats/preview.png" referrerpolicy="no-referrer">
+            </div>思维混乱常常导致我们决策失误，戴上六顶思考帽，专注思考方向，全面、快速、清晰地思考]]></description>
+</item><item>
+    <title>自治数据库管理系统</title>
+    <link>https://dcoliversun.github.io/self-driving-dbms/</link>
+    <pubDate>Fri, 22 Jan 2021 17:52:32 &#43;0800</pubDate>
+    <author>author</author>
+    <guid>https://dcoliversun.github.io/self-driving-dbms/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/202101/self-driving-dbms/database.jpg" referrerpolicy="no-referrer">
+            </div>自治DBMS可以降低DBA工作负担，为企业带来数据驱动决策的便利。该文提出Peloton DBMS自治架构，并认为在深度神经网络、新硬件和高性能数据库架构下，自治DBMS是可以实现的]]></description>
+</item><item>
+    <title>Lakehouse：统一数据仓库和高级分析的开放数据平台</title>
+    <link>https://dcoliversun.github.io/lakehouse/</link>
+    <pubDate>Wed, 06 Jan 2021 20:42:47 &#43;0800</pubDate>
+    <author>author</author>
+    <guid>https://dcoliversun.github.io/lakehouse/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/202101/lakehouse/preview.png" referrerpolicy="no-referrer">
+            </div>Lakehouse架构支持开放的数据格式、机器学习，提供卓越的性能，是第三代数据分析平台的代表]]></description>
+</item></channel>
+</rss>

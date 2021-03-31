@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>LCTT - 分类 - @Qian Sun</title>
+        <link>https://dcoliversun.github.io/categories/lctt/</link>
+        <description>LCTT - 分类 - @Qian Sun</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Wed, 31 Mar 2021 13:59:38 &#43;0800</lastBuildDate><atom:link href="https://dcoliversun.github.io/categories/lctt/" rel="self" type="application/rss+xml" /><item>
+    <title>LCTT项目序言</title>
+    <link>https://dcoliversun.github.io/lctt-foreword/</link>
+    <pubDate>Wed, 31 Mar 2021 13:59:38 &#43;0800</pubDate>
+    <author>author</author>
+    <guid>https://dcoliversun.github.io/lctt-foreword/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/202103/lctt-foreword/preview.png" referrerpolicy="no-referrer">
+            </div>开启技术翻译道路]]></description>
+</item></channel>
+</rss>
