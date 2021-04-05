@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>逆向工程 - 标签 - @Qian Sun</title>
+        <link>https://dcoliversun.github.io/tags/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/</link>
+        <description>逆向工程 - 标签 - @Qian Sun</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Mon, 05 Apr 2021 09:41:01 &#43;0800</lastBuildDate><atom:link href="https://dcoliversun.github.io/tags/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/" rel="self" type="application/rss+xml" /><item>
+    <title>一次 Docker 镜像的逆向工程</title>
+    <link>https://dcoliversun.github.io/reverse-engineering-a-docker-image/</link>
+    <pubDate>Mon, 05 Apr 2021 09:41:01 &#43;0800</pubDate>
+    <author>author</author>
+    <guid>https://dcoliversun.github.io/reverse-engineering-a-docker-image/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/202104/reverse-engineering-a-docker-image/preview.png" referrerpolicy="no-referrer">
+            </div>没有提交原始 Dockerfile 的时候，可以通过逆向工程查看镜像构建过程。]]></description>
+</item></channel>
+</rss>
