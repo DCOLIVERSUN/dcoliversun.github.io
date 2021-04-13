@@ -1,8 +1,6 @@
 # About me
 
 
-{{< figure src="/images/about.jpeg" height="300" width="600">}}
-
 ### 我是谁
 
 大家好！👏
@@ -37,7 +35,7 @@
 
 | 标题                 | 活动           | 地点         | 时间      | 链接                                                         |
 | :--------------------: | :--------------: | :------------: | :---------: | :------------------------------------------------------------: |
-| 轻松进大厂的简单方法 | 我把经验留下来 | 中科院计算所 | 2021.2.27 | [Video](https://www.bilibili.com/video/BV1Hh411k7m1/)、[Slide](https://docs.qq.com/slide/DSktucVF6cFBhRnBD) |
+| 轻松进大厂的简单方法 | 我把经验留下来 | 中科院计算所 | 2021.2.27 | [Slide](https://docs.qq.com/slide/DSktucVF6cFBhRnBD) |
 
 ### 推荐的博客
 

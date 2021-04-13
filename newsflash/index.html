@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noodp"/><title>NewsFlash: 一款支持 Feedly 的现代开源 Feed 阅读器 | </title><meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content=""/>
+<meta name="twitter:title" content="NewsFlash: 一款支持 Feedly 的现代开源 Feed 阅读器"/>
+<meta name="twitter:description" content="一款简洁、好用的 Feed 阅读器，让你及时跟进想看的内容"/><meta name="Description" content="一款简洁、好用的 Feed 阅读器，让你及时跟进想看的内容"><meta property="og:title" content="NewsFlash: 一款支持 Feedly 的现代开源 Feed 阅读器" />
+<meta property="og:description" content="一款简洁、好用的 Feed 阅读器，让你及时跟进想看的内容" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://dcoliversun.github.io/newsflash/" />
+<meta property="og:image" content="https://dcoliversun.github.io/logo.png"/>
+<meta property="article:published_time" content="2021-04-13T10:35:01+08:00" />
+<meta property="article:modified_time" content="2021-04-13T10:35:01+08:00" />
+<meta name="application-name" content="@Qian Sun">
+<meta name="apple-mobile-web-app-title" content="@Qian Sun"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
+        <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://dcoliversun.github.io/newsflash/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "NewsFlash: 一款支持 Feedly 的现代开源 Feed 阅读器",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/dcoliversun.github.io\/newsflash\/"
+        },"genre": "posts","keywords": "LCTT, RSS, Feed","wordCount":  973 ,
+        "url": "https:\/\/dcoliversun.github.io\/newsflash\/","datePublished": "2021-04-13T10:35:01+08:00","dateModified": "2021-04-13T10:35:01+08:00",
+        "publisher": {
+            "@type": "Person",
+            "name": "", "image": [
+            {
+            "@type": "ImageObject",
+            "url": "https:\/\/dcoliversun.github.io\/images\/me\/avatar.png"
+            }
+            ]},"author": {
+                "@type": "Person",
+                "name": ""
+            },"description": "一款简洁、好用的 Feed 阅读器，让你及时跟进想看的内容"
+    }
+    </script><script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [{
+            "@type": "ListItem",
+            "position": 1,
+            "name": "主页",
+            "item": "https:\/\/dcoliversun.github.io"
+        },{
+            "@type": "ListItem",
+            "position": 2,
+            "name": "LCTT",
+            "item": "https://dcoliversun.github.io/categories/lctt/"
+        },{
+                "@type": "ListItem",
+                "position": 3,
+                "name": "NewsFlash: 一款支持 Feedly 的现代开源 Feed 阅读器"
+            }]
+    }
+</script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="@Qian Sun" class="header-logo logo-svg">@Qian Sun</a>
+        </div>
+        <div class="menu">
+            <nav>
+                <ul class="menu-inner"><li>
+                        <a class="menu-item" href="/posts/"> Posts </a>
+                    </li><li>
+                        <a class="menu-item" href="/tags/"> Tags </a>
+                    </li><li>
+                        <a class="menu-item" href="/categories/"> Categories </a>
+                    </li><li>
+                        <a class="menu-item" href="/donate"> Donate </a>
+                    </li><li>
+                        <a class="menu-item" href="/about"> About </a>
+                    </li></ul>
+            </nav><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <span class="svg-icon icon-search"></span>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <span class="svg-icon icon-cancel"></span>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <span class="svg-icon icon-loading"></span>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <span class="svg-icon icon-moon"></span>
+                </a>
+            </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="@Qian Sun" class="header-logo">@Qian Sun</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <span class="svg-icon icon-search"></span>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <span class="svg-icon icon-cancel"></span>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <span class="svg-icon icon-loading"></span>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><nav>
+                <ul><li>
+                        <a class="menu-item" href="/posts/" title="">Posts</a>
+                    </li><li>
+                        <a class="menu-item" href="/tags/" title="">Tags</a>
+                    </li><li>
+                        <a class="menu-item" href="/categories/" title="">Categories</a>
+                    </li><li>
+                        <a class="menu-item" href="/donate" title="">Donate</a>
+                    </li><li>
+                        <a class="menu-item" href="/about" title="">About</a>
+                    </li></ul>
+            </nav>
+            <a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <span class="svg-icon icon-moon"></span>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div><main class="main">
+<div class="container content-article page-toc theme-full"><div class="toc" id="toc-auto">
+            <div class="toc-title">目录</div>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div>
+    
+
+    <div class="header-post">
+
+        
+
+        
+        <div class="featured-image" style="background-image: url('/images/202104/newsflash/preview.png');"><div class="post-title">
+
+                <div class="post-all-meta">
+                    <nav class="breadcrumbs">
+    <ol>
+        <li><a href="/">主页 </a></li><li><a href="/categories/lctt/">LCTT </a></li><li>NewsFlash: 一款支持 Feedly 的现代开源 Feed 阅读器</li>
+    </ol>
+</nav>
+                    <h1 class="single-title flipInX">NewsFlash: 一款支持 Feedly 的现代开源 Feed 阅读器</h1><div class="post-meta">
+                        <div class="post-meta-line"><span class="post-category">
+                                <a href="/categories/lctt/"><i class="svg-icon icon-folder"></i>LCTT</a>
+                            </span><span class="post-meta-date">
+                                <i class="svg-icon icon-clock"></i><time class="timeago" datetime="2021-04-13">2021-04-13</time>
+                            </span><span class="post-meta-words">
+                                <i class="svg-icon icon-pencil"></i>约 973 字
+                            </span>
+                            <span class="post-meta-reading">
+                                <i class="svg-icon icon-stopwatch"></i>预计阅读 2 分钟
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            </div></div>
+
+    <article class="single toc-start">
+
+        <div class="content-block content-block-first content-block-position">
+
+        <div class="post"><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#newsflash-一款补充网页-rss-阅读器账户的-feed-阅读器">NewsFlash: 一款补充网页 RSS 阅读器账户的 Feed 阅读器</a></li>
+    <li><a href="#newsflash-功能">NewsFlash 功能</a></li>
+    <li><a href="#在-linux-上安装-newsflash">在 Linux 上安装 NewsFlash</a></li>
+    <li><a href="#结束语">结束语</a></li>
+  </ul>
+</nav></div>
+            </div><p>
+
+
+
+
+<img loading="lazy" decoding="async"
+         src="https://img.linux.net.cn/data/attachment/album/202104/03/001037r2udx6u6xqu5sqzu.jpg"
+         alt="https://img.linux.net.cn/data/attachment/album/202104/03/001037r2udx6u6xqu5sqzu.jpg"
+         title="001037r2udx6u6xqu5sqzu.jpg"
+    /></p>
+<p>有些人可能认为 RSS 阅读器已经不再，但它们仍然坚持在这里，特别是当你不想让大科技算法来决定你应该阅读什么的时候。Feed 阅读器可以帮你自助选择阅读来源。</p>
+<p>我最近遇到一个很棒的 RSS 阅读器 NewsFlash。它支持通过基于网页的 Feed 阅读器增加 feed，例如 <a href="https://feedly.com/" target="_blank" rel="noopener noreffer">Feedly</a> 和 NewsBlur。这是一个很大的安慰，因为如果你已经使用这种服务，就不必人工导入 feed，这节省了你的工作。</p>
+<p>NewsFlash 恰好是 <a href="https://jangernert.github.io/FeedReader/" target="_blank" rel="noopener noreffer">FeedReadeer</a> 的精神继承者，原来的 FeedReader 开发人员也参与其中。</p>
+<p>如果你正在找适用的 RSS 阅读器，我们整理了 <a href="https://itsfoss.com/feed-reader-apps-linux/" target="_blank" rel="noopener noreffer">Linux Feed 阅读器</a> 列表供您参考。</p>
+<h2 id="newsflash-一款补充网页-rss-阅读器账户的-feed-阅读器">NewsFlash: 一款补充网页 RSS 阅读器账户的 Feed 阅读器</h2>
+<p>
+
+
+
+
+<img loading="lazy" decoding="async"
+         src="https://i2.wp.com/itsfoss.com/wp-content/uploads/2021/03/newsflash.jpg?resize=945%2C648&amp;ssl=1"
+         alt="https://i2.wp.com/itsfoss.com/wp-content/uploads/2021/03/newsflash.jpg?resize=945%2C648&amp;ssl=1"
+         title="newsflash.jpg?resize=945%2C648&amp;ssl=1"
+    /></p>
+<p>请注意，NewsFlash 并不只是针对基于网页的 RSS feed 账户量身定做的，你也可以选择使用本地 RSS feed，而不必在多设备间同步。</p>
+<p>不过，如果你在用是任何一款支持的基于网页的 feed 阅读器，那么 NewsFlash 特别有用。</p>
+<p>这里，我将重点介绍 NewsFlash 提供的一些功能。</p>
+<h2 id="newsflash-功能">NewsFlash 功能</h2>
+<p>
+
+
+
+
+<img loading="lazy" decoding="async"
+         src="https://i2.wp.com/itsfoss.com/wp-content/uploads/2021/03/newsflash-screenshot.jpg?resize=800%2C533&amp;ssl=1"
+         alt="https://i2.wp.com/itsfoss.com/wp-content/uploads/2021/03/newsflash-screenshot.jpg?resize=800%2C533&amp;ssl=1"
+         title="newsflash-screenshot.jpg?resize=800%2C533&amp;ssl=1"
+    /></p>
+<ul>
+<li>支持桌面通知</li>
+<li>快速搜索、过滤</li>
+<li>支持标签</li>
+<li>便捷、可重定义的键盘快捷键</li>
+<li>本地 feed</li>
+<li>OPML 文件导入/导出</li>
+<li>无需注册即可在 Feedly 库中轻松找到不同 RSS Feed</li>
+<li>支持自定义字体</li>
+<li>支持多主题（包括深色主题）</li>
+<li>启动/禁止缩略图</li>
+<li>细粒度调整定期同步间隔时间</li>
+<li>支持基于网页的 Feed 账户，例如 Feedly、Fever、NewsBlur、feedbin、Miniflux</li>
+</ul>
+<p>除上述功能外，当你调整窗口大小时，还可以打开阅读器视图，这是一个细腻的补充功能。</p>
+<p>
+
+
+
+
+<img loading="lazy" decoding="async"
+         src="https://i2.wp.com/itsfoss.com/wp-content/uploads/2021/03/newsflash-screenshot-1.jpg?resize=800%2C532&amp;ssl=1"
+         alt="newsflash 截图1"
+         title="newsflash-screenshot-1.jpg?resize=800%2C532&amp;ssl=1"
+    /></p>
+<p>账户重新设置也很容易，这将删除所有本地数据。是的，你可以手动清除缓存并设置到期时间，并为你关注的所有 feed 设置一个用户数据存在本地的到期时间。</p>
+<h2 id="在-linux-上安装-newsflash">在 Linux 上安装 NewsFlash</h2>
+<p>你无法找到适用于各种 Linux 发行版的官方软件包，只有 <a href="https://flathub.org/apps/details/com.gitlab.newsflash" target="_blank" rel="noopener noreffer">Flatpak</a>。</p>
+<p>对于 Arch 用户，可以从 <a href="https://itsfoss.com/aur-arch-linux/" target="_blank" rel="noopener noreffer">AUR</a> 下载。</p>
+<p>幸运的是，<a href="https://itsfoss.com/what-is-flatpak/" target="_blank" rel="noopener noreffer">Flatpak</a> 软件包可以让你轻松在 Linux 发行版上安装 NewsFlash。具体请参阅我们的 <a href="https://itsfoss.com/flatpak-guide/" target="_blank" rel="noopener noreffer">Flatpak 指南</a>。</p>
+<p>你可以参考 NewsFlash 的 <a href="https://gitlab.com/news-flash/news_flash_gtk" target="_blank" rel="noopener noreffer">GitLab 页面</a> 去解决大部分问题。</p>
+<h2 id="结束语">结束语</h2>
+<p>我现在用 NewsFlash 作为桌面本地解决方案，不用基于网页的服务。你可以通过直接导出 OPML 文件在移动 feed 应用上得到相同的 feed。这已经被我验证过了。</p>
+<p>用户界面易于使用，也提供了数一数二的新版 UX。虽然这个 RSS 阅读器看似简单，但提供了你可以找到的所有重要功能。</p>
+<p>你怎么看 NewsFlash？你喜欢用其他类似产品吗？欢迎在评论区中分享你的想法。</p>
+<hr>
+<p>via: <a href="https://itsfoss.com/newsflash-feedreader/">https://itsfoss.com/newsflash-feedreader/</a></p>
+<p>作者：<a href="https://itsfoss.com/author/ankush/" target="_blank" rel="noopener noreffer">Ankush Das</a>
+选题：<a href="https://github.com/lujun9972" target="_blank" rel="noopener noreffer">lujun9972</a>
+译者：<a href="https://github.com/DCOLIVERSUN" target="_blank" rel="noopener noreffer">DCOLIVERSUN</a>
+校对：<a href="https://github.com/wxy" target="_blank" rel="noopener noreffer">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject" target="_blank" rel="noopener noreffer">LCTT</a> 原创编译，<a href="https://linux.cn/" target="_blank" rel="noopener noreffer">Linux中国</a> 荣誉推出</p>
+</div>
+
+            <div class="post" style="padding-top: 0">
+
+
+<div class="post-share"><div class="share-link">
+        <a class="share-icon share-twitter" href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://dcoliversun.github.io/newsflash/" data-title="NewsFlash: 一款支持 Feedly 的现代开源 Feed 阅读器" data-hashtags="LCTT,RSS,Feed"><span class="svg-social-icon icon-twitter"></span></a>
+    </div><div class="share-link">
+        <a class="share-icon share-facebook" href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://dcoliversun.github.io/newsflash/" data-hashtag="LCTT"><span class="svg-social-icon icon-facebook"></span></a>
+    </div><div class="share-link">
+        <a class="share-icon share-linkedin" href="javascript:void(0);" title="分享到 Linkedin" data-sharer="linkedin" data-url="https://dcoliversun.github.io/newsflash/"><span class="svg-social-icon icon-linkedin"></span></a>
+    </div></div>
+
+<div class="footer-post-author">
+    <div class="author-avatar"><a href="https://dcoliversun.github.io" target="_blank"><img alt="Qian Sun -- Coder💻 | Blogger📝 | Swimmer🏊‍♀️" src="https://dcoliversun.github.io/images/me/avatar.png"></a></div>
+    <div class="author-info">
+        <div class="name"><a href="https://dcoliversun.github.io" target="_blank"></a></div>
+        <div class="number-posts">Qian Sun -- Coder💻 | Blogger📝 | Swimmer🏊‍♀️</span></div>
+    </div>
+</div><div class="post-tags"><a href="/tags/lctt/" class="tag">LCTT</a><a href="/tags/rss/" class="tag">RSS</a><a href="/tags/feed/" class="tag">Feed</a></div></div>
+        </div>
+    <div id="toc-final"></div>
+    </article><div class="page single comments content-block-position"><div id="comments"></div></div></div>
+
+</main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.79.1">Hugo</a> 强力驱动 | 主题 - <a href="https://ublogger.netlify.app/?utm_source=https://dcoliversun.github.io&utm_medium=footer&utm_campaign=config&utm_term=2.0.1" target="_blank" title="uBlogger 2.0.1">uBlogger</a>
+                </div><div class="footer-line"><i class="svg-icon icon-copyright"></i><span>2020 - 2021</span><span class="author">&nbsp;<a href="https://dcoliversun.github.io" target="_blank">Qian Sun</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="svg-icon icon-arrow-up"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="svg-icon icon-comments-fixed"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/katex/copy-tex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/smooth-scroll/smooth-scroll.min.js"></script><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lunr/lunr.stemmer.support.min.js"></script><script src="/lib/lunr/lunr.zh.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/auto-render.min.js"></script><script src="/lib/katex/copy-tex.min.js"></script><script src="/lib/katex/mhchem.min.js"></script><script src="/lib/cookieconsent/cookieconsent.min.js"></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{},"cookieconsent":{"content":{"dismiss":"同意","link":"了解更多","message":"本网站使用 Cookies 来改善您的浏览体验."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":30,"type":"lunr"}};</script><script src="/js/theme.min.js"></script></body>
+</html>

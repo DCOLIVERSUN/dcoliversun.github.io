@@ -3,9 +3,18 @@
         <title>@Qian Sun</title>
         <link>https://dcoliversun.github.io/</link>
         <description>Hi! I&#39;m Qian Sun. Coder💻 | Blogger📝 | Swimmer🏊‍♀️</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Mon, 05 Apr 2021 09:41:01 &#43;0800</lastBuildDate>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Tue, 13 Apr 2021 10:35:01 &#43;0800</lastBuildDate>
             <atom:link href="https://dcoliversun.github.io/index.xml" rel="self" type="application/rss+xml" />
         <item>
+    <title>NewsFlash: 一款支持 Feedly 的现代开源 Feed 阅读器</title>
+    <link>https://dcoliversun.github.io/newsflash/</link>
+    <pubDate>Tue, 13 Apr 2021 10:35:01 &#43;0800</pubDate>
+    <author>author</author>
+    <guid>https://dcoliversun.github.io/newsflash/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/202104/newsflash/preview.png" referrerpolicy="no-referrer">
+            </div>一款简洁、好用的 Feed 阅读器，让你及时跟进想看的内容]]></description>
+</item><item>
     <title>一次 Docker 镜像的逆向工程</title>
     <link>https://dcoliversun.github.io/reverse-engineering-a-docker-image/</link>
     <pubDate>Mon, 05 Apr 2021 09:41:01 &#43;0800</pubDate>
@@ -86,14 +95,5 @@
     <description><![CDATA[<div class="featured-image">
                 <img src="/images/202101/self-driving-dbms/database.jpg" referrerpolicy="no-referrer">
             </div>自治DBMS可以降低DBA工作负担，为企业带来数据驱动决策的便利。该文提出Peloton DBMS自治架构，并认为在深度神经网络、新硬件和高性能数据库架构下，自治DBMS是可以实现的]]></description>
-</item><item>
-    <title>Lakehouse：统一数据仓库和高级分析的开放数据平台</title>
-    <link>https://dcoliversun.github.io/lakehouse/</link>
-    <pubDate>Wed, 06 Jan 2021 20:42:47 &#43;0800</pubDate>
-    <author>author</author>
-    <guid>https://dcoliversun.github.io/lakehouse/</guid>
-    <description><![CDATA[<div class="featured-image">
-                <img src="/images/202101/lakehouse/preview.png" referrerpolicy="no-referrer">
-            </div>Lakehouse架构支持开放的数据格式、机器学习，提供卓越的性能，是第三代数据分析平台的代表]]></description>
 </item></channel>
 </rss>
