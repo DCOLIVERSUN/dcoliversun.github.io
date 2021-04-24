@@ -63,25 +63,27 @@
 </script></head>
     <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
 
-        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
-    <div class="header-wrapper">
-        <div class="header-title">
-            <a href="/" title="@Qian Sun" class="header-logo logo-svg">@Qian Sun</a>
-        </div>
-        <div class="menu">
-            <nav>
-                <ul class="menu-inner"><li>
-                        <a class="menu-item" href="/posts/"> Posts </a>
-                    </li><li>
-                        <a class="menu-item" href="/tags/"> Tags </a>
-                    </li><li>
-                        <a class="menu-item" href="/categories/"> Categories </a>
-                    </li><li>
-                        <a class="menu-item" href="/donate"> Donate </a>
-                    </li><li>
-                        <a class="menu-item" href="/about"> About </a>
-                    </li></ul>
-            </nav><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+        <div id="mask"></div><div class="wrapper"><header>
+    <div class="desktop header" id="header-desktop">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="@Qian Sun" class="header-logo logo-svg">@Qian Sun</a>
+            </div>
+            <div class="menu">
+                <nav>
+                    <h2 class="display-hidden">Основная навигация</h2>
+                    <ul class="menu-inner"><li>
+                            <a class="menu-item" href="/posts/"> Posts </a>
+                        </li><li>
+                            <a class="menu-item" href="/tags/"> Tags </a>
+                        </li><li>
+                            <a class="menu-item" href="/categories/"> Categories </a>
+                        </li><li>
+                            <a class="menu-item" href="/donate"> Donate </a>
+                        </li><li>
+                            <a class="menu-item" href="/about"> About </a>
+                        </li></ul>
+                </nav><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
                         <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
                         <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
                             <span class="svg-icon icon-search"></span>
@@ -93,112 +95,117 @@
                             <span class="svg-icon icon-loading"></span>
                         </span>
                     </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
-                    <span class="svg-icon icon-moon"></span>
+                <span class="svg-icon icon-moon"></span>
                 </a>
             </div>
-    </div>
-</header><header class="mobile" id="header-mobile">
-    <div class="header-container">
-        <div class="header-wrapper">
-            <div class="header-title">
-                <a href="/" title="@Qian Sun" class="header-logo">@Qian Sun</a>
-            </div>
-            <div class="menu-toggle" id="menu-toggle-mobile">
-                <span></span><span></span><span></span>
-            </div>
         </div>
-        <div class="menu" id="menu-mobile"><div class="search-wrapper">
-                    <div class="search mobile" id="search-mobile">
-                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
-                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
-                            <span class="svg-icon icon-search"></span>
+    </div><div class="mobile header" id="header-mobile">
+        <div class="header-container">
+            <div class="header-wrapper">
+                <div class="header-title">
+                    <a href="/" title="@Qian Sun" class="header-logo">@Qian Sun</a>
+                </div>
+                <div class="menu-toggle" id="menu-toggle-mobile">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+            <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                        <div class="search mobile" id="search-mobile">
+                            <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                            <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                                <span class="svg-icon icon-search"></span>
+                            </a>
+                            <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                                <span class="svg-icon icon-cancel"></span>
+                            </a>
+                            <span class="search-button search-loading" id="search-loading-mobile">
+                                <span class="svg-icon icon-loading"></span>
+                            </span>
+                        </div>
+                        <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                            取消
                         </a>
-                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
-                            <span class="svg-icon icon-cancel"></span>
-                        </a>
-                        <span class="search-button search-loading" id="search-loading-mobile">
-                            <span class="svg-icon icon-loading"></span>
-                        </span>
-                    </div>
-                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
-                        取消
-                    </a>
-                </div><nav>
-                <ul><li>
-                        <a class="menu-item" href="/posts/" title="">Posts</a>
-                    </li><li>
-                        <a class="menu-item" href="/tags/" title="">Tags</a>
-                    </li><li>
-                        <a class="menu-item" href="/categories/" title="">Categories</a>
-                    </li><li>
-                        <a class="menu-item" href="/donate" title="">Donate</a>
-                    </li><li>
-                        <a class="menu-item" href="/about" title="">About</a>
-                    </li></ul>
-            </nav>
-            <a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
-                <span class="svg-icon icon-moon"></span>
-            </a></div>
-    </div>
-</header><div class="search-dropdown desktop">
+                    </div><nav>
+                    <h2 class="display-hidden">Основная навигация</h2>
+                    <ul><li>
+                            <a class="menu-item" href="/posts/" title="">Posts</a>
+                        </li><li>
+                            <a class="menu-item" href="/tags/" title="">Tags</a>
+                        </li><li>
+                            <a class="menu-item" href="/categories/" title="">Categories</a>
+                        </li><li>
+                            <a class="menu-item" href="/donate" title="">Donate</a>
+                        </li><li>
+                            <a class="menu-item" href="/about" title="">About</a>
+                        </li></ul>
+                </nav>
+                <a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <span class="svg-icon icon-moon"></span>
+                </a></div>
+        </div>
+    </div><div class="search-dropdown desktop">
     <div id="search-dropdown-desktop"></div>
 </div>
 <div class="search-dropdown mobile">
     <div id="search-dropdown-mobile"></div>
-</div><main class="main">
+</div></header><main class="main">
 <div class="container content-article page-toc theme-full"><div class="toc" id="toc-auto">
             <div class="toc-title">目录</div>
             <div class="toc-content" id="toc-content-auto"></div>
         </div>
     
 
-    <div class="header-post">
+    
+    
+    <article>
+    
 
-        
+        <header class="header-post">
 
-        
-        <div class="featured-image" style="background-image: url('/images/202103/Java-concurrency-2/preview.png');"><div class="post-title">
+            
 
-                <div class="post-all-meta">
-                    <nav class="breadcrumbs">
+            
+            <div class="featured-image" style="background-image: url('/images/202103/Java-concurrency-2/preview.png');"><div class="post-title">
+
+                    <div class="post-all-meta">
+                        <nav class="breadcrumbs">
     <ol>
         <li><a href="/">主页 </a></li><li><a href="/categories/java/">Java </a></li><li>任务执行策略与线程池性能</li>
     </ol>
 </nav>
-                    <h1 class="single-title flipInX">任务执行策略与线程池性能</h1><div class="post-meta">
-                        <div class="post-meta-line"><span class="post-category">
-                                <a href="/categories/java/"><i class="svg-icon icon-folder"></i>Java</a>
-                            </span><span class="post-meta-date">
-                                <i class="svg-icon icon-clock"></i><time class="timeago" datetime="2021-03-19">2021-03-19</time>
-                            </span><span class="post-meta-words">
-                                <i class="svg-icon icon-pencil"></i>约 787 字
+                        <h1 class="single-title flipInX">任务执行策略与线程池性能</h1><div class="post-meta summary-post-meta"><span class="post-category meta-item">
+                                <a href="/categories/java/"><span class="svg-icon icon-folder"></span>Java</a>
+                            </span><span class="post-meta-date meta-item">
+                                <span class="svg-icon icon-clock"></span><time class="timeago" datetime="2021-03-19">2021-03-19</time>
+                            </span><span class="post-meta-words meta-item">
+                                <span class="svg-icon icon-pencil"></span>约 787 字
                             </span>
-                            <span class="post-meta-reading">
-                                <i class="svg-icon icon-stopwatch"></i>预计阅读 2 分钟
+                            <span class="post-meta-reading meta-item">
+                                <span class="svg-icon icon-stopwatch"></span>预计阅读 2 分钟
                             </span>
                         </div>
+
                     </div>
+
                 </div>
 
-            </div>
+                </div></header>
 
-            </div></div>
+        <div class="article-post toc-start">
 
-    <article class="single toc-start">
+            <div class="content-block content-block-first content-block-position">
 
-        <div class="content-block content-block-first content-block-position">
-
-        <div class="post"><div class="details toc" id="toc-static"  data-kept="">
-                <div class="details-summary toc-title">
-                    <span>目录</span>
-                </div>
-                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+                <div class="post single"><div class="details toc" id="toc-static"  data-kept="">
+                        <div class="details-summary toc-title">
+                            <span>目录</span>
+                        </div>
+                        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
   <ul>
     <li><a href="#线程饥饿死锁">线程饥饿死锁</a></li>
     <li><a href="#运行时间较长的任务">运行时间较长的任务</a></li>
   </ul>
 </nav></div>
-            </div><figure>
+                    </div><figure>
     <img src="/images/202103/Java-concurrency-2/threadpool.png" width="700" height="500"/> <figcaption>
             <h4>ThreadPool</h4>
         </figcaption>
@@ -220,14 +227,11 @@
 </li>
 </ul>
 <p>只有当任务都是同类型且相互独立时，线程池的性能才能达到最佳。</p>
-<h2 id="线程饥饿死锁">线程饥饿死锁</h2>
-<p>依赖性任务可能造成线程池死锁。线程池中如果所有正在执行任务的线程都因等待其他仍处于工作队列中的任务而阻塞，就会引发线程<strong><ruby>饥饿死锁<rt>Thread Starvation Deadlock</rt></ruby></strong>。</p>
-<h2 id="运行时间较长的任务">运行时间较长的任务</h2>
-<p>如果任务阻塞的时间过长，线程池的响应性也会变得糟糕。此外，运行时间较长的任务也会增加短任务的服务时间。</p>
+<h2 id="线程饥饿死锁" class="headerLink"><a href="#%e7%ba%bf%e7%a8%8b%e9%a5%a5%e9%a5%bf%e6%ad%bb%e9%94%81" class="header-mark"></a>线程饥饿死锁</h2><p>依赖性任务可能造成线程池死锁。线程池中如果所有正在执行任务的线程都因等待其他仍处于工作队列中的任务而阻塞，就会引发线程<strong><ruby>饥饿死锁<rt>Thread Starvation Deadlock</rt></ruby></strong>。</p>
+<h2 id="运行时间较长的任务" class="headerLink"><a href="#%e8%bf%90%e8%a1%8c%e6%97%b6%e9%97%b4%e8%be%83%e9%95%bf%e7%9a%84%e4%bb%bb%e5%8a%a1" class="header-mark"></a>运行时间较长的任务</h2><p>如果任务阻塞的时间过长，线程池的响应性也会变得糟糕。此外，运行时间较长的任务也会增加短任务的服务时间。</p>
 <p>有一项技术可以缓解执行时间较长任务造成的影响，即限定任务等待资源的时间。在平台类库的大多数可阻塞方法中，都同时定义了限时版本和无限时版本，例如 <code>Thread.join</code>、<code>BlockingQueue.put</code>、<code>CountDownLatch.await</code> 以及 <code>Selector.select</code> 等。如果等待超时，那么可以把任务标识为失败，然后中止任务或重新返回队列以便随后执行。</p>
-</div>
-
-            <div class="post" style="padding-top: 0">
+</div><footer>
+                        <div class="post">
 
 
 <div class="post-share"><div class="share-link">
@@ -245,9 +249,14 @@
         <div class="number-posts">Qian Sun -- Coder💻 | Blogger📝 | Swimmer🏊‍♀️</span></div>
     </div>
 </div><div class="post-tags"><a href="/tags/java/" class="tag">Java</a><a href="/tags/%E5%B9%B6%E5%8F%91/" class="tag">并发</a></div></div>
+                </footer></div>
+        <div id="toc-final"></div>
         </div>
-    <div id="toc-final"></div>
-    </article><div class="page single comments content-block-position"><div id="comments"></div></div></div>
+
+    
+    </article>
+    <section class="page single comments content-block-position">
+        <h1 class="display-hidden">Комментарии</h1><div id="comments"></div></section></div>
 
 </main><footer class="footer">
         <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.79.1">Hugo</a> 强力驱动 | 主题 - <a href="https://ublogger.netlify.app/?utm_source=https://dcoliversun.github.io&utm_medium=footer&utm_campaign=config&utm_term=2.0.1" target="_blank" title="uBlogger 2.0.1">uBlogger</a>
@@ -255,10 +264,10 @@
         </div>
     </footer></div>
 
-        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+        <aside id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
                 <i class="svg-icon icon-arrow-up"></i>
             </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
                 <i class="svg-icon icon-comments-fixed"></i>
             </a>
-        </div><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/katex/copy-tex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/smooth-scroll/smooth-scroll.min.js"></script><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lunr/lunr.stemmer.support.min.js"></script><script src="/lib/lunr/lunr.zh.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/auto-render.min.js"></script><script src="/lib/katex/copy-tex.min.js"></script><script src="/lib/katex/mhchem.min.js"></script><script src="/lib/cookieconsent/cookieconsent.min.js"></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{},"cookieconsent":{"content":{"dismiss":"同意","link":"了解更多","message":"本网站使用 Cookies 来改善您的浏览体验."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":30,"type":"lunr"}};</script><script src="/js/theme.min.js"></script></body>
+        </aside><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/katex/copy-tex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/smooth-scroll/smooth-scroll.min.js"></script><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lunr/lunr.stemmer.support.min.js"></script><script src="/lib/lunr/lunr.zh.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/auto-render.min.js"></script><script src="/lib/katex/copy-tex.min.js"></script><script src="/lib/katex/mhchem.min.js"></script><script src="/lib/cookieconsent/cookieconsent.min.js"></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{},"cookieconsent":{"content":{"dismiss":"同意","link":"了解更多","message":"本网站使用 Cookies 来改善您的浏览体验."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":30,"type":"lunr"}};</script><script src="/js/theme.min.js"></script></body>
 </html>

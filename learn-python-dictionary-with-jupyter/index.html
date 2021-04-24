@@ -63,25 +63,27 @@
 </script></head>
     <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
 
-        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
-    <div class="header-wrapper">
-        <div class="header-title">
-            <a href="/" title="@Qian Sun" class="header-logo logo-svg">@Qian Sun</a>
-        </div>
-        <div class="menu">
-            <nav>
-                <ul class="menu-inner"><li>
-                        <a class="menu-item" href="/posts/"> Posts </a>
-                    </li><li>
-                        <a class="menu-item" href="/tags/"> Tags </a>
-                    </li><li>
-                        <a class="menu-item" href="/categories/"> Categories </a>
-                    </li><li>
-                        <a class="menu-item" href="/donate"> Donate </a>
-                    </li><li>
-                        <a class="menu-item" href="/about"> About </a>
-                    </li></ul>
-            </nav><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+        <div id="mask"></div><div class="wrapper"><header>
+    <div class="desktop header" id="header-desktop">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="@Qian Sun" class="header-logo logo-svg">@Qian Sun</a>
+            </div>
+            <div class="menu">
+                <nav>
+                    <h2 class="display-hidden">Основная навигация</h2>
+                    <ul class="menu-inner"><li>
+                            <a class="menu-item" href="/posts/"> Posts </a>
+                        </li><li>
+                            <a class="menu-item" href="/tags/"> Tags </a>
+                        </li><li>
+                            <a class="menu-item" href="/categories/"> Categories </a>
+                        </li><li>
+                            <a class="menu-item" href="/donate"> Donate </a>
+                        </li><li>
+                            <a class="menu-item" href="/about"> About </a>
+                        </li></ul>
+                </nav><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
                         <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
                         <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
                             <span class="svg-icon icon-search"></span>
@@ -93,106 +95,111 @@
                             <span class="svg-icon icon-loading"></span>
                         </span>
                     </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
-                    <span class="svg-icon icon-moon"></span>
+                <span class="svg-icon icon-moon"></span>
                 </a>
             </div>
-    </div>
-</header><header class="mobile" id="header-mobile">
-    <div class="header-container">
-        <div class="header-wrapper">
-            <div class="header-title">
-                <a href="/" title="@Qian Sun" class="header-logo">@Qian Sun</a>
-            </div>
-            <div class="menu-toggle" id="menu-toggle-mobile">
-                <span></span><span></span><span></span>
-            </div>
         </div>
-        <div class="menu" id="menu-mobile"><div class="search-wrapper">
-                    <div class="search mobile" id="search-mobile">
-                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
-                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
-                            <span class="svg-icon icon-search"></span>
+    </div><div class="mobile header" id="header-mobile">
+        <div class="header-container">
+            <div class="header-wrapper">
+                <div class="header-title">
+                    <a href="/" title="@Qian Sun" class="header-logo">@Qian Sun</a>
+                </div>
+                <div class="menu-toggle" id="menu-toggle-mobile">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+            <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                        <div class="search mobile" id="search-mobile">
+                            <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                            <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                                <span class="svg-icon icon-search"></span>
+                            </a>
+                            <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                                <span class="svg-icon icon-cancel"></span>
+                            </a>
+                            <span class="search-button search-loading" id="search-loading-mobile">
+                                <span class="svg-icon icon-loading"></span>
+                            </span>
+                        </div>
+                        <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                            取消
                         </a>
-                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
-                            <span class="svg-icon icon-cancel"></span>
-                        </a>
-                        <span class="search-button search-loading" id="search-loading-mobile">
-                            <span class="svg-icon icon-loading"></span>
-                        </span>
-                    </div>
-                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
-                        取消
-                    </a>
-                </div><nav>
-                <ul><li>
-                        <a class="menu-item" href="/posts/" title="">Posts</a>
-                    </li><li>
-                        <a class="menu-item" href="/tags/" title="">Tags</a>
-                    </li><li>
-                        <a class="menu-item" href="/categories/" title="">Categories</a>
-                    </li><li>
-                        <a class="menu-item" href="/donate" title="">Donate</a>
-                    </li><li>
-                        <a class="menu-item" href="/about" title="">About</a>
-                    </li></ul>
-            </nav>
-            <a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
-                <span class="svg-icon icon-moon"></span>
-            </a></div>
-    </div>
-</header><div class="search-dropdown desktop">
+                    </div><nav>
+                    <h2 class="display-hidden">Основная навигация</h2>
+                    <ul><li>
+                            <a class="menu-item" href="/posts/" title="">Posts</a>
+                        </li><li>
+                            <a class="menu-item" href="/tags/" title="">Tags</a>
+                        </li><li>
+                            <a class="menu-item" href="/categories/" title="">Categories</a>
+                        </li><li>
+                            <a class="menu-item" href="/donate" title="">Donate</a>
+                        </li><li>
+                            <a class="menu-item" href="/about" title="">About</a>
+                        </li></ul>
+                </nav>
+                <a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <span class="svg-icon icon-moon"></span>
+                </a></div>
+        </div>
+    </div><div class="search-dropdown desktop">
     <div id="search-dropdown-desktop"></div>
 </div>
 <div class="search-dropdown mobile">
     <div id="search-dropdown-mobile"></div>
-</div><main class="main">
+</div></header><main class="main">
 <div class="container content-article page-toc theme-full"><div class="toc" id="toc-auto">
             <div class="toc-title">目录</div>
             <div class="toc-content" id="toc-content-auto"></div>
         </div>
     
 
-    <div class="header-post">
+    
+    
+    <article>
+    
 
-        
+        <header class="header-post">
 
-        
-        <div class="featured-image" style="background-image: url('/images/202104/learn-python-dictionary-values-with-jupyter/preview.png');"><div class="post-title">
+            
 
-                <div class="post-all-meta">
-                    <nav class="breadcrumbs">
+            
+            <div class="featured-image" style="background-image: url('/images/202104/learn-python-dictionary-values-with-jupyter/preview.png');"><div class="post-title">
+
+                    <div class="post-all-meta">
+                        <nav class="breadcrumbs">
     <ol>
         <li><a href="/">主页 </a></li><li><a href="/categories/lctt/">LCTT </a></li><li>用 Jupyter 学习 Python 字典</li>
     </ol>
 </nav>
-                    <h1 class="single-title flipInX">用 Jupyter 学习 Python 字典</h1><div class="post-meta">
-                        <div class="post-meta-line"><span class="post-category">
-                                <a href="/categories/lctt/"><i class="svg-icon icon-folder"></i>LCTT</a>
-                            </span><span class="post-meta-date">
-                                <i class="svg-icon icon-clock"></i><time class="timeago" datetime="2021-04-01">2021-04-01</time>
-                            </span><span class="post-meta-words">
-                                <i class="svg-icon icon-pencil"></i>约 1341 字
+                        <h1 class="single-title flipInX">用 Jupyter 学习 Python 字典</h1><div class="post-meta summary-post-meta"><span class="post-category meta-item">
+                                <a href="/categories/lctt/"><span class="svg-icon icon-folder"></span>LCTT</a>
+                            </span><span class="post-meta-date meta-item">
+                                <span class="svg-icon icon-clock"></span><time class="timeago" datetime="2021-04-01">2021-04-01</time>
+                            </span><span class="post-meta-words meta-item">
+                                <span class="svg-icon icon-pencil"></span>约 1341 字
                             </span>
-                            <span class="post-meta-reading">
-                                <i class="svg-icon icon-stopwatch"></i>预计阅读 3 分钟
+                            <span class="post-meta-reading meta-item">
+                                <span class="svg-icon icon-stopwatch"></span>预计阅读 3 分钟
                             </span>
                         </div>
+
                     </div>
+
                 </div>
 
-            </div>
+                </div></header>
 
-            </div></div>
+        <div class="article-post toc-start">
 
-    <article class="single toc-start">
+            <div class="content-block content-block-first content-block-position">
 
-        <div class="content-block content-block-first content-block-position">
-
-        <div class="post"><div class="details toc" id="toc-static"  data-kept="">
-                <div class="details-summary toc-title">
-                    <span>目录</span>
-                </div>
-                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+                <div class="post single"><div class="details toc" id="toc-static"  data-kept="">
+                        <div class="details-summary toc-title">
+                            <span>目录</span>
+                        </div>
+                        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
   <ul>
     <li><a href="#1在-jupyter-中打开一个新的笔记本">1、在 Jupyter 中打开一个新的笔记本</a></li>
     <li><a href="#2新建一个键值对">2、新建一个键值对</a></li>
@@ -202,12 +209,11 @@
     <li><a href="#使用字典">使用字典</a></li>
   </ul>
 </nav></div>
-            </div><p>字典是 Python 编程语言使用的数据结构。一个 Python 字典由多个键值对组成；每个键值对将键映射到其关联的值上。</p>
+                    </div><p>字典是 Python 编程语言使用的数据结构。一个 Python 字典由多个键值对组成；每个键值对将键映射到其关联的值上。</p>
 <p>例如你是一名老师，想把学生姓名与成绩对应起来。你可以使用 Python 字典，将学生姓名映射到他们关联的成绩上。此时，键值对中键是姓名，值是对应的成绩。</p>
 <p>如果你想知道某个学生的考试成绩，你可以从字典中访问。这种快捷查询方式可以为你节省解析整个列表找到学生成绩的时间。</p>
 <p>本文介绍了如何通过键访问对应的字典值。学习前，请确保你已经安装了 <a href="https://docs.anaconda.com/anaconda/" target="_blank" rel="noopener noreffer">Anaconda 包管理器</a> 和 <a href="https://opensource.com/article/18/3/getting-started-jupyter-notebooks" target="_blank" rel="noopener noreffer">Jupyter 笔记本</a>。</p>
-<h2 id="1在-jupyter-中打开一个新的笔记本">1、在 Jupyter 中打开一个新的笔记本</h2>
-<p>首先在 Web 浏览器中打开并运行 Jupyter。然后，</p>
+<h2 id="1在-jupyter-中打开一个新的笔记本" class="headerLink"><a href="#1%e5%9c%a8-jupyter-%e4%b8%ad%e6%89%93%e5%bc%80%e4%b8%80%e4%b8%aa%e6%96%b0%e7%9a%84%e7%ac%94%e8%ae%b0%e6%9c%ac" class="header-mark"></a>1、在 Jupyter 中打开一个新的笔记本</h2><p>首先在 Web 浏览器中打开并运行 Jupyter。然后，</p>
 <ol>
 <li>转到左上角的 “File”。</li>
 <li>选择 “New Notebook”，点击 “Python 3”。</li>
@@ -217,9 +223,9 @@
 
 
 
-<figure><a target="_blank" href="https://opensource.com/sites/default/files/uploads/new-jupyter-notebook.png" title="Create Jupyter notebook" >
+<figure class="render-image"><a target="_blank" href="https://opensource.com/sites/default/files/uploads/new-jupyter-notebook.png" title="Create Jupyter notebook" >
         <img loading="lazy" decoding="async"
-            data-sizes="auto"
+             class="render-image"
              src="https://opensource.com/sites/default/files/uploads/new-jupyter-notebook.png"
             alt="新建 Jupyter 笔记本"
         />
@@ -228,8 +234,7 @@
 <p>开始时，新建的笔记本是无标题的，你可以将其重命名为任何名称。我为我的笔记本取名为 “OpenSource.com Data Dictionary Tutorial”。</p>
 <p>笔记本中标有行号的位置就是你写代码的区域，也是你输入的位置。</p>
 <p>在 macOS 上，可以同时按 <code>Shift + Return</code> 键得到输出。在创建新的代码区域前，请确保完成上述动作；否则，你写的任何附加代码可能无法运行。</p>
-<h2 id="2新建一个键值对">2、新建一个键值对</h2>
-<p>在字典中输入你希望访问的键与值。输入前，你需要在字典上下文中定义它们的含义：</p>
+<h2 id="2新建一个键值对" class="headerLink"><a href="#2%e6%96%b0%e5%bb%ba%e4%b8%80%e4%b8%aa%e9%94%ae%e5%80%bc%e5%af%b9" class="header-mark"></a>2、新建一个键值对</h2><p>在字典中输入你希望访问的键与值。输入前，你需要在字典上下文中定义它们的含义：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code><span class="lnt">1
@@ -255,25 +260,24 @@
 
 
 
-<figure><a target="_blank" href="https://opensource.com/sites/default/files/uploads/define-keys-values.png" title="Code for defining key-value pairs in the dictionary" >
+<figure class="render-image"><a target="_blank" href="https://opensource.com/sites/default/files/uploads/define-keys-values.png" title="Code for defining key-value pairs in the dictionary" >
         <img loading="lazy" decoding="async"
-            data-sizes="auto"
+             class="render-image"
              src="https://opensource.com/sites/default/files/uploads/define-keys-values.png"
             alt="定义字典键值对的代码"
         />
     </a><figcaption class="image-caption">Code for defining key-value pairs in the dictionary</figcaption>
 </figure></p>
 <p>这段代码让字典将特定键与其各自的值关联起来。字典按名称存储数据，从而可以更快地查询。</p>
-<h2 id="3通过键访问字典值">3、通过键访问字典值</h2>
-<p>现在你想查询指定的字典值；在上述例子中，字典值指特定学生的成绩。首先，点击 “Insert” 后选择 “Insert Cell Below”。</p>
+<h2 id="3通过键访问字典值" class="headerLink"><a href="#3%e9%80%9a%e8%bf%87%e9%94%ae%e8%ae%bf%e9%97%ae%e5%ad%97%e5%85%b8%e5%80%bc" class="header-mark"></a>3、通过键访问字典值</h2><p>现在你想查询指定的字典值；在上述例子中，字典值指特定学生的成绩。首先，点击 “Insert” 后选择 “Insert Cell Below”。</p>
 <p>
 
 
 
 
-<figure><a target="_blank" href="https://opensource.com/sites/default/files/uploads/jupyter_insertcell.png" title="Inserting a new cell in Jupyter" >
+<figure class="render-image"><a target="_blank" href="https://opensource.com/sites/default/files/uploads/jupyter_insertcell.png" title="Inserting a new cell in Jupyter" >
         <img loading="lazy" decoding="async"
-            data-sizes="auto"
+             class="render-image"
              src="https://opensource.com/sites/default/files/uploads/jupyter_insertcell.png"
             alt="在 Jupyter 插入新建单元格"
         />
@@ -308,9 +312,9 @@
 
 
 
-<figure><a target="_blank" href="https://opensource.com/sites/default/files/uploads/lookforvalue.png" title="Code to look for a specific value" >
+<figure class="render-image"><a target="_blank" href="https://opensource.com/sites/default/files/uploads/lookforvalue.png" title="Code to look for a specific value" >
         <img loading="lazy" decoding="async"
-            data-sizes="auto"
+             class="render-image"
              src="https://opensource.com/sites/default/files/uploads/lookforvalue.png"
             alt="查询特定值的代码"
         />
@@ -318,8 +322,7 @@
 </figure></p>
 <p>当你查询 Kelsey 的成绩（也就是你想要查询的值）时，如果你用的是 macOS，只需要同时按 <code>Shift+Return</code> 键。</p>
 <p>你会在单元格下方看到 Kelsey 的成绩。</p>
-<h2 id="4更新已有的键">4、更新已有的键</h2>
-<p>当把一位学生的错误成绩添加到字典时，你会怎么办？可以通过更新字典、存储新值来修正这类错误。</p>
+<h2 id="4更新已有的键" class="headerLink"><a href="#4%e6%9b%b4%e6%96%b0%e5%b7%b2%e6%9c%89%e7%9a%84%e9%94%ae" class="header-mark"></a>4、更新已有的键</h2><p>当把一位学生的错误成绩添加到字典时，你会怎么办？可以通过更新字典、存储新值来修正这类错误。</p>
 <p>首先，选择你想更新的那个键。在上述例子中，假设你错误地输入了 Finley 的成绩，那么 Finley 就是你需要更新的键。</p>
 <p>为了更新 Finley 的成绩，你需要在下方插入新的单元格，然后创建一个新的键值对。同时按 <code>Shift+Return</code> 键打印字典全部信息：</p>
 <div class="highlight"><div class="chroma">
@@ -341,17 +344,16 @@
 
 
 
-<figure><a target="_blank" href="https://opensource.com/sites/default/files/uploads/jupyter_updatekey.png" title="Code for updating a key" >
+<figure class="render-image"><a target="_blank" href="https://opensource.com/sites/default/files/uploads/jupyter_updatekey.png" title="Code for updating a key" >
         <img loading="lazy" decoding="async"
-            data-sizes="auto"
+             class="render-image"
              src="https://opensource.com/sites/default/files/uploads/jupyter_updatekey.png"
             alt="更新键的代码"
         />
     </a><figcaption class="image-caption">Code for updating a key</figcaption>
 </figure></p>
 <p>单元格下方输出带有 Finley 更新成绩的字典。</p>
-<h2 id="5添加新键">5、添加新键</h2>
-<p>假设你得到一位新学生的考试成绩。你可以用新键值对将那名学生的姓名与成绩补充到字典中。</p>
+<h2 id="5添加新键" class="headerLink"><a href="#5%e6%b7%bb%e5%8a%a0%e6%96%b0%e9%94%ae" class="header-mark"></a>5、添加新键</h2><p>假设你得到一位新学生的考试成绩。你可以用新键值对将那名学生的姓名与成绩补充到字典中。</p>
 <p>插入新的单元格，以键值对形式添加新学生的姓名与成绩。当你完成这些后，同时按 <code>Shift+Return</code> 键打印字典全部信息：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -372,17 +374,16 @@
 
 
 
-<figure><a target="_blank" href="https://opensource.com/sites/default/files/uploads/jupyter_addnewkey.png" title="Add a new key" >
+<figure class="render-image"><a target="_blank" href="https://opensource.com/sites/default/files/uploads/jupyter_addnewkey.png" title="Add a new key" >
         <img loading="lazy" decoding="async"
-            data-sizes="auto"
+             class="render-image"
              src="https://opensource.com/sites/default/files/uploads/jupyter_addnewkey.png"
             alt="添加新键"
         />
     </a><figcaption class="image-caption">Add a new key</figcaption>
 </figure></p>
 <p>所有的键值对输出在单元格下方。</p>
-<h2 id="使用字典">使用字典</h2>
-<p>请记住，键与值可以是任意数据类型，但它们很少是<ruby><a href="https://www.datacamp.com/community/tutorials/data-structures-python" target="_blank" rel="noopener noreffer">扩展数据类型</a><rt>non-primitive types</rt></ruby>。此外，字典不能以指定的顺序存储、组织里面的数据。如果你想要数据有序，最好使用 Python 列表，而非字典。</p>
+<h2 id="使用字典" class="headerLink"><a href="#%e4%bd%bf%e7%94%a8%e5%ad%97%e5%85%b8" class="header-mark"></a>使用字典</h2><p>请记住，键与值可以是任意数据类型，但它们很少是<ruby><a href="https://www.datacamp.com/community/tutorials/data-structures-python" target="_blank" rel="noopener noreffer">扩展数据类型</a><rt>non-primitive types</rt></ruby>。此外，字典不能以指定的顺序存储、组织里面的数据。如果你想要数据有序，最好使用 Python 列表，而非字典。</p>
 <p>如果你考虑使用字典，首先要确认你的数据结构是否是合适的，例如像电话簿的结构。如果不是，列表、元组、树或者其他数据结构可能是更好的选择。</p>
 <hr>
 <p>via: <a href="https://opensource.com/article/21/3/dictionary-values-python">https://opensource.com/article/21/3/dictionary-values-python</a></p>
@@ -391,9 +392,8 @@
 译者：<a href="https://github.com/DCOLIVERSUN" target="_blank" rel="noopener noreffer">DCOLIVERSUN</a>
 校对：<a href="https://github.com/wxy" target="_blank" rel="noopener noreffer">wxy</a></p>
 <p>本文由 <a href="https://github.com/LCTT/TranslateProject" target="_blank" rel="noopener noreffer">LCTT</a> 原创编译，<a href="https://linux.cn/" target="_blank" rel="noopener noreffer">Linux中国</a> 荣誉推出</p>
-</div>
-
-            <div class="post" style="padding-top: 0">
+</div><footer>
+                        <div class="post">
 
 
 <div class="post-share"><div class="share-link">
@@ -411,9 +411,14 @@
         <div class="number-posts">Qian Sun -- Coder💻 | Blogger📝 | Swimmer🏊‍♀️</span></div>
     </div>
 </div><div class="post-tags"><a href="/tags/lctt/" class="tag">LCTT</a><a href="/tags/jupyter/" class="tag">Jupyter</a><a href="/tags/python/" class="tag">Python</a><a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="tag">数据结构</a></div></div>
+                </footer></div>
+        <div id="toc-final"></div>
         </div>
-    <div id="toc-final"></div>
-    </article><div class="page single comments content-block-position"><div id="comments"></div></div></div>
+
+    
+    </article>
+    <section class="page single comments content-block-position">
+        <h1 class="display-hidden">Комментарии</h1><div id="comments"></div></section></div>
 
 </main><footer class="footer">
         <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.79.1">Hugo</a> 强力驱动 | 主题 - <a href="https://ublogger.netlify.app/?utm_source=https://dcoliversun.github.io&utm_medium=footer&utm_campaign=config&utm_term=2.0.1" target="_blank" title="uBlogger 2.0.1">uBlogger</a>
@@ -421,10 +426,10 @@
         </div>
     </footer></div>
 
-        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+        <aside id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
                 <i class="svg-icon icon-arrow-up"></i>
             </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
                 <i class="svg-icon icon-comments-fixed"></i>
             </a>
-        </div><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/katex/copy-tex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/smooth-scroll/smooth-scroll.min.js"></script><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lunr/lunr.stemmer.support.min.js"></script><script src="/lib/lunr/lunr.zh.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/auto-render.min.js"></script><script src="/lib/katex/copy-tex.min.js"></script><script src="/lib/katex/mhchem.min.js"></script><script src="/lib/cookieconsent/cookieconsent.min.js"></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{},"cookieconsent":{"content":{"dismiss":"同意","link":"了解更多","message":"本网站使用 Cookies 来改善您的浏览体验."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":30,"type":"lunr"}};</script><script src="/js/theme.min.js"></script></body>
+        </aside><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/katex/copy-tex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/smooth-scroll/smooth-scroll.min.js"></script><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lunr/lunr.stemmer.support.min.js"></script><script src="/lib/lunr/lunr.zh.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/auto-render.min.js"></script><script src="/lib/katex/copy-tex.min.js"></script><script src="/lib/katex/mhchem.min.js"></script><script src="/lib/cookieconsent/cookieconsent.min.js"></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{},"cookieconsent":{"content":{"dismiss":"同意","link":"了解更多","message":"本网站使用 Cookies 来改善您的浏览体验."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":30,"type":"lunr"}};</script><script src="/js/theme.min.js"></script></body>
 </html>

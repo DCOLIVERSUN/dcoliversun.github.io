@@ -3,9 +3,18 @@
         <title>@Qian Sun</title>
         <link>https://dcoliversun.github.io/</link>
         <description>Hi! I&#39;m Qian Sun. Coder💻 | Blogger📝 | Swimmer🏊‍♀️</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Tue, 13 Apr 2021 10:35:01 &#43;0800</lastBuildDate>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Sat, 24 Apr 2021 14:13:34 &#43;0800</lastBuildDate>
             <atom:link href="https://dcoliversun.github.io/index.xml" rel="self" type="application/rss+xml" />
         <item>
+    <title>查看 Git 提交中发生了什么变化</title>
+    <link>https://dcoliversun.github.io/git-whatchanged/</link>
+    <pubDate>Sat, 24 Apr 2021 14:13:34 &#43;0800</pubDate>
+    <author>author</author>
+    <guid>https://dcoliversun.github.io/git-whatchanged/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/202104/git-whatchanged/preview.png" referrerpolicy="no-referrer">
+            </div>Git 提供了几种方式可以帮你快速查看提交中哪些文件被改变。]]></description>
+</item><item>
     <title>NewsFlash: 一款支持 Feedly 的现代开源 Feed 阅读器</title>
     <link>https://dcoliversun.github.io/newsflash/</link>
     <pubDate>Tue, 13 Apr 2021 10:35:01 &#43;0800</pubDate>
@@ -86,14 +95,5 @@
     <description><![CDATA[<div class="featured-image">
                 <img src="/images/202102/six-thinking-hats/preview.png" referrerpolicy="no-referrer">
             </div>思维混乱常常导致我们决策失误，戴上六顶思考帽，专注思考方向，全面、快速、清晰地思考]]></description>
-</item><item>
-    <title>自治数据库管理系统</title>
-    <link>https://dcoliversun.github.io/self-driving-dbms/</link>
-    <pubDate>Fri, 22 Jan 2021 17:52:32 &#43;0800</pubDate>
-    <author>author</author>
-    <guid>https://dcoliversun.github.io/self-driving-dbms/</guid>
-    <description><![CDATA[<div class="featured-image">
-                <img src="/images/202101/self-driving-dbms/database.jpg" referrerpolicy="no-referrer">
-            </div>自治DBMS可以降低DBA工作负担，为企业带来数据驱动决策的便利。该文提出Peloton DBMS自治架构，并认为在深度神经网络、新硬件和高性能数据库架构下，自治DBMS是可以实现的]]></description>
 </item></channel>
 </rss>
