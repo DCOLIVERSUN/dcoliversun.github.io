@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noodp"/><title>Yaml Notebook | </title><meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content=""/>
+<meta name="twitter:title" content="Yaml Notebook"/>
+<meta name="twitter:description" content="学好 Yaml 语法，打好 K8s 基础"/><meta name="Description" content="学好 Yaml 语法，打好 K8s 基础"><meta property="og:title" content="Yaml Notebook" />
+<meta property="og:description" content="学好 Yaml 语法，打好 K8s 基础" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://dcoliversun.github.io/yaml-notebook/" />
+<meta property="og:image" content="https://dcoliversun.github.io/logo.png"/>
+<meta property="article:published_time" content="2021-05-08T16:51:51+08:00" />
+<meta property="article:modified_time" content="2021-05-08T16:51:51+08:00" />
+<meta name="application-name" content="@Qian Sun">
+<meta name="apple-mobile-web-app-title" content="@Qian Sun"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
+        <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://dcoliversun.github.io/yaml-notebook/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Yaml Notebook",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/dcoliversun.github.io\/yaml-notebook\/"
+        },"genre": "posts","keywords": "Yaml, 云原生, Kubernetes","wordCount":  935 ,
+        "url": "https:\/\/dcoliversun.github.io\/yaml-notebook\/","datePublished": "2021-05-08T16:51:51+08:00","dateModified": "2021-05-08T16:51:51+08:00",
+        "publisher": {
+            "@type": "Person",
+            "name": "", "image": [
+            {
+            "@type": "ImageObject",
+            "url": "https:\/\/dcoliversun.github.io\/images\/me\/avatar.png"
+            }
+            ]},"author": {
+                "@type": "Person",
+                "name": ""
+            },"description": "学好 Yaml 语法，打好 K8s 基础"
+    }
+    </script><script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [{
+            "@type": "ListItem",
+            "position": 1,
+            "name": "主页",
+            "item": "https:\/\/dcoliversun.github.io"
+        },{
+            "@type": "ListItem",
+            "position": 2,
+            "name": "云原生",
+            "item": "https://dcoliversun.github.io/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/"
+        },{
+                "@type": "ListItem",
+                "position": 3,
+                "name": "Yaml Notebook"
+            }]
+    }
+</script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header>
+    <div class="desktop header" id="header-desktop">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="@Qian Sun" class="header-logo logo-svg">@Qian Sun</a>
+            </div>
+            <div class="menu">
+                <nav>
+                    <h2 class="display-hidden">Основная навигация</h2>
+                    <ul class="menu-inner"><li>
+                            <a class="menu-item" href="/posts/"> Posts </a>
+                        </li><li>
+                            <a class="menu-item" href="/tags/"> Tags </a>
+                        </li><li>
+                            <a class="menu-item" href="/categories/"> Categories </a>
+                        </li><li>
+                            <a class="menu-item" href="/donate"> Donate </a>
+                        </li><li>
+                            <a class="menu-item" href="/about"> About </a>
+                        </li></ul>
+                </nav><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <span class="svg-icon icon-search"></span>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <span class="svg-icon icon-cancel"></span>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <span class="svg-icon icon-loading"></span>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <span class="svg-icon icon-moon"></span>
+                </a>
+            </div>
+        </div>
+    </div><div class="mobile header" id="header-mobile">
+        <div class="header-container">
+            <div class="header-wrapper">
+                <div class="header-title">
+                    <a href="/" title="@Qian Sun" class="header-logo">@Qian Sun</a>
+                </div>
+                <div class="menu-toggle" id="menu-toggle-mobile">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+            <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                        <div class="search mobile" id="search-mobile">
+                            <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                            <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                                <span class="svg-icon icon-search"></span>
+                            </a>
+                            <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                                <span class="svg-icon icon-cancel"></span>
+                            </a>
+                            <span class="search-button search-loading" id="search-loading-mobile">
+                                <span class="svg-icon icon-loading"></span>
+                            </span>
+                        </div>
+                        <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                            取消
+                        </a>
+                    </div><nav>
+                    <h2 class="display-hidden">Основная навигация</h2>
+                    <ul><li>
+                            <a class="menu-item" href="/posts/" title="">Posts</a>
+                        </li><li>
+                            <a class="menu-item" href="/tags/" title="">Tags</a>
+                        </li><li>
+                            <a class="menu-item" href="/categories/" title="">Categories</a>
+                        </li><li>
+                            <a class="menu-item" href="/donate" title="">Donate</a>
+                        </li><li>
+                            <a class="menu-item" href="/about" title="">About</a>
+                        </li></ul>
+                </nav>
+                <a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <span class="svg-icon icon-moon"></span>
+                </a></div>
+        </div>
+    </div><div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div></header><main class="main">
+<div class="container content-article page-toc theme-full"><div class="toc" id="toc-auto">
+            <div class="toc-title">目录</div>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div>
+    
+
+    
+    
+    <article>
+    
+
+        <header class="header-post">
+
+            
+
+            
+            <div class="featured-image" style="background-image: url('/images/202105/yaml-notebook/preview.png');"><div class="post-title">
+
+                    <div class="post-all-meta">
+                        <nav class="breadcrumbs">
+    <ol>
+        <li><a href="/">主页 </a></li><li><a href="/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生 </a></li><li>Yaml Notebook</li>
+    </ol>
+</nav>
+                        <h1 class="single-title flipInX">Yaml Notebook</h1><div class="post-meta summary-post-meta"><span class="post-category meta-item">
+                                <a href="/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/"><span class="svg-icon icon-folder"></span>云原生</a>
+                            </span><span class="post-meta-date meta-item">
+                                <span class="svg-icon icon-clock"></span><time class="timeago" datetime="2021-05-08">2021-05-08</time>
+                            </span><span class="post-meta-words meta-item">
+                                <span class="svg-icon icon-pencil"></span>约 935 字
+                            </span>
+                            <span class="post-meta-reading meta-item">
+                                <span class="svg-icon icon-stopwatch"></span>预计阅读 2 分钟
+                            </span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                </div></header>
+
+        <div class="article-post toc-start">
+
+            <div class="content-block content-block-first content-block-position">
+
+                <div class="post single"><div class="details toc" id="toc-static"  data-kept="">
+                        <div class="details-summary toc-title">
+                            <span>目录</span>
+                        </div>
+                        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#简单说明">简单说明</a></li>
+    <li><a href="#基本语法">基本语法</a></li>
+    <li><a href="#yaml-支持的数据结构">Yaml 支持的数据结构</a>
+      <ul>
+        <li><a href="#对象类型对象的一组键值对使用冒号结构表示">对象类型：对象的一组键值对，使用冒号结构表示</a></li>
+        <li><a href="#数组类型一组连词线开头的行构成一个数组">数组类型：一组连词线开头的行，构成一个数组</a></li>
+        <li><a href="#复合结构对象和数组可以结合使用形成复合结构">复合结构：对象和数组可以结合使用，形成复合结构</a></li>
+        <li><a href="#纯量纯量是最基本的不可再分的值">纯量：纯量是最基本的、不可再分的值</a></li>
+      </ul>
+    </li>
+    <li><a href="#引用">引用</a></li>
+  </ul>
+</nav></div>
+                    </div><h2 id="简单说明" class="headerLink"><a href="#%e7%ae%80%e5%8d%95%e8%af%b4%e6%98%8e" class="header-mark"></a>简单说明</h2><p>Yaml 是一个可读性高，用来表达数据序列的格式。Yaml 的意思是：仍是一种标记语言，强调这种语言以数据做为中心，而不是以标记语言为重点</p>
+<h2 id="基本语法" class="headerLink"><a href="#%e5%9f%ba%e6%9c%ac%e8%af%ad%e6%b3%95" class="header-mark"></a>基本语法</h2><ul>
+<li>缩进时不允许使用 Tab 键，只允许使用空格</li>
+<li>缩进的空格数目不重要，只要相同层级的元素左侧对齐即可</li>
+<li>标识注释，从这个字符一直到行尾，都会被解释器忽略</li>
+</ul>
+<h2 id="yaml-支持的数据结构" class="headerLink"><a href="#yaml-%e6%94%af%e6%8c%81%e7%9a%84%e6%95%b0%e6%8d%ae%e7%bb%93%e6%9e%84" class="header-mark"></a>Yaml 支持的数据结构</h2><ul>
+<li>对象：键值对的集合，又称为映射mapping<ruby>映射<rt>mapping</rt></ruby>/ 哈希hash<ruby>哈希<rt>hash</rt></ruby>/ 字典dictionary<ruby>字典<rt>dictionary</rt></ruby></li>
+<li>数组：一组按次序排列的值，又称为序列sequence<ruby>序列<rt>sequence</rt></ruby>/ 列表list<ruby>列表<rt>list</rt></ruby></li>
+<li>纯量scalars<ruby>纯量<rt>scalars</rt></ruby>：单个的、不可再分的值</li>
+</ul>
+<h3 id="对象类型对象的一组键值对使用冒号结构表示" class="headerLink"><a href="#%e5%af%b9%e8%b1%a1%e7%b1%bb%e5%9e%8b%e5%af%b9%e8%b1%a1%e7%9a%84%e4%b8%80%e7%bb%84%e9%94%ae%e5%80%bc%e5%af%b9%e4%bd%bf%e7%94%a8%e5%86%92%e5%8f%b7%e7%bb%93%e6%9e%84%e8%a1%a8%e7%a4%ba" class="header-mark"></a>对象类型：对象的一组键值对，使用冒号结构表示</h3><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">Oliver</span><span class="w">
+</span><span class="w"></span><span class="l">age:24</span><span class="w">
+</span></code></pre></td></tr></table>
+</div>
+</div><p>Yaml 也允许另一种写法，将所有键值对写成一个行内对象</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">hash</span><span class="p">:</span><span class="w"> </span>{<span class="nt">name: Oliver, age</span><span class="p">:</span><span class="w"> </span><span class="m">24</span>}<span class="w">
+</span></code></pre></td></tr></table>
+</div>
+</div><p>Yaml 允许存在层级键值对</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">major</span><span class="p">:</span><span class="w">
+</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">computer</span><span class="w">
+</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">law</span><span class="w">
+</span></code></pre></td></tr></table>
+</div>
+</div><h3 id="数组类型一组连词线开头的行构成一个数组" class="headerLink"><a href="#%e6%95%b0%e7%bb%84%e7%b1%bb%e5%9e%8b%e4%b8%80%e7%bb%84%e8%bf%9e%e8%af%8d%e7%ba%bf%e5%bc%80%e5%a4%b4%e7%9a%84%e8%a1%8c%e6%9e%84%e6%88%90%e4%b8%80%e4%b8%aa%e6%95%b0%e7%bb%84" class="header-mark"></a>数组类型：一组连词线开头的行，构成一个数组</h3><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">Sport</span><span class="p">:</span><span class="w">
+</span><span class="w"> </span>- <span class="l">Swim</span><span class="w">
+</span><span class="w"> </span>- <span class="l">Run</span><span class="w">
+</span></code></pre></td></tr></table>
+</div>
+</div><p>数组也可以采用行内表示法</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">Sport</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="l">Swim, Run]</span><span class="w">
+</span></code></pre></td></tr></table>
+</div>
+</div><p>数组的一个相对复杂的实现方式</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">products</span><span class="p">:</span><span class="w">
+</span><span class="w"> </span>-<span class="w">
+</span><span class="w">  </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="m">1</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">egg</span><span class="w">
+</span><span class="w">  </span><span class="nt">price</span><span class="p">:</span><span class="w"> </span><span class="m">8</span><span class="w">
+</span><span class="w"> </span>-<span class="w">
+</span><span class="w">  </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="m">2</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">meat</span><span class="w">
+</span><span class="w">  </span><span class="nt">price</span><span class="p">:</span><span class="w"> </span><span class="m">33</span><span class="w">
+</span></code></pre></td></tr></table>
+</div>
+</div><h3 id="复合结构对象和数组可以结合使用形成复合结构" class="headerLink"><a href="#%e5%a4%8d%e5%90%88%e7%bb%93%e6%9e%84%e5%af%b9%e8%b1%a1%e5%92%8c%e6%95%b0%e7%bb%84%e5%8f%af%e4%bb%a5%e7%bb%93%e5%90%88%e4%bd%bf%e7%94%a8%e5%bd%a2%e6%88%90%e5%a4%8d%e5%90%88%e7%bb%93%e6%9e%84" class="header-mark"></a>复合结构：对象和数组可以结合使用，形成复合结构</h3><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">sport</span><span class="p">:</span><span class="w">
+</span><span class="w"> </span>- <span class="l">swim</span><span class="w">
+</span><span class="w"> </span>- <span class="l">run</span><span class="w">
+</span><span class="w"> </span>- <span class="l">basketball</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="nt">city</span><span class="p">:</span><span class="w">
+</span><span class="w"> </span><span class="nt">haidian</span><span class="p">:</span><span class="w"> </span><span class="l">beijing.haidian</span><span class="w">
+</span><span class="w"> </span><span class="nt">jinan</span><span class="p">:</span><span class="w"> </span><span class="l">shandong.jinan</span><span class="w">
+</span><span class="w"> </span><span class="nt">hefei</span><span class="p">:</span><span class="w"> </span><span class="l">anhui.hefei</span><span class="w">
+</span></code></pre></td></tr></table>
+</div>
+</div><h3 id="纯量纯量是最基本的不可再分的值" class="headerLink"><a href="#%e7%ba%af%e9%87%8f%e7%ba%af%e9%87%8f%e6%98%af%e6%9c%80%e5%9f%ba%e6%9c%ac%e7%9a%84%e4%b8%8d%e5%8f%af%e5%86%8d%e5%88%86%e7%9a%84%e5%80%bc" class="header-mark"></a>纯量：纯量是最基本的、不可再分的值</h3><ol>
+<li>字符串、布尔值、整数、浮点数、Null</li>
+<li>时间、日期</li>
+</ol>
+<p><strong>数值</strong></p>
+<p>数值直接以字面量的形式表示</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">number</span><span class="p">:</span><span class="w"> </span><span class="m">12.30</span><span class="w">
+</span></code></pre></td></tr></table>
+</div>
+</div><p><strong>布尔值</strong></p>
+<p>布尔值用 true 和 false 表示</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">isSet</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></code></pre></td></tr></table>
+</div>
+</div><p><strong>Null</strong></p>
+<p>null 用～表示</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">parent</span><span class="p">:</span><span class="w"> </span><span class="l">~</span><span class="w">
+</span></code></pre></td></tr></table>
+</div>
+</div><p><strong>时间</strong></p>
+<p>时间采用 ISO8601 格式</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">iso8601</span><span class="p">:</span><span class="w"> </span><span class="ld">2001-12-14</span><span class="l">t21:59:43.10-05:00</span><span class="w">
+</span></code></pre></td></tr></table>
+</div>
+</div><p><strong>日期</strong></p>
+<p>日期采用 ISO8601 格式的年、月、日表示</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">date</span><span class="p">:</span><span class="w"> </span><span class="ld">1976-07-31</span><span class="w">
+</span></code></pre></td></tr></table>
+</div>
+</div><p><strong>类型转换</strong></p>
+<p>Yaml 允许使用两个感叹号，强制转换数据类型</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">e</span><span class="p">:</span><span class="w"> </span><span class="cp">!!str</span><span class="w"> </span><span class="m">123</span><span class="w">
+</span><span class="w"></span><span class="nt">f</span><span class="p">:</span><span class="w"> </span><span class="cp">!!str</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></code></pre></td></tr></table>
+</div>
+</div><p><strong>字符串</strong></p>
+<p>字符串默认不使用引号表示</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">str</span><span class="p">:</span><span class="w"> </span><span class="l">我是字符串</span><span class="w">
+</span></code></pre></td></tr></table>
+</div>
+</div><p>如果字符串之中包含空格或特殊字符，需要放在引号中</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">str</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;内容： 字符串&#39;</span><span class="w">
+</span></code></pre></td></tr></table>
+</div>
+</div><p>单引号之中如果还有单引号，必须连续使用两个单引号转义</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">str</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;labor’‘s day&#39;</span><span class="w">
+</span></code></pre></td></tr></table>
+</div>
+</div><p>字符串可以写成多行，从第二行开始，必须有一个单空格缩进，换行符会被转为空格</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">str</span><span class="p">:</span><span class="w"> </span><span class="l">我是一段</span><span class="w">
+</span><span class="w"> </span><span class="l">多行</span><span class="w">
+</span><span class="w"> </span><span class="l">字符串</span><span class="w">
+</span></code></pre></td></tr></table>
+</div>
+</div><p>多行字符串可以使用 | 保留换行符，也可以使用 &gt; 折叠换行</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">this</span><span class="p">:</span><span class="w"> </span><span class="p">|</span><span class="sd">
+</span><span class="sd"> Foo
+</span><span class="sd"> Bar</span><span class="w"> 
+</span><span class="w"></span><span class="nt">that</span><span class="p">:</span><span class="w"> </span><span class="p">&gt;</span><span class="sd">
+</span><span class="sd"> Foo
+</span><span class="sd"> Bar</span><span class="w"> 
+</span></code></pre></td></tr></table>
+</div>
+</div><p>+ 表示保留文字块末尾的换行，- 表示删除字符串末尾的换行</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">s1</span><span class="p">:</span><span class="w"> </span><span class="p">|</span><span class="sd">
+</span><span class="sd"> </span><span class="w"> </span><span class="l">Foo</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="nt">s2</span><span class="p">:</span><span class="w"> </span><span class="p">|+</span><span class="sd">
+</span><span class="sd"> </span><span class="w"> </span><span class="l">Foo</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="nt">s3</span><span class="p">:</span><span class="w"> </span><span class="p">|-</span><span class="sd">
+</span><span class="sd"> </span><span class="w"> </span><span class="l">Foo</span><span class="w">
+</span></code></pre></td></tr></table>
+</div>
+</div><h2 id="引用" class="headerLink"><a href="#%e5%bc%95%e7%94%a8" class="header-mark"></a>引用</h2><p>&amp; 锚点和 * 别名，可以用来引用:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">defaults</span><span class="p">:</span><span class="w"> </span><span class="cp">&amp;defaults</span><span class="w">
+</span><span class="w">  </span><span class="nt">adapter</span><span class="p">:</span><span class="w">  </span><span class="l">postgres</span><span class="w">
+</span><span class="w">  </span><span class="nt">host</span><span class="p">:</span><span class="w">     </span><span class="l">localhost</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="nt">development</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">database</span><span class="p">:</span><span class="w"> </span><span class="l">myapp_development</span><span class="w">
+</span><span class="w">  </span><span class="nt">&lt;&lt;</span><span class="p">:</span><span class="w"> </span><span class="cp">*defaults</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="nt">test</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">database</span><span class="p">:</span><span class="w"> </span><span class="l">myapp_test</span><span class="w">
+</span><span class="w">  </span><span class="nt">&lt;&lt;</span><span class="p">:</span><span class="w"> </span><span class="cp">*defaults</span><span class="w">
+</span></code></pre></td></tr></table>
+</div>
+</div><p>相当于</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">defaults</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">adapter</span><span class="p">:</span><span class="w">  </span><span class="l">postgres</span><span class="w">
+</span><span class="w">  </span><span class="nt">host</span><span class="p">:</span><span class="w">     </span><span class="l">localhost</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="nt">development</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">database</span><span class="p">:</span><span class="w"> </span><span class="l">myapp_development</span><span class="w">
+</span><span class="w">  </span><span class="nt">adapter</span><span class="p">:</span><span class="w">  </span><span class="l">postgres</span><span class="w">
+</span><span class="w">  </span><span class="nt">host</span><span class="p">:</span><span class="w">     </span><span class="l">localhost</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="nt">test</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">database</span><span class="p">:</span><span class="w"> </span><span class="l">myapp_test</span><span class="w">
+</span><span class="w">  </span><span class="nt">adapter</span><span class="p">:</span><span class="w">  </span><span class="l">postgres</span><span class="w">
+</span><span class="w">  </span><span class="nt">host</span><span class="p">:</span><span class="w">     </span><span class="l">localhost</span><span class="w">
+</span></code></pre></td></tr></table>
+</div>
+</div><p>&amp; 用来建立锚点（defaults），&laquo; 表示合并到当前数据，* 用来引用锚点。</p>
+</div><footer>
+                        <div class="post">
+
+
+<div class="post-share"><div class="share-link">
+        <a class="share-icon share-twitter" href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://dcoliversun.github.io/yaml-notebook/" data-title="Yaml Notebook" data-hashtags="Yaml,云原生,Kubernetes"><span class="svg-social-icon icon-twitter"></span></a>
+    </div><div class="share-link">
+        <a class="share-icon share-facebook" href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://dcoliversun.github.io/yaml-notebook/" data-hashtag="Yaml"><span class="svg-social-icon icon-facebook"></span></a>
+    </div><div class="share-link">
+        <a class="share-icon share-linkedin" href="javascript:void(0);" title="分享到 Linkedin" data-sharer="linkedin" data-url="https://dcoliversun.github.io/yaml-notebook/"><span class="svg-social-icon icon-linkedin"></span></a>
+    </div></div>
+
+<div class="footer-post-author">
+    <div class="author-avatar"><a href="https://dcoliversun.github.io" target="_blank"><img alt="Qian Sun -- Coder💻 | Blogger📝 | Swimmer🏊‍♀️" src="https://dcoliversun.github.io/images/me/avatar.png"></a></div>
+    <div class="author-info">
+        <div class="name"><a href="https://dcoliversun.github.io" target="_blank"></a></div>
+        <div class="number-posts">Qian Sun -- Coder💻 | Blogger📝 | Swimmer🏊‍♀️</span></div>
+    </div>
+</div><div class="post-tags"><a href="/tags/yaml/" class="tag">Yaml</a><a href="/tags/%E4%BA%91%E5%8E%9F%E7%94%9F/" class="tag">云原生</a><a href="/tags/kubernetes/" class="tag">Kubernetes</a></div></div>
+                </footer></div>
+        <div id="toc-final"></div>
+        </div>
+
+    
+    </article>
+    <section class="page single comments content-block-position">
+        <h1 class="display-hidden">Комментарии</h1><div id="comments"></div></section></div>
+
+</main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.79.1">Hugo</a> 强力驱动 | 主题 - <a href="https://ublogger.netlify.app/?utm_source=https://dcoliversun.github.io&utm_medium=footer&utm_campaign=config&utm_term=2.0.1" target="_blank" title="uBlogger 2.0.1">uBlogger</a>
+                </div><div class="footer-line"><i class="svg-icon icon-copyright"></i><span>2020 - 2021</span><span class="author">&nbsp;<a href="https://dcoliversun.github.io" target="_blank">Qian Sun</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <aside id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="svg-icon icon-arrow-up"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="svg-icon icon-comments-fixed"></i>
+            </a>
+        </aside><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/katex/copy-tex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/smooth-scroll/smooth-scroll.min.js"></script><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lunr/lunr.stemmer.support.min.js"></script><script src="/lib/lunr/lunr.zh.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/auto-render.min.js"></script><script src="/lib/katex/copy-tex.min.js"></script><script src="/lib/katex/mhchem.min.js"></script><script src="/lib/cookieconsent/cookieconsent.min.js"></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{},"cookieconsent":{"content":{"dismiss":"同意","link":"了解更多","message":"本网站使用 Cookies 来改善您的浏览体验."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":30,"type":"lunr"}};</script><script src="/js/theme.min.js"></script></body>
+</html>

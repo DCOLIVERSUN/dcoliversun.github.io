@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>云原生 - 分类 - @Qian Sun</title>
+        <link>https://dcoliversun.github.io/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/</link>
+        <description>云原生 - 分类 - @Qian Sun</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Sat, 08 May 2021 16:51:51 &#43;0800</lastBuildDate><atom:link href="https://dcoliversun.github.io/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/" rel="self" type="application/rss+xml" /><item>
+    <title>Yaml Notebook</title>
+    <link>https://dcoliversun.github.io/yaml-notebook/</link>
+    <pubDate>Sat, 08 May 2021 16:51:51 &#43;0800</pubDate>
+    <author>author</author>
+    <guid>https://dcoliversun.github.io/yaml-notebook/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/202105/yaml-notebook/preview.png" referrerpolicy="no-referrer">
+            </div>学好 Yaml 语法，打好 K8s 基础]]></description>
+</item></channel>
+</rss>
