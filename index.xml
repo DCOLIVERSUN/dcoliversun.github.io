@@ -3,9 +3,18 @@
         <title>@Qian Sun</title>
         <link>https://dcoliversun.github.io/</link>
         <description>Hi! I&#39;m Qian Sun. Coder💻 | Blogger📝 | Swimmer🏊‍♀️</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Sat, 08 May 2021 16:51:51 &#43;0800</lastBuildDate>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Tue, 11 May 2021 20:16:06 &#43;0800</lastBuildDate>
             <atom:link href="https://dcoliversun.github.io/index.xml" rel="self" type="application/rss+xml" />
         <item>
+    <title>容器基本概念</title>
+    <link>https://dcoliversun.github.io/docker-notebook/</link>
+    <pubDate>Tue, 11 May 2021 20:16:06 &#43;0800</pubDate>
+    <author>author</author>
+    <guid>https://dcoliversun.github.io/docker-notebook/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/202105/docker-notebook/preview.png" referrerpolicy="no-referrer">
+            </div>什么是容器与镜像？容器的生命周期如何？容器与虚拟机的区别？]]></description>
+</item><item>
     <title>最全 Yaml 语法详解</title>
     <link>https://dcoliversun.github.io/yaml-notebook/</link>
     <pubDate>Sat, 08 May 2021 16:51:51 &#43;0800</pubDate>
@@ -86,14 +95,5 @@
     <description><![CDATA[<div class="featured-image">
                 <img src="/images/202103/house-renting/preview.png" referrerpolicy="no-referrer">
             </div>避免租房踩坑]]></description>
-</item><item>
-    <title>Executor与线程池</title>
-    <link>https://dcoliversun.github.io/java-concurrency-1/</link>
-    <pubDate>Fri, 12 Mar 2021 19:48:22 &#43;0800</pubDate>
-    <author>author</author>
-    <guid>https://dcoliversun.github.io/java-concurrency-1/</guid>
-    <description><![CDATA[<div class="featured-image">
-                <img src="/images/202103/Java-concurrency-1/preview.png" referrerpolicy="no-referrer">
-            </div>本文介绍了Executor框架，框架采用了任务提交、执行的解耦方案。为了让该方案适配不同场景，需要将多种因素考虑进执行策略中。不同的执行策略也衍生出不同的线程池，我们在使用前需要分析真实环境去选择适当的线程池。线程池异步执行多个任务，导致任务可能处于不同的状态。为了管理整个线程池的生命周期，ExecutorService提供了多种方法，一般采取awaitTermination、shutdown组合使用的方式，达到同步关闭的效果。最后，本文介绍了ScheduledThreadPool在延迟任务、周期任务的优越性，如果构建调度服务，可以采用DelayQueue。]]></description>
 </item></channel>
 </rss>

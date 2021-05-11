@@ -3,7 +3,16 @@
         <title>云原生 - 标签 - @Qian Sun</title>
         <link>https://dcoliversun.github.io/tags/%E4%BA%91%E5%8E%9F%E7%94%9F/</link>
         <description>云原生 - 标签 - @Qian Sun</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Sat, 08 May 2021 16:51:51 &#43;0800</lastBuildDate><atom:link href="https://dcoliversun.github.io/tags/%E4%BA%91%E5%8E%9F%E7%94%9F/" rel="self" type="application/rss+xml" /><item>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Tue, 11 May 2021 20:16:06 &#43;0800</lastBuildDate><atom:link href="https://dcoliversun.github.io/tags/%E4%BA%91%E5%8E%9F%E7%94%9F/" rel="self" type="application/rss+xml" /><item>
+    <title>容器基本概念</title>
+    <link>https://dcoliversun.github.io/docker-notebook/</link>
+    <pubDate>Tue, 11 May 2021 20:16:06 &#43;0800</pubDate>
+    <author>author</author>
+    <guid>https://dcoliversun.github.io/docker-notebook/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/202105/docker-notebook/preview.png" referrerpolicy="no-referrer">
+            </div>什么是容器与镜像？容器的生命周期如何？容器与虚拟机的区别？]]></description>
+</item><item>
     <title>最全 Yaml 语法详解</title>
     <link>https://dcoliversun.github.io/yaml-notebook/</link>
     <pubDate>Sat, 08 May 2021 16:51:51 &#43;0800</pubDate>
