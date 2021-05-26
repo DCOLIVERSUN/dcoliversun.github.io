@@ -3,7 +3,16 @@
         <title>所有文章 - @Qian Sun</title>
         <link>https://dcoliversun.github.io/posts/</link>
         <description>所有文章 | @Qian Sun</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Tue, 11 May 2021 20:16:06 &#43;0800</lastBuildDate><atom:link href="https://dcoliversun.github.io/posts/" rel="self" type="application/rss+xml" /><item>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Wed, 26 May 2021 20:23:53 &#43;0800</lastBuildDate><atom:link href="https://dcoliversun.github.io/posts/" rel="self" type="application/rss+xml" /><item>
+    <title>Kubernetes 核心概念</title>
+    <link>https://dcoliversun.github.io/kubernetes-notebook/</link>
+    <pubDate>Wed, 26 May 2021 20:23:53 &#43;0800</pubDate>
+    <author>author</author>
+    <guid>https://dcoliversun.github.io/kubernetes-notebook/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/202105/k8s-notebook/preview.png" referrerpolicy="no-referrer">
+            </div>本文详细介绍了 K8s 的概念、核心功能、架构、核心概念与API，非常全面的 K8s 整理笔记]]></description>
+</item><item>
     <title>容器基本概念</title>
     <link>https://dcoliversun.github.io/docker-notebook/</link>
     <pubDate>Tue, 11 May 2021 20:16:06 &#43;0800</pubDate>
@@ -84,14 +93,5 @@
     <description><![CDATA[<div class="featured-image">
                 <img src="/images/202103/Java-concurrency-2/preview.png" referrerpolicy="no-referrer">
             </div>Executor框架的执行策略对线程池性能造成的影响随着业务场景不同而变化，本文介绍了四类任务对执行策略、线程池性能的影响]]></description>
-</item><item>
-    <title>应届生租房注意事项（持续更新）</title>
-    <link>https://dcoliversun.github.io/house-renting/</link>
-    <pubDate>Mon, 15 Mar 2021 21:31:32 &#43;0800</pubDate>
-    <author>author</author>
-    <guid>https://dcoliversun.github.io/house-renting/</guid>
-    <description><![CDATA[<div class="featured-image">
-                <img src="/images/202103/house-renting/preview.png" referrerpolicy="no-referrer">
-            </div>避免租房踩坑]]></description>
 </item></channel>
 </rss>
