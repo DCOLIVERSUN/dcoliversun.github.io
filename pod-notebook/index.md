@@ -35,7 +35,7 @@ K8s 类比为一个操作系统，同时容器类比为进程，那么 Pod 就�
 
 ### 为什么 Pod 必须是原子调度单位？
 
-因为存在调度失败Task co-scheduling<ruby>调度失败<rt>Task co-scheduling</rt></ruby>，调度失败指的是分配容器到 Node 时，因为不知道全局分配信息，导致有紧密协作的容器不能被分配到同一个 Node。
+因为存在<ruby>调度失败<rt>Task co-scheduling</rt></ruby>，调度失败指的是分配容器到 Node 时，因为不知道全局分配信息，导致有紧密协作的容器不能被分配到同一个 Node。
 
 调度失败存在如下解决办法：
 

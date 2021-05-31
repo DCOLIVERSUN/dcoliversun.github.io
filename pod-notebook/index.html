@@ -26,7 +26,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/dcoliversun.github.io\/pod-notebook\/"
-        },"genre": "posts","keywords": "云原生, Kubernetes, Pod, 设计模式","wordCount":  2011 ,
+        },"genre": "posts","keywords": "云原生, Kubernetes, Pod, 设计模式","wordCount":  1990 ,
         "url": "https:\/\/dcoliversun.github.io\/pod-notebook\/","datePublished": "2021-05-31T21:35:22+08:00","dateModified": "2021-05-31T21:35:22+08:00",
         "publisher": {
             "@type": "Person",
@@ -178,10 +178,10 @@
                             </span><span class="post-meta-date meta-item">
                                 <span class="svg-icon icon-clock"></span><time class="timeago" datetime="2021-05-31">2021-05-31</time>
                             </span><span class="post-meta-words meta-item">
-                                <span class="svg-icon icon-pencil"></span>约 2011 字
+                                <span class="svg-icon icon-pencil"></span>约 1990 字
                             </span>
                             <span class="post-meta-reading meta-item">
-                                <span class="svg-icon icon-stopwatch"></span>预计阅读 5 分钟
+                                <span class="svg-icon icon-stopwatch"></span>预计阅读 4 分钟
                             </span>
                         </div>
 
@@ -236,7 +236,7 @@
         </figcaption>
 </figure>
 
-<h3 id="为什么-pod-必须是原子调度单位" class="headerLink"><a href="#%e4%b8%ba%e4%bb%80%e4%b9%88-pod-%e5%bf%85%e9%a1%bb%e6%98%af%e5%8e%9f%e5%ad%90%e8%b0%83%e5%ba%a6%e5%8d%95%e4%bd%8d" class="header-mark"></a>为什么 Pod 必须是原子调度单位？</h3><p>因为存在调度失败Task co-scheduling<ruby>调度失败<rt>Task co-scheduling</rt></ruby>，调度失败指的是分配容器到 Node 时，因为不知道全局分配信息，导致有紧密协作的容器不能被分配到同一个 Node。</p>
+<h3 id="为什么-pod-必须是原子调度单位" class="headerLink"><a href="#%e4%b8%ba%e4%bb%80%e4%b9%88-pod-%e5%bf%85%e9%a1%bb%e6%98%af%e5%8e%9f%e5%ad%90%e8%b0%83%e5%ba%a6%e5%8d%95%e4%bd%8d" class="header-mark"></a>为什么 Pod 必须是原子调度单位？</h3><p>因为存在<ruby>调度失败<rt>Task co-scheduling</rt></ruby>，调度失败指的是分配容器到 Node 时，因为不知道全局分配信息，导致有紧密协作的容器不能被分配到同一个 Node。</p>
 <p>调度失败存在如下解决办法：</p>
 <ul>
 <li>Mesos 的资源囤积：当所有设置了 Affinity 约束的任务都达到时，才开始统一调度；</li>
