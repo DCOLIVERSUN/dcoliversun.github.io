@@ -3,9 +3,18 @@
         <title>@Qian Sun</title>
         <link>https://dcoliversun.github.io/</link>
         <description>Hi! I&#39;m Qian Sun. Coder💻 | Blogger📝 | Swimmer🏊‍♀️</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Wed, 26 May 2021 20:23:53 &#43;0800</lastBuildDate>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Mon, 31 May 2021 21:35:22 &#43;0800</lastBuildDate>
             <atom:link href="https://dcoliversun.github.io/index.xml" rel="self" type="application/rss+xml" />
         <item>
+    <title>Pod 概念与容器设计模式</title>
+    <link>https://dcoliversun.github.io/pod-notebook/</link>
+    <pubDate>Mon, 31 May 2021 21:35:22 &#43;0800</pubDate>
+    <author>author</author>
+    <guid>https://dcoliversun.github.io/pod-notebook/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/202105/pod-notebook/preview.png" referrerpolicy="no-referrer">
+            </div>本文介绍为什么需要Pod、Pod的实现机制与设计模式]]></description>
+</item><item>
     <title>Kubernetes 核心概念</title>
     <link>https://dcoliversun.github.io/kubernetes-notebook/</link>
     <pubDate>Wed, 26 May 2021 20:23:53 &#43;0800</pubDate>
@@ -86,14 +95,5 @@
     <description><![CDATA[<div class="featured-image">
                 <img src="/images/202103/Java-concurrency-3/preview.png" referrerpolicy="no-referrer">
             </div>本文介绍了 Java 线程池中所有参数配置项与要求，针对不同业务场景提供对应的配置建议]]></description>
-</item><item>
-    <title>任务执行策略与线程池性能</title>
-    <link>https://dcoliversun.github.io/java-concurrency-2/</link>
-    <pubDate>Fri, 19 Mar 2021 09:40:15 &#43;0800</pubDate>
-    <author>author</author>
-    <guid>https://dcoliversun.github.io/java-concurrency-2/</guid>
-    <description><![CDATA[<div class="featured-image">
-                <img src="/images/202103/Java-concurrency-2/preview.png" referrerpolicy="no-referrer">
-            </div>Executor框架的执行策略对线程池性能造成的影响随着业务场景不同而变化，本文介绍了四类任务对执行策略、线程池性能的影响]]></description>
 </item></channel>
 </rss>
