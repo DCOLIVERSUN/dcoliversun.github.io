@@ -3,9 +3,18 @@
         <title>@Qian Sun</title>
         <link>https://dcoliversun.github.io/</link>
         <description>Hi! I&#39;m Qian Sun. Coder💻 | Blogger📝 | Swimmer🏊‍♀️</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Mon, 31 May 2021 21:35:22 &#43;0800</lastBuildDate>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Fri, 11 Jun 2021 10:56:11 &#43;0800</lastBuildDate>
             <atom:link href="https://dcoliversun.github.io/index.xml" rel="self" type="application/rss+xml" />
         <item>
+    <title>应用编排与管理：核心原理</title>
+    <link>https://dcoliversun.github.io/application-orchestration-and-management/</link>
+    <pubDate>Fri, 11 Jun 2021 10:56:11 &#43;0800</pubDate>
+    <author>author</author>
+    <guid>https://dcoliversun.github.io/application-orchestration-and-management/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/202106/application-orchestration-and-management/preview.png" referrerpolicy="no-referrer">
+            </div>本文介绍了K8s的控制器模式与工作逻辑，解释了为何命令式API不适用控制器模式的原因]]></description>
+</item><item>
     <title>Pod 概念与容器设计模式</title>
     <link>https://dcoliversun.github.io/pod-notebook/</link>
     <pubDate>Mon, 31 May 2021 21:35:22 &#43;0800</pubDate>
@@ -86,14 +95,5 @@
     <description><![CDATA[<div class="featured-image">
                 <img src="/images/202103/lctt-foreword/preview.png" referrerpolicy="no-referrer">
             </div>开启技术翻译道路]]></description>
-</item><item>
-    <title>配置 Java 线程池</title>
-    <link>https://dcoliversun.github.io/java-concurrency-3/</link>
-    <pubDate>Tue, 30 Mar 2021 14:47:05 &#43;0800</pubDate>
-    <author>author</author>
-    <guid>https://dcoliversun.github.io/java-concurrency-3/</guid>
-    <description><![CDATA[<div class="featured-image">
-                <img src="/images/202103/Java-concurrency-3/preview.png" referrerpolicy="no-referrer">
-            </div>本文介绍了 Java 线程池中所有参数配置项与要求，针对不同业务场景提供对应的配置建议]]></description>
 </item></channel>
 </rss>

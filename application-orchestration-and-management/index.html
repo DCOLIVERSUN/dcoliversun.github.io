@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noodp"/><title>应用编排与管理：核心原理 | </title><meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content=""/>
+<meta name="twitter:title" content="应用编排与管理：核心原理"/>
+<meta name="twitter:description" content="本文介绍了K8s的控制器模式与工作逻辑，解释了为何命令式API不适用控制器模式的原因"/><meta name="Description" content="本文介绍了K8s的控制器模式与工作逻辑，解释了为何命令式API不适用控制器模式的原因"><meta property="og:title" content="应用编排与管理：核心原理" />
+<meta property="og:description" content="本文介绍了K8s的控制器模式与工作逻辑，解释了为何命令式API不适用控制器模式的原因" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://dcoliversun.github.io/application-orchestration-and-management/" />
+<meta property="og:image" content="https://dcoliversun.github.io/logo.png"/>
+<meta property="article:published_time" content="2021-06-11T10:56:11+08:00" />
+<meta property="article:modified_time" content="2021-06-11T10:56:11+08:00" />
+<meta name="application-name" content="@Qian Sun">
+<meta name="apple-mobile-web-app-title" content="@Qian Sun"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
+        <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://dcoliversun.github.io/application-orchestration-and-management/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/lib/prismjs/prism.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "应用编排与管理：核心原理",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/dcoliversun.github.io\/application-orchestration-and-management\/"
+        },"genre": "posts","keywords": "云原生, Kubernetes, 应用编排","wordCount":  2238 ,
+        "url": "https:\/\/dcoliversun.github.io\/application-orchestration-and-management\/","datePublished": "2021-06-11T10:56:11+08:00","dateModified": "2021-06-11T10:56:11+08:00",
+        "publisher": {
+            "@type": "Person",
+            "name": "", "image": [
+            {
+            "@type": "ImageObject",
+            "url": "https:\/\/dcoliversun.github.io\/images\/me\/avatar.png"
+            }
+            ]},"author": {
+                "@type": "Person",
+                "name": ""
+            },"description": "本文介绍了K8s的控制器模式与工作逻辑，解释了为何命令式API不适用控制器模式的原因"
+    }
+    </script><script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [{
+            "@type": "ListItem",
+            "position": 1,
+            "name": "主页",
+            "item": "https:\/\/dcoliversun.github.io"
+        },{
+            "@type": "ListItem",
+            "position": 2,
+            "name": "云原生",
+            "item": "https://dcoliversun.github.io/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/"
+        },{
+                "@type": "ListItem",
+                "position": 3,
+                "name": "应用编排与管理：核心原理"
+            }]
+    }
+</script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header>
+    <div class="desktop header" id="header-desktop">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="@Qian Sun" class="header-logo logo-svg">@Qian Sun</a>
+            </div>
+            <div class="menu">
+                <nav>
+                    <h2 class="display-hidden">Основная навигация</h2>
+                    <ul class="menu-inner"><li>
+                            <a class="menu-item" href="/posts/"> Posts </a>
+                        </li><li>
+                            <a class="menu-item" href="/tags/"> Tags </a>
+                        </li><li>
+                            <a class="menu-item" href="/categories/"> Categories </a>
+                        </li><li>
+                            <a class="menu-item" href="/donate"> Donate </a>
+                        </li><li>
+                            <a class="menu-item" href="/about"> About </a>
+                        </li></ul>
+                </nav><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <span class="svg-icon icon-search"></span>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <span class="svg-icon icon-cancel"></span>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <span class="svg-icon icon-loading"></span>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <span class="svg-icon icon-moon"></span>
+                </a>
+            </div>
+        </div>
+    </div><div class="mobile header" id="header-mobile">
+        <div class="header-container">
+            <div class="header-wrapper">
+                <div class="header-title">
+                    <a href="/" title="@Qian Sun" class="header-logo">@Qian Sun</a>
+                </div>
+                <div class="menu-toggle" id="menu-toggle-mobile">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+            <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                        <div class="search mobile" id="search-mobile">
+                            <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                            <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                                <span class="svg-icon icon-search"></span>
+                            </a>
+                            <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                                <span class="svg-icon icon-cancel"></span>
+                            </a>
+                            <span class="search-button search-loading" id="search-loading-mobile">
+                                <span class="svg-icon icon-loading"></span>
+                            </span>
+                        </div>
+                        <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                            取消
+                        </a>
+                    </div><nav>
+                    <h2 class="display-hidden">Основная навигация</h2>
+                    <ul><li>
+                            <a class="menu-item" href="/posts/" title="">Posts</a>
+                        </li><li>
+                            <a class="menu-item" href="/tags/" title="">Tags</a>
+                        </li><li>
+                            <a class="menu-item" href="/categories/" title="">Categories</a>
+                        </li><li>
+                            <a class="menu-item" href="/donate" title="">Donate</a>
+                        </li><li>
+                            <a class="menu-item" href="/about" title="">About</a>
+                        </li></ul>
+                </nav>
+                <a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <span class="svg-icon icon-moon"></span>
+                </a></div>
+        </div>
+    </div><div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div></header><main class="main">
+<div class="container content-article page-toc theme-full"><div class="toc" id="toc-auto">
+            <div class="toc-title">目录</div>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div>
+    
+
+    
+    
+    <article>
+    
+
+        <header class="header-post">
+
+            
+
+            
+            <div class="featured-image" style="background-image: url('/images/202106/application-orchestration-and-management/preview.png');"><div class="post-title">
+
+                    <div class="post-all-meta">
+                        <nav class="breadcrumbs">
+    <ol>
+        <li><a href="/">主页 </a></li><li><a href="/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生 </a></li><li>应用编排与管理：核心原理</li>
+    </ol>
+</nav>
+                        <h1 class="single-title flipInX">应用编排与管理：核心原理</h1><div class="post-meta summary-post-meta"><span class="post-category meta-item">
+                                <a href="/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/"><span class="svg-icon icon-folder"></span>云原生</a>
+                            </span><span class="post-meta-date meta-item">
+                                <span class="svg-icon icon-clock"></span><time class="timeago" datetime="2021-06-11">2021-06-11</time>
+                            </span><span class="post-meta-words meta-item">
+                                <span class="svg-icon icon-pencil"></span>约 2238 字
+                            </span>
+                            <span class="post-meta-reading meta-item">
+                                <span class="svg-icon icon-stopwatch"></span>预计阅读 5 分钟
+                            </span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                </div></header>
+
+        <div class="article-post toc-start">
+
+            <div class="content-block content-block-first content-block-position">
+
+                <div class="post single"><div class="details toc" id="toc-static"  data-kept="">
+                        <div class="details-summary toc-title">
+                            <span>目录</span>
+                        </div>
+                        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#资源元信息">资源元信息</a>
+      <ul>
+        <li><a href="#k8s-资源对象">K8s 资源对象</a></li>
+        <li><a href="#labels">labels</a></li>
+        <li><a href="#annotations">Annotations</a></li>
+        <li><a href="#ownereference">Ownereference</a></li>
+      </ul>
+    </li>
+    <li><a href="#控制器模式">控制器模式</a>
+      <ul>
+        <li><a href="#控制循环">控制循环</a></li>
+        <li><a href="#sensor">Sensor</a></li>
+        <li><a href="#控制循环例子-扩容">控制循环例子-扩容</a></li>
+      </ul>
+    </li>
+    <li><a href="#控制器模式总结">控制器模式总结</a>
+      <ul>
+        <li><a href="#两种-api-设计方法">两种 API 设计方法</a></li>
+        <li><a href="#命令式-api-的问题">命令式 API 的问题</a></li>
+        <li><a href="#总结">总结</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+                    </div><h2 id="资源元信息" class="headerLink"><a href="#%e8%b5%84%e6%ba%90%e5%85%83%e4%bf%a1%e6%81%af" class="header-mark"></a>资源元信息</h2><h3 id="k8s-资源对象" class="headerLink"><a href="#k8s-%e8%b5%84%e6%ba%90%e5%af%b9%e8%b1%a1" class="header-mark"></a>K8s 资源对象</h3><p>K8s 的资源对象组成：主要包括了 Spec、Status 两部分。其中 Spec 部分用来描述期望的状态，Status 部分用来描述观测到的状态。</p>
+<p>其实，K8s 还有另外一部分，即元数据部分。该部分主要包括了用来识别资源的标签：Labels，用来描述资源的注解：Annotations，用来描述多个资源之间相互关系的 OwnerReference。</p>
+<h3 id="labels" class="headerLink"><a href="#labels" class="header-mark"></a>labels</h3><p>第一个元数据，也是最重要的元数据是：资源标签。资源标签是一种具有标识型的 Key：Value 元数据。</p>
+<p>标签主要用来筛选资源和组合资源，可以使用类似于 SQL 查询 select，来根据 Label 查询相关的资源。</p>
+<h3 id="annotations" class="headerLink"><a href="#annotations" class="header-mark"></a>Annotations</h3><p>Annotations 是系统或者工具用来存储资源的非标志性信息，可以用来扩展资源的 spec/status 的描述。</p>
+<h3 id="ownereference" class="headerLink"><a href="#ownereference" class="header-mark"></a>Ownereference</h3><p>所谓所有者，一般就是指集合类的资源，比如说 Pod 集合，就有 replicaset、statefulset。</p>
+<p>集合类资源的控制器会创建对应的归属资源。比如：replicaset 控制器在操作中会创建 Pod，被创建 Pod 的 Ownereference 就指向了创建 Pod 的 replicaset。Ownereference 使得用户可以方便地查找一个创建资源的对象，另外，还可以用来实现级联删除的效果。</p>
+<h2 id="控制器模式" class="headerLink"><a href="#%e6%8e%a7%e5%88%b6%e5%99%a8%e6%a8%a1%e5%bc%8f" class="header-mark"></a>控制器模式</h2><h3 id="控制循环" class="headerLink"><a href="#%e6%8e%a7%e5%88%b6%e5%be%aa%e7%8e%af" class="header-mark"></a>控制循环</h3><p>控制型模式最核心的就是控制循环的概念。在控制循环中包括了控制器，被控制的系统，以及能够观测系统的传感器。</p>
+<figure>
+    <img src="/images/202106/application-orchestration-and-management/control-operation.png" width="650" height="600"/> <figcaption>
+            <h4>Control Operation</h4>
+        </figcaption>
+</figure>
+
+<p>这些组件都是逻辑的，外界通过修改资源 spec 来控制资源，控制器比较资源 spec 和 status，从而计算一个 diff，diff 最后会用来决定对系统的控制操作，控制操作会使得系统产生新的输出，并被传感器以资源 status 形式上报，控制器的各个组件将都会是独立自主地运行，不断使系统向 spec 表示终态趋近。</p>
+<h3 id="sensor" class="headerLink"><a href="#sensor" class="header-mark"></a>Sensor</h3><p>循环控制中逻辑的传感器主要由 Reflector、Informer、Indexer 三个组件构成。</p>
+<figure>
+    <img src="/images/202106/application-orchestration-and-management/sensor.png" width="650" height="600"/> <figcaption>
+            <h4>Sensor</h4>
+        </figcaption>
+</figure>
+
+<p>Reflector 通过 List 和 Watch K8s server 来获取资源的数据。List 用来在 Controller 重启以及 Watch 中断的情况下，进行系统资源的全量更新；而 Watch 则在多次 List 之间进行增量的资源更新；Reflector 在获取新的资源数据后，会在 Delta 队列中塞入一个包括资源对象信息本身以及资源对象事件类型的 Delta 记录，Delta 队列中可以保证同一个对象在队列中仅有一条记录，从而避免 Reflector 重新 List 和 Watch 的时候产生重复的记录。</p>
+<p>Informer 组件不断从 Delta 队列中弹出 delta 记录，然后把资源对象交给 indexer，让 indexer 把资源记录在一个缓存中，缓存在默认设置下是用资源的命名空间来做索引的，并且可以被 Controller Manager 或多个 Controller 所共享。之后，再把这个事件交给事件的回调函数。</p>
+<p>控制循环中的控制器组件主要由事件处理函数以及 worker 组成，事件处理函数会相互关注资源的新增、更新、删除的事件，并根据控制器的逻辑去决定是否需要处理。对需要处理的事件，会把事件关联资源的命名空间以及名字塞入一个工作队列中，并且由后续的 worker 池中的一个 worker 来处理，工作队列会对存储的对象进行去重，从而避免多个 worker 处理同一个资源的情况。</p>
+<p>worker 在处理资源对象时，一般需要用资源的名字来重新获得最新的资源数据，用来创建或更新资源对象，或者调用其他的外部服务，worker 如果处理失败的时候，一般情况下会把资源的名字重新加入到工作队列中，从而方便之后进行重试。</p>
+<h3 id="控制循环例子-扩容" class="headerLink"><a href="#%e6%8e%a7%e5%88%b6%e5%be%aa%e7%8e%af%e4%be%8b%e5%ad%90-%e6%89%a9%e5%ae%b9" class="header-mark"></a>控制循环例子-扩容</h3><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">apps/v1</span><span class="w">
+</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">ReplicaSet</span><span class="w">
+</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">rsA</span><span class="w">
+</span><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">nsA</span><span class="w">
+</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="m">3</span><span class="w">
+</span><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">env</span><span class="p">:</span><span class="w"> </span><span class="l">prod</span><span class="w">
+</span><span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="nt">env</span><span class="p">:</span><span class="w"> </span><span class="l">prod</span><span class="w">
+</span><span class="w">      </span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="nt">containers</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span>- <span class="nt">images</span><span class="p">:</span><span class="w"> </span><span class="l">registry.cn-hangzhou.aliyuncs.com/acs/nginx</span><span class="w">
+</span><span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">nginx</span><span class="w">
+</span><span class="w"></span><span class="nt">status</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="m">2</span><span class="w">
+</span></code></pre></td></tr></table>
+</div>
+</div><figure>
+    <img src="/images/202106/application-orchestration-and-management/onUpdate.png" width="650" height="600"/> <figcaption>
+            <h4>更新</h4>
+        </figcaption>
+</figure>
+
+<ol>
+<li>Reflector会 watch 到 ReplicaSet 和 Pod 两种资源的变换；</li>
+<li>向 delta 队列中塞入 rsA 对象，类型为更新；</li>
+<li>Informer 取出记录；</li>
+<li>将新的 ReplicaSet 更新到缓存中，并与 Namespace nsA 作为索引；</li>
+<li>调用 Update 回调函数，ReplicaSet 控制器发现 ReplicaSet 发生变化后把字符串 nsA/rsA 字符串塞入到工作队列中；</li>
+<li>worker 从工作队列中取到 nsA/rsA 这个字符串的 key；</li>
+<li>从缓存中取到了最新的 ReplicaSet 数据；</li>
+<li>worker 通过比较 ReplicaSet 中 spec 和 status 里的数值，发现需要进行扩容操作，因此创建一个 Pod，这个 Pod 中的 Ownereference 指向了 ReplicaSet rsA；</li>
+</ol>
+<figure>
+    <img src="/images/202106/application-orchestration-and-management/onAdd.png" width="650" height="600"/> <figcaption>
+            <h4>扩容</h4>
+        </figcaption>
+</figure>
+
+<ol start="9">
+<li>Reflector Watch 到 Pod 新增事件；</li>
+<li>Reflector 在 Delta 队列中额外加入 Add 类型的 delta 记录；</li>
+<li>Informer 取出记录传送给 Indexer，调用 ReplicaSet 控制器的 Add 回调函数；</li>
+<li>将记录存储在缓存中；</li>
+<li>Add 回调函数通过检查 pod ownerReferences 找到了对应的 ReplicaSet，并把包括 ReplicaSet 命名空间和字符串塞入到了工作队列中；</li>
+<li>ReplicaSet 的 worker 在得到新工作项之后，从缓存中取到了新的 ReplicaSet 记录，并得到了其所有创建的 Pod；</li>
+<li>ReplicaSet 更新 status 使得 spec 和 status 达成一致。</li>
+</ol>
+<h2 id="控制器模式总结" class="headerLink"><a href="#%e6%8e%a7%e5%88%b6%e5%99%a8%e6%a8%a1%e5%bc%8f%e6%80%bb%e7%bb%93" class="header-mark"></a>控制器模式总结</h2><h3 id="两种-api-设计方法" class="headerLink"><a href="#%e4%b8%a4%e7%a7%8d-api-%e8%ae%be%e8%ae%a1%e6%96%b9%e6%b3%95" class="header-mark"></a>两种 API 设计方法</h3><p>K8s 控制器模式依赖声明式 API，另一种常见 API 类型是命令式 API。</p>
+<ul>
+<li>声明式 API：只说目标决定，具体操作交给 worker</li>
+<li>命令式 API：告诉 worker 具体操作</li>
+</ul>
+<h3 id="命令式-api-的问题" class="headerLink"><a href="#%e5%91%bd%e4%bb%a4%e5%bc%8f-api-%e7%9a%84%e9%97%ae%e9%a2%98" class="header-mark"></a>命令式 API 的问题</h3><ol>
+<li>错误处理：在大规模分布式系统中，错误是无处不在的。一旦发出的命令没有响应，调用方只能通过反复重试的方式来试图恢复错误，然而盲目的重试可能会带来更大的问题。</li>
+<li>命令式 API 后台往往还有一个巡检系统，用来修正命令处理超时、重试等一些场景造成数据不一致的问题。</li>
+<li>容易在并发访问时出现问题：假如有多方并发的对一个资源请求进行操作，一旦其中有操作出现错误，就要重试。那么很难确认是哪个操作生效。很多命令式系统往往在操作前会对系统进行加锁，从而保证整个系统最后生效行为的可预见性，但是加锁行为会降低整个系统的操作执行效率。</li>
+<li>声明式 API 系统天然记录了系统现在和最终的状态。</li>
+</ol>
+<h3 id="总结" class="headerLink"><a href="#%e6%80%bb%e7%bb%93" class="header-mark"></a>总结</h3><ol>
+<li>K8s 所采用的控制器模式，是由声明式 API 驱动的。确切来说，是基于对 K8s 资源对象的修改来驱动的；</li>
+<li>K8s 资源之后，是关注该资源的控制器。这些控制器将异步的控制系统向设置的终态驱近；</li>
+<li>控制器是自主运行的，使得系统的自动化和无人值守成为可能；</li>
+<li>因为 K8s 的控制器和资源都是可以自定义的，因此可以方便的扩展控制器模式。特别是对于有状态应用，往往通过自定义资源和控制器的方式，来自动化运维操作。</li>
+</ol>
+</div><footer>
+                        <div class="post">
+
+
+<div class="post-share"><div class="share-link">
+        <a class="share-icon share-twitter" href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://dcoliversun.github.io/application-orchestration-and-management/" data-title="应用编排与管理：核心原理" data-hashtags="云原生,Kubernetes,应用编排"><span class="svg-social-icon icon-twitter"></span></a>
+    </div><div class="share-link">
+        <a class="share-icon share-facebook" href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://dcoliversun.github.io/application-orchestration-and-management/" data-hashtag="云原生"><span class="svg-social-icon icon-facebook"></span></a>
+    </div><div class="share-link">
+        <a class="share-icon share-linkedin" href="javascript:void(0);" title="分享到 Linkedin" data-sharer="linkedin" data-url="https://dcoliversun.github.io/application-orchestration-and-management/"><span class="svg-social-icon icon-linkedin"></span></a>
+    </div></div>
+
+
+
+
+<div class="block-author">
+    <div class="author-avatar"><a href="https://dcoliversun.github.io" target="_blank"><img alt="Qian Sun -- Coder💻 | Blogger📝 | Swimmer🏊‍♀️" src="https://dcoliversun.github.io/images/me/avatar.png"></a></div>
+    <div class="author-info">
+        <div class="name"><a href="https://dcoliversun.github.io" target="_blank"></a></div>
+        <div class="number-posts">Qian Sun -- Coder💻 | Blogger📝 | Swimmer🏊‍♀️</span></div>
+    </div>
+</div>
+
+
+<div class="post-tags"><a href="/tags/%E4%BA%91%E5%8E%9F%E7%94%9F/" class="tag">云原生</a><a href="/tags/kubernetes/" class="tag">Kubernetes</a><a href="/tags/%E5%BA%94%E7%94%A8%E7%BC%96%E6%8E%92/" class="tag">应用编排</a></div></div>
+                </footer></div>
+
+        <div id="toc-final"></div>
+        </div>
+
+    
+    </article>
+    <section class="page single comments content-block-position">
+        <h1 class="display-hidden">Комментарии</h1><div id="comments"></div></section></div>
+
+</main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.79.1">Hugo</a> 强力驱动 | 主题 - <a href="https://ublogger.netlify.app/?utm_source=https://dcoliversun.github.io&utm_medium=footer&utm_campaign=config&utm_term=2.0.1" target="_blank" title="uBlogger 2.0.1">uBlogger</a>
+                </div><div class="footer-line"><i class="svg-icon icon-copyright"></i><span>2020 - 2021</span><span class="author">&nbsp;<a href="https://dcoliversun.github.io" target="_blank">Qian Sun</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <aside id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="svg-icon icon-arrow-up"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="svg-icon icon-comments-fixed"></i>
+            </a>
+        </aside><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/katex/copy-tex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/smooth-scroll/smooth-scroll.min.js"></script><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lunr/lunr.stemmer.support.min.js"></script><script src="/lib/lunr/lunr.zh.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/prismjs/prism.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/auto-render.min.js"></script><script src="/lib/katex/copy-tex.min.js"></script><script src="/lib/katex/mhchem.min.js"></script><script src="/lib/cookieconsent/cookieconsent.min.js"></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{},"cookieconsent":{"content":{"dismiss":"同意","link":"了解更多","message":"本网站使用 Cookies 来改善您的浏览体验."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":30,"type":"lunr"}};</script><script src="/js/theme.min.js"></script></body>
+</html>
