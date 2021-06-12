@@ -3,9 +3,18 @@
         <title>@Qian Sun</title>
         <link>https://dcoliversun.github.io/</link>
         <description>Hi! I&#39;m Qian Sun. Coder💻 | Blogger📝 | Swimmer🏊‍♀️</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Fri, 11 Jun 2021 10:56:11 &#43;0800</lastBuildDate>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Sat, 12 Jun 2021 10:06:54 &#43;0800</lastBuildDate>
             <atom:link href="https://dcoliversun.github.io/index.xml" rel="self" type="application/rss+xml" />
         <item>
+    <title>开源为你带来竞争优势的 4 种方式</title>
+    <link>https://dcoliversun.github.io/four-ways-open-source-gives-you-a-competitive-edge/</link>
+    <pubDate>Sat, 12 Jun 2021 10:06:54 &#43;0800</pubDate>
+    <author>author</author>
+    <guid>https://dcoliversun.github.io/four-ways-open-source-gives-you-a-competitive-edge/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/202106/four-ways-open-source-gives-you-a-competitive-edge/preview.png" referrerpolicy="no-referrer">
+            </div>可拓展性与灵活性、安全性和高可信的协作、不受供应商限制、顶尖人才和社区]]></description>
+</item><item>
     <title>应用编排与管理：核心原理</title>
     <link>https://dcoliversun.github.io/application-orchestration-and-management/</link>
     <pubDate>Fri, 11 Jun 2021 10:56:11 &#43;0800</pubDate>
@@ -86,14 +95,5 @@
     <description><![CDATA[<div class="featured-image">
                 <img src="/images/202104/learn-python-dictionary-values-with-jupyter/preview.png" referrerpolicy="no-referrer">
             </div>字典数据结构可以帮助你快速访问信息。]]></description>
-</item><item>
-    <title>LCTT项目序言</title>
-    <link>https://dcoliversun.github.io/lctt-foreword/</link>
-    <pubDate>Wed, 31 Mar 2021 13:59:38 &#43;0800</pubDate>
-    <author>author</author>
-    <guid>https://dcoliversun.github.io/lctt-foreword/</guid>
-    <description><![CDATA[<div class="featured-image">
-                <img src="/images/202103/lctt-foreword/preview.png" referrerpolicy="no-referrer">
-            </div>开启技术翻译道路]]></description>
 </item></channel>
 </rss>
