@@ -3,7 +3,16 @@
         <title>所有文章 - @Qian Sun</title>
         <link>https://dcoliversun.github.io/posts/</link>
         <description>所有文章 | @Qian Sun</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Sat, 12 Jun 2021 10:06:54 &#43;0800</lastBuildDate><atom:link href="https://dcoliversun.github.io/posts/" rel="self" type="application/rss+xml" /><item>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Sun, 27 Jun 2021 11:31:13 &#43;0800</lastBuildDate><atom:link href="https://dcoliversun.github.io/posts/" rel="self" type="application/rss+xml" /><item>
+    <title>应用编排与管理：Deployment</title>
+    <link>https://dcoliversun.github.io/application-orchestration-and-management-deployment/</link>
+    <pubDate>Sun, 27 Jun 2021 11:31:13 &#43;0800</pubDate>
+    <author>author</author>
+    <guid>https://dcoliversun.github.io/application-orchestration-and-management-deployment/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/202106/application-orchestration-and-management-deployment/preview.png" referrerpolicy="no-referrer">
+            </div>Deployment 保证集群里可用 Pod 数量，为所有 Pod 更新镜像版本，保证更新过程中的服务可用性，实现快速回滚]]></description>
+</item><item>
     <title>开源为你带来竞争优势的 4 种方式</title>
     <link>https://dcoliversun.github.io/four-ways-open-source-gives-you-a-competitive-edge/</link>
     <pubDate>Sat, 12 Jun 2021 10:06:54 &#43;0800</pubDate>
@@ -84,14 +93,5 @@
     <description><![CDATA[<div class="featured-image">
                 <img src="/images/202104/reverse-engineering-a-docker-image/preview.png" referrerpolicy="no-referrer">
             </div>没有提交原始 Dockerfile 的时候，可以通过逆向工程查看镜像构建过程。]]></description>
-</item><item>
-    <title>用 Jupyter 学习 Python 字典</title>
-    <link>https://dcoliversun.github.io/learn-python-dictionary-with-jupyter/</link>
-    <pubDate>Thu, 01 Apr 2021 22:42:55 &#43;0800</pubDate>
-    <author>author</author>
-    <guid>https://dcoliversun.github.io/learn-python-dictionary-with-jupyter/</guid>
-    <description><![CDATA[<div class="featured-image">
-                <img src="/images/202104/learn-python-dictionary-values-with-jupyter/preview.png" referrerpolicy="no-referrer">
-            </div>字典数据结构可以帮助你快速访问信息。]]></description>
 </item></channel>
 </rss>

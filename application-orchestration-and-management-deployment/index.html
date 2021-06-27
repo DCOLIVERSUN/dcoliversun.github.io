@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noodp"/><title>应用编排与管理：Deployment | </title><meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content=""/>
+<meta name="twitter:title" content="应用编排与管理：Deployment"/>
+<meta name="twitter:description" content="Deployment 保证集群里可用 Pod 数量，为所有 Pod 更新镜像版本，保证更新过程中的服务可用性，实现快速回滚"/><meta name="Description" content="Deployment 保证集群里可用 Pod 数量，为所有 Pod 更新镜像版本，保证更新过程中的服务可用性，实现快速回滚"><meta property="og:title" content="应用编排与管理：Deployment" />
+<meta property="og:description" content="Deployment 保证集群里可用 Pod 数量，为所有 Pod 更新镜像版本，保证更新过程中的服务可用性，实现快速回滚" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://dcoliversun.github.io/application-orchestration-and-management-deployment/" />
+<meta property="og:image" content="https://dcoliversun.github.io/logo.png"/>
+<meta property="article:published_time" content="2021-06-27T11:31:13+08:00" />
+<meta property="article:modified_time" content="2021-06-27T11:31:13+08:00" />
+<meta name="application-name" content="@Qian Sun">
+<meta name="apple-mobile-web-app-title" content="@Qian Sun"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
+        <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://dcoliversun.github.io/application-orchestration-and-management-deployment/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/lib/prismjs/prism.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "应用编排与管理：Deployment",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/dcoliversun.github.io\/application-orchestration-and-management-deployment\/"
+        },"genre": "posts","keywords": "云原生, Kubernetes, 应用编排, Deployment","wordCount":  1462 ,
+        "url": "https:\/\/dcoliversun.github.io\/application-orchestration-and-management-deployment\/","datePublished": "2021-06-27T11:31:13+08:00","dateModified": "2021-06-27T11:31:13+08:00",
+        "publisher": {
+            "@type": "Person",
+            "name": "", "image": [
+            {
+            "@type": "ImageObject",
+            "url": "https:\/\/dcoliversun.github.io\/images\/me\/avatar.png"
+            }
+            ]},"author": {
+                "@type": "Person",
+                "name": ""
+            },"description": "Deployment 保证集群里可用 Pod 数量，为所有 Pod 更新镜像版本，保证更新过程中的服务可用性，实现快速回滚"
+    }
+    </script><script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [{
+            "@type": "ListItem",
+            "position": 1,
+            "name": "主页",
+            "item": "https:\/\/dcoliversun.github.io"
+        },{
+            "@type": "ListItem",
+            "position": 2,
+            "name": "云原生",
+            "item": "https://dcoliversun.github.io/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/"
+        },{
+                "@type": "ListItem",
+                "position": 3,
+                "name": "应用编排与管理：Deployment"
+            }]
+    }
+</script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header>
+    <div class="desktop header" id="header-desktop">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="@Qian Sun" class="header-logo logo-svg">@Qian Sun</a>
+            </div>
+            <div class="menu">
+                <nav>
+                    <h2 class="display-hidden">Основная навигация</h2>
+                    <ul class="menu-inner"><li>
+                            <a class="menu-item" href="/posts/"> Posts </a>
+                        </li><li>
+                            <a class="menu-item" href="/tags/"> Tags </a>
+                        </li><li>
+                            <a class="menu-item" href="/categories/"> Categories </a>
+                        </li><li>
+                            <a class="menu-item" href="/donate"> Donate </a>
+                        </li><li>
+                            <a class="menu-item" href="/about"> About </a>
+                        </li></ul>
+                </nav><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <span class="svg-icon icon-search"></span>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <span class="svg-icon icon-cancel"></span>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <span class="svg-icon icon-loading"></span>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <span class="svg-icon icon-moon"></span>
+                </a>
+            </div>
+        </div>
+    </div><div class="mobile header" id="header-mobile">
+        <div class="header-container">
+            <div class="header-wrapper">
+                <div class="header-title">
+                    <a href="/" title="@Qian Sun" class="header-logo">@Qian Sun</a>
+                </div>
+                <div class="menu-toggle" id="menu-toggle-mobile">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+            <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                        <div class="search mobile" id="search-mobile">
+                            <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                            <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                                <span class="svg-icon icon-search"></span>
+                            </a>
+                            <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                                <span class="svg-icon icon-cancel"></span>
+                            </a>
+                            <span class="search-button search-loading" id="search-loading-mobile">
+                                <span class="svg-icon icon-loading"></span>
+                            </span>
+                        </div>
+                        <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                            取消
+                        </a>
+                    </div><nav>
+                    <h2 class="display-hidden">Основная навигация</h2>
+                    <ul><li>
+                            <a class="menu-item" href="/posts/" title="">Posts</a>
+                        </li><li>
+                            <a class="menu-item" href="/tags/" title="">Tags</a>
+                        </li><li>
+                            <a class="menu-item" href="/categories/" title="">Categories</a>
+                        </li><li>
+                            <a class="menu-item" href="/donate" title="">Donate</a>
+                        </li><li>
+                            <a class="menu-item" href="/about" title="">About</a>
+                        </li></ul>
+                </nav>
+                <a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <span class="svg-icon icon-moon"></span>
+                </a></div>
+        </div>
+    </div><div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div></header><main class="main">
+<div class="container content-article page-toc theme-full"><div class="toc" id="toc-auto">
+            <div class="toc-title">目录</div>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div>
+    
+
+    
+    
+    <article>
+    
+
+        <header class="header-post">
+
+            
+
+            
+            <div class="featured-image" style="background-image: url('/images/202106/application-orchestration-and-management-deployment/preview.png');"><div class="post-title">
+
+                    <div class="post-all-meta">
+                        <nav class="breadcrumbs">
+    <ol>
+        <li><a href="/">主页 </a></li><li><a href="/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生 </a></li><li>应用编排与管理：Deployment</li>
+    </ol>
+</nav>
+                        <h1 class="single-title flipInX">应用编排与管理：Deployment</h1><div class="post-meta summary-post-meta"><span class="post-category meta-item">
+                                <a href="/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/"><span class="svg-icon icon-folder"></span>云原生</a>
+                            </span><span class="post-meta-date meta-item">
+                                <span class="svg-icon icon-clock"></span><time class="timeago" datetime="2021-06-27">2021-06-27</time>
+                            </span><span class="post-meta-words meta-item">
+                                <span class="svg-icon icon-pencil"></span>约 1462 字
+                            </span>
+                            <span class="post-meta-reading meta-item">
+                                <span class="svg-icon icon-stopwatch"></span>预计阅读 3 分钟
+                            </span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                </div></header>
+
+        <div class="article-post toc-start">
+
+            <div class="content-block content-block-first content-block-position">
+
+                <div class="post single"><div class="details toc" id="toc-static"  data-kept="">
+                        <div class="details-summary toc-title">
+                            <span>目录</span>
+                        </div>
+                        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#需求来源">需求来源</a>
+      <ul>
+        <li><a href="#背景问题">背景问题</a></li>
+        <li><a href="#deployment管理部署发布的控制器">Deployment：管理部署发布的控制器</a></li>
+      </ul>
+    </li>
+    <li><a href="#架构设计">架构设计</a>
+      <ul>
+        <li><a href="#管理模式">管理模式</a></li>
+        <li><a href="#deployment-控制器">Deployment 控制器</a></li>
+        <li><a href="#replicaset-控制器">ReplicaSet 控制器</a></li>
+        <li><a href="#发布模拟">发布模拟</a></li>
+        <li><a href="#spec-字段解析">spec 字段解析</a></li>
+        <li><a href="#升级策略字段解析">升级策略字段解析</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+                    </div><h2 id="需求来源" class="headerLink"><a href="#%e9%9c%80%e6%b1%82%e6%9d%a5%e6%ba%90" class="header-mark"></a>需求来源</h2><h3 id="背景问题" class="headerLink"><a href="#%e8%83%8c%e6%99%af%e9%97%ae%e9%a2%98" class="header-mark"></a>背景问题</h3><p>现在存在三个应用，分别对应一些 Pod，那么我们可以直接管理集群中所有的 Pod 吗？</p>
+<p>如果管理所有的 Pod，那么如何保证集群里可用 Pod 数量？如何为所有 Pod 更新镜像版本？更新的过程中，如何保证服务可用性？更新的过程中，发现问题如何快速回滚？</p>
+<h3 id="deployment管理部署发布的控制器" class="headerLink"><a href="#deployment%e7%ae%a1%e7%90%86%e9%83%a8%e7%bd%b2%e5%8f%91%e5%b8%83%e7%9a%84%e6%8e%a7%e5%88%b6%e5%99%a8" class="header-mark"></a>Deployment：管理部署发布的控制器</h3><p>可以通过 Deployment 将三个应用分别规划到不同的 Deployment，每个 Deployment 管理一组相同的应用 Pod，这组 Pod 是相同的一个副本。</p>
+<figure>
+    <img src="/images/202106/application-orchestration-and-management-deployment/deployment.png" width="450" height="400"/> <figcaption>
+            <h4>Deployment</h4>
+        </figcaption>
+</figure>
+
+<p>Deployment 可以实现以下功能：</p>
+<ol>
+<li>Deployment 定义了 Pod 期望数量；</li>
+<li>配置 Pod 发布方式，即 controller 会按照用户给定的策略来更新 Pod，而且更新过程中，可以设定不可用 Pod 数量在多少范围内；</li>
+<li>更新过程中发现问题可以回滚。</li>
+</ol>
+<h2 id="架构设计" class="headerLink"><a href="#%e6%9e%b6%e6%9e%84%e8%ae%be%e8%ae%a1" class="header-mark"></a>架构设计</h2><h3 id="管理模式" class="headerLink"><a href="#%e7%ae%a1%e7%90%86%e6%a8%a1%e5%bc%8f" class="header-mark"></a>管理模式</h3><figure>
+    <img src="/images/202106/application-orchestration-and-management-deployment/management-model.png" width="200" height="400"/> <figcaption>
+            <h4>Management Model</h4>
+        </figcaption>
+</figure>
+
+<p>Deployment 只管理不同版本的 ReplicaSet，由 ReplicaSet 来管理具体的 Pod 副本数，每个 ReplicaSet 对应 Deployment template 的一个版本。</p>
+<h3 id="deployment-控制器" class="headerLink"><a href="#deployment-%e6%8e%a7%e5%88%b6%e5%99%a8" class="header-mark"></a>Deployment 控制器</h3><figure>
+    <img src="/images/202106/application-orchestration-and-management-deployment/deployment-controller.png" width="650" height="600"/> <figcaption>
+            <h4>Deployment Controller</h4>
+        </figcaption>
+</figure>
+
+<p>控制器通过 Informer 中的 Event 做一些 Handler 和 Watch，收到事件后会加入到队列中。而 Deployment controller 从队列中取出来之后，它的逻辑会判断 Check Paused，如果 Paused 设置为 true 的话，就表示这个 Deployment 只会做一个数量上的维持，不会做新的发布，如果为 false 的话，就会做 Rollout。</p>
+<h3 id="replicaset-控制器" class="headerLink"><a href="#replicaset-%e6%8e%a7%e5%88%b6%e5%99%a8" class="header-mark"></a>ReplicaSet 控制器</h3><figure>
+    <img src="/images/202106/application-orchestration-and-management-deployment/replicaset-controller.png" width="650" height="600"/> <figcaption>
+            <h4>Replicaset Controller</h4>
+        </figcaption>
+</figure>
+
+<p>当 Deployment 分配 ReplicaSet 之后，ReplicaSet 控制器本身也是从 Informer 中 watch 一些事件，这些事件包含了 ReplicaSet 和 Pod 的事件。从队列中取出之后，ReplicaSet controller 的逻辑很简单，就只管理副本数。</p>
+<h3 id="发布模拟" class="headerLink"><a href="#%e5%8f%91%e5%b8%83%e6%a8%a1%e6%8b%9f" class="header-mark"></a>发布模拟</h3><figure>
+    <img src="/images/202106/application-orchestration-and-management-deployment/deployment-process.png" width="650" height="600"/> <figcaption>
+            <h4>Deployment Process</h4>
+        </figcaption>
+</figure>
+
+<p>Deployment 当前初始版本为 template1，底下有三个 Pod：Pod1、Pod2、Pod3。</p>
+<p>这时修改 template 中一个容器的 image，Deployment controller 就会新建一个对应 template2 的 ReplicaSet。创建出来之后 ReplicaSet 会逐渐修改两个 ReplicaSet 的数量，比如逐渐增加 ReplicaSet2 中 replicas 的期望数量，逐渐减少 ReplicaSet1 中的 Pod 数量。</p>
+<h3 id="spec-字段解析" class="headerLink"><a href="#spec-%e5%ad%97%e6%ae%b5%e8%a7%a3%e6%9e%90" class="header-mark"></a>spec 字段解析</h3><ul>
+<li>MinReadySeconds：Deployment 会根据 Pod ready 来看 Pod 是否可用，但是如果我们设置了 MinReadySeconds 之后，比如设置为 30 秒，那 Deployment 就一定会等到 Pod ready 超过 30 秒之后才认为 Pod 是 available 的。Pod available 的前提条件是 Pod ready，但是 ready 的 Pod 不一定是 available 的，它一定要超过 MinReadySeconds 之后，才会判断为 available</li>
+<li>revisionHistoryLimit：保留历史 revision，即保留历史 ReplicaSet 的数量，默认值为 10 个。这里可以设置为一个或两个，如果回滚可能性比较大的话，可以设置数量超过 10；</li>
+<li>paused：paused 是标识，Deployment 只做数量维持，不做新的发布，这里在 Debug 场景可能会用到；</li>
+<li>progressDeadlineSeconds：前面提到当 Deployment 处于扩容或者发布状态时，它的 condition 会处于一个 processing 的状态，processing 可以设置一个超时时间。如果超过超时时间还处于 processing，那么 controller 将认为这个 Pod 会进入 failed 的状态。</li>
+</ul>
+<h3 id="升级策略字段解析" class="headerLink"><a href="#%e5%8d%87%e7%ba%a7%e7%ad%96%e7%95%a5%e5%ad%97%e6%ae%b5%e8%a7%a3%e6%9e%90" class="header-mark"></a>升级策略字段解析</h3><p>Deployment 在 RollingUpdate 中主要提供了两个策略，一个是 MaxUnavailable，另一个是 MaxSurge。</p>
+<ul>
+<li>MaxUnavailable：滚动过程中最多有多少个 Pod 不可用；</li>
+<li>MaxSurge：滚动过程中最多存在多少个 Pod 超过预期 replicas 数量。</li>
+</ul>
+<p>上文提到，ReplicaSet 为 3 的 Deployment 在发布的时候可能存在一种情况：新版本的 ReplicaSet 和旧版本的 ReplicaSet 都可能有两个 replicas，加在一起就是 4 个，超过了我们期望的数量三个。这是因为我们默认的 MaxUnavailable 和 MaxSurge 都是 25%，默认 Deployment 在发布的过程中，可能有 25% 的 replica 是不可用的，也可能超过 replica 数量 25% 是可用的，最高可以达到 125% 的 replica 数量。</p>
+<p>这里其实可以根据用户实际场景来做设置。比如当用户的资源足够，且更注重发布过程中的可用性，可设置 MaxUnavailable 较小、MaxSurge 较大。但如果用户的资源比较紧张，可以设置 MaxSurge 较小，甚至设置为 0，<strong>这里要注意的是 MaxSurge 和 MaxUnavailable 不能同时为 0</strong>。</p>
+</div><footer>
+                        <div class="post">
+
+
+<div class="post-share"><div class="share-link">
+        <a class="share-icon share-twitter" href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://dcoliversun.github.io/application-orchestration-and-management-deployment/" data-title="应用编排与管理：Deployment" data-hashtags="云原生,Kubernetes,应用编排,Deployment"><span class="svg-social-icon icon-twitter"></span></a>
+    </div><div class="share-link">
+        <a class="share-icon share-facebook" href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://dcoliversun.github.io/application-orchestration-and-management-deployment/" data-hashtag="云原生"><span class="svg-social-icon icon-facebook"></span></a>
+    </div><div class="share-link">
+        <a class="share-icon share-linkedin" href="javascript:void(0);" title="分享到 Linkedin" data-sharer="linkedin" data-url="https://dcoliversun.github.io/application-orchestration-and-management-deployment/"><span class="svg-social-icon icon-linkedin"></span></a>
+    </div></div>
+
+
+
+
+<div class="block-author">
+    <div class="author-avatar"><a href="https://dcoliversun.github.io" target="_blank"><img alt="Qian Sun -- Coder💻 | Blogger📝 | Swimmer🏊‍♀️" src="https://dcoliversun.github.io/images/me/avatar.png"></a></div>
+    <div class="author-info">
+        <div class="name"><a href="https://dcoliversun.github.io" target="_blank"></a></div>
+        <div class="number-posts">Qian Sun -- Coder💻 | Blogger📝 | Swimmer🏊‍♀️</span></div>
+    </div>
+</div>
+
+
+<div class="post-tags"><a href="/tags/%E4%BA%91%E5%8E%9F%E7%94%9F/" class="tag">云原生</a><a href="/tags/kubernetes/" class="tag">Kubernetes</a><a href="/tags/%E5%BA%94%E7%94%A8%E7%BC%96%E6%8E%92/" class="tag">应用编排</a><a href="/tags/deployment/" class="tag">Deployment</a></div></div>
+                </footer></div>
+
+        <div id="toc-final"></div>
+        </div>
+
+    
+    </article>
+    <section class="page single comments content-block-position">
+        <h1 class="display-hidden">Комментарии</h1><div id="comments"></div></section></div>
+
+</main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.79.1">Hugo</a> 强力驱动 | 主题 - <a href="https://ublogger.netlify.app/?utm_source=https://dcoliversun.github.io&utm_medium=footer&utm_campaign=config&utm_term=2.0.1" target="_blank" title="uBlogger 2.0.1">uBlogger</a>
+                </div><div class="footer-line"><i class="svg-icon icon-copyright"></i><span>2020 - 2021</span><span class="author">&nbsp;<a href="https://dcoliversun.github.io" target="_blank">Qian Sun</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <aside id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="svg-icon icon-arrow-up"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="svg-icon icon-comments-fixed"></i>
+            </a>
+        </aside><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/katex/copy-tex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/smooth-scroll/smooth-scroll.min.js"></script><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lunr/lunr.stemmer.support.min.js"></script><script src="/lib/lunr/lunr.zh.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/prismjs/prism.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/auto-render.min.js"></script><script src="/lib/katex/copy-tex.min.js"></script><script src="/lib/katex/mhchem.min.js"></script><script src="/lib/cookieconsent/cookieconsent.min.js"></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{},"cookieconsent":{"content":{"dismiss":"同意","link":"了解更多","message":"本网站使用 Cookies 来改善您的浏览体验."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":30,"type":"lunr"}};</script><script src="/js/theme.min.js"></script></body>
+</html>
