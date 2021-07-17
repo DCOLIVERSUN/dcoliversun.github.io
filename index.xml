@@ -3,9 +3,18 @@
         <title>@Qian Sun</title>
         <link>https://dcoliversun.github.io/</link>
         <description>Hi! I&#39;m Qian Sun. Coder💻 | Blogger📝 | Swimmer🏊‍♀️</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Sat, 10 Jul 2021 16:09:14 &#43;0800</lastBuildDate>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Sat, 17 Jul 2021 17:17:26 &#43;0800</lastBuildDate>
             <atom:link href="https://dcoliversun.github.io/index.xml" rel="self" type="application/rss+xml" />
         <item>
+    <title>应用配置管理</title>
+    <link>https://dcoliversun.github.io/application-configuration-management/</link>
+    <pubDate>Sat, 17 Jul 2021 17:17:26 &#43;0800</pubDate>
+    <author>author</author>
+    <guid>https://dcoliversun.github.io/application-configuration-management/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/202107/application-configuration-management/preview.png" referrerpolicy="no-referrer">
+            </div>本文系统介绍了 ConfigMap、Secret、Pod 身份认证、容器资源和安全、InitContainer]]></description>
+</item><item>
     <title>应用编排与管理：DaemonSet</title>
     <link>https://dcoliversun.github.io/application-orchestration-and-management-daemonset/</link>
     <pubDate>Sat, 10 Jul 2021 16:09:14 &#43;0800</pubDate>
@@ -86,14 +95,5 @@
     <description><![CDATA[<div class="featured-image">
                 <img src="/images/202105/yaml-notebook/preview.png" referrerpolicy="no-referrer">
             </div>学好 Yaml 语法，打好 K8s 基础]]></description>
-</item><item>
-    <title>查看 Git 提交中发生了什么变化</title>
-    <link>https://dcoliversun.github.io/git-whatchanged/</link>
-    <pubDate>Sat, 24 Apr 2021 14:13:34 &#43;0800</pubDate>
-    <author>author</author>
-    <guid>https://dcoliversun.github.io/git-whatchanged/</guid>
-    <description><![CDATA[<div class="featured-image">
-                <img src="/images/202104/git-whatchanged/preview.png" referrerpolicy="no-referrer">
-            </div>Git 提供了几种方式可以帮你快速查看提交中哪些文件被改变。]]></description>
 </item></channel>
 </rss>
