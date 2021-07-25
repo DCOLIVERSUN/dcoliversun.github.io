@@ -3,9 +3,18 @@
         <title>@Qian Sun</title>
         <link>https://dcoliversun.github.io/</link>
         <description>Hi! I&#39;m Qian Sun. Coder💻 | Blogger📝 | Swimmer🏊‍♀️</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Sat, 17 Jul 2021 17:17:26 &#43;0800</lastBuildDate>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Sun, 25 Jul 2021 13:10:00 &#43;0800</lastBuildDate>
             <atom:link href="https://dcoliversun.github.io/index.xml" rel="self" type="application/rss+xml" />
         <item>
+    <title>应用存储和持久化数据卷 - 核心知识</title>
+    <link>https://dcoliversun.github.io/application-storage-and-persistent-data-volume-core-knowledge/</link>
+    <pubDate>Sun, 25 Jul 2021 13:10:00 &#43;0800</pubDate>
+    <author>author</author>
+    <guid>https://dcoliversun.github.io/application-storage-and-persistent-data-volume-core-knowledge/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/202107/application-storage-and-persistent-data-volume-core-knowledge/preview.png" referrerpolicy="no-referrer">
+            </div>本文介绍了 K8s Volume 使用场景、PVC/PV/StorageClass 基本操作和概念解析、PVC+PV 体系的设计与实现原理]]></description>
+</item><item>
     <title>应用配置管理</title>
     <link>https://dcoliversun.github.io/application-configuration-management/</link>
     <pubDate>Sat, 17 Jul 2021 17:17:26 &#43;0800</pubDate>
@@ -86,14 +95,5 @@
     <description><![CDATA[<div class="featured-image">
                 <img src="/images/202105/docker-notebook/preview.png" referrerpolicy="no-referrer">
             </div>什么是容器与镜像？容器的生命周期如何？容器与虚拟机的区别？]]></description>
-</item><item>
-    <title>最全 Yaml 语法详解</title>
-    <link>https://dcoliversun.github.io/yaml-notebook/</link>
-    <pubDate>Sat, 08 May 2021 16:51:51 &#43;0800</pubDate>
-    <author>author</author>
-    <guid>https://dcoliversun.github.io/yaml-notebook/</guid>
-    <description><![CDATA[<div class="featured-image">
-                <img src="/images/202105/yaml-notebook/preview.png" referrerpolicy="no-referrer">
-            </div>学好 Yaml 语法，打好 K8s 基础]]></description>
 </item></channel>
 </rss>

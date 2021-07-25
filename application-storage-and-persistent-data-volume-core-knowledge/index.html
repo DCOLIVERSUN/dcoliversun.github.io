@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noodp"/><title>应用存储和持久化数据卷 - 核心知识 | </title><meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content=""/>
+<meta name="twitter:title" content="应用存储和持久化数据卷 - 核心知识"/>
+<meta name="twitter:description" content="本文介绍了 K8s Volume 使用场景、PVC/PV/StorageClass 基本操作和概念解析、PVC&#43;PV 体系的设计与实现原理"/><meta name="Description" content="本文介绍了 K8s Volume 使用场景、PVC/PV/StorageClass 基本操作和概念解析、PVC&#43;PV 体系的设计与实现原理"><meta property="og:title" content="应用存储和持久化数据卷 - 核心知识" />
+<meta property="og:description" content="本文介绍了 K8s Volume 使用场景、PVC/PV/StorageClass 基本操作和概念解析、PVC&#43;PV 体系的设计与实现原理" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://dcoliversun.github.io/application-storage-and-persistent-data-volume-core-knowledge/" />
+<meta property="og:image" content="https://dcoliversun.github.io/logo.png"/>
+<meta property="article:published_time" content="2021-07-25T13:10:00+08:00" />
+<meta property="article:modified_time" content="2021-07-25T13:10:00+08:00" />
+<meta name="application-name" content="@Qian Sun">
+<meta name="apple-mobile-web-app-title" content="@Qian Sun"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
+        <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://dcoliversun.github.io/application-storage-and-persistent-data-volume-core-knowledge/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/lib/prismjs/prism.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "应用存储和持久化数据卷 - 核心知识",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/dcoliversun.github.io\/application-storage-and-persistent-data-volume-core-knowledge\/"
+        },"genre": "posts","keywords": "云原生, Kubernetes, 存储, PV, PVC","wordCount":  5092 ,
+        "url": "https:\/\/dcoliversun.github.io\/application-storage-and-persistent-data-volume-core-knowledge\/","datePublished": "2021-07-25T13:10:00+08:00","dateModified": "2021-07-25T13:10:00+08:00",
+        "publisher": {
+            "@type": "Person",
+            "name": "", "image": [
+            {
+            "@type": "ImageObject",
+            "url": "https:\/\/dcoliversun.github.io\/images\/me\/avatar.png"
+            }
+            ]},"author": {
+                "@type": "Person",
+                "name": ""
+            },"description": "本文介绍了 K8s Volume 使用场景、PVC/PV/StorageClass 基本操作和概念解析、PVC+PV 体系的设计与实现原理"
+    }
+    </script><script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [{
+            "@type": "ListItem",
+            "position": 1,
+            "name": "主页",
+            "item": "https:\/\/dcoliversun.github.io"
+        },{
+            "@type": "ListItem",
+            "position": 2,
+            "name": "云原生",
+            "item": "https://dcoliversun.github.io/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/"
+        },{
+                "@type": "ListItem",
+                "position": 3,
+                "name": "应用存储和持久化数据卷 - 核心知识"
+            }]
+    }
+</script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header>
+    <div class="desktop header" id="header-desktop">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="@Qian Sun" class="header-logo logo-svg">@Qian Sun</a>
+            </div>
+            <div class="menu">
+                <nav>
+                    <h2 class="display-hidden">Основная навигация</h2>
+                    <ul class="menu-inner"><li>
+                            <a class="menu-item" href="/posts/"> Posts </a>
+                        </li><li>
+                            <a class="menu-item" href="/tags/"> Tags </a>
+                        </li><li>
+                            <a class="menu-item" href="/categories/"> Categories </a>
+                        </li><li>
+                            <a class="menu-item" href="/donate"> Donate </a>
+                        </li><li>
+                            <a class="menu-item" href="/about"> About </a>
+                        </li></ul>
+                </nav><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <span class="svg-icon icon-search"></span>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <span class="svg-icon icon-cancel"></span>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <span class="svg-icon icon-loading"></span>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <span class="svg-icon icon-moon"></span>
+                </a>
+            </div>
+        </div>
+    </div><div class="mobile header" id="header-mobile">
+        <div class="header-container">
+            <div class="header-wrapper">
+                <div class="header-title">
+                    <a href="/" title="@Qian Sun" class="header-logo">@Qian Sun</a>
+                </div>
+                <div class="menu-toggle" id="menu-toggle-mobile">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+            <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                        <div class="search mobile" id="search-mobile">
+                            <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                            <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                                <span class="svg-icon icon-search"></span>
+                            </a>
+                            <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                                <span class="svg-icon icon-cancel"></span>
+                            </a>
+                            <span class="search-button search-loading" id="search-loading-mobile">
+                                <span class="svg-icon icon-loading"></span>
+                            </span>
+                        </div>
+                        <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                            取消
+                        </a>
+                    </div><nav>
+                    <h2 class="display-hidden">Основная навигация</h2>
+                    <ul><li>
+                            <a class="menu-item" href="/posts/" title="">Posts</a>
+                        </li><li>
+                            <a class="menu-item" href="/tags/" title="">Tags</a>
+                        </li><li>
+                            <a class="menu-item" href="/categories/" title="">Categories</a>
+                        </li><li>
+                            <a class="menu-item" href="/donate" title="">Donate</a>
+                        </li><li>
+                            <a class="menu-item" href="/about" title="">About</a>
+                        </li></ul>
+                </nav>
+                <a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <span class="svg-icon icon-moon"></span>
+                </a></div>
+        </div>
+    </div><div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div></header><main class="main">
+<div class="container content-article page-toc theme-full"><div class="toc" id="toc-auto">
+            <div class="toc-title">目录</div>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div>
+    
+
+    
+    
+    <article>
+    
+
+        <header class="header-post">
+
+            
+
+            
+            <div class="featured-image" style="background-image: url('/images/202107/application-storage-and-persistent-data-volume-core-knowledge/preview.png');"><div class="post-title">
+
+                    <div class="post-all-meta">
+                        <nav class="breadcrumbs">
+    <ol>
+        <li><a href="/">主页 </a></li><li><a href="/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生 </a></li><li>应用存储和持久化数据卷 - 核心知识</li>
+    </ol>
+</nav>
+                        <h1 class="single-title flipInX">应用存储和持久化数据卷 - 核心知识</h1><div class="post-meta summary-post-meta"><span class="post-category meta-item">
+                                <a href="/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/"><span class="svg-icon icon-folder"></span>云原生</a>
+                            </span><span class="post-meta-date meta-item">
+                                <span class="svg-icon icon-clock"></span><time class="timeago" datetime="2021-07-25">2021-07-25</time>
+                            </span><span class="post-meta-words meta-item">
+                                <span class="svg-icon icon-pencil"></span>约 5092 字
+                            </span>
+                            <span class="post-meta-reading meta-item">
+                                <span class="svg-icon icon-stopwatch"></span>预计阅读 11 分钟
+                            </span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                </div></header>
+
+        <div class="article-post toc-start">
+
+            <div class="content-block content-block-first content-block-position">
+
+                <div class="post single"><div class="details toc" id="toc-static"  data-kept="">
+                        <div class="details-summary toc-title">
+                            <span>目录</span>
+                        </div>
+                        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#volumes-介绍">Volumes 介绍</a>
+      <ul>
+        <li><a href="#pod-volumes">Pod Volumes</a></li>
+        <li><a href="#persistent-volumes">Persistent Volumes</a></li>
+        <li><a href="#pvc设计意图">PVC设计意图</a></li>
+        <li><a href="#static-volume-provisioning">Static Volume Provisioning</a></li>
+        <li><a href="#dynamic-volume-provisioning">Dynamic Volume Provisioning</a></li>
+      </ul>
+    </li>
+    <li><a href="#用例解读">用例解读</a>
+      <ul>
+        <li><a href="#pv-spec-重要字段解析">PV Spec 重要字段解析</a></li>
+        <li><a href="#pv状态流转">PV状态流转</a></li>
+      </ul>
+    </li>
+    <li><a href="#架构设计">架构设计</a>
+      <ul>
+        <li><a href="#pv和pvc的处理流程">PV和PVC的处理流程</a></li>
+        <li><a href="#pvpvc以及通过csi使用存储流程">PV、PVC以及通过csi使用存储流程</a></li>
+      </ul>
+    </li>
+    <li><a href="#总结">总结</a></li>
+  </ul>
+</nav></div>
+                    </div><h2 id="volumes-介绍" class="headerLink"><a href="#volumes-%e4%bb%8b%e7%bb%8d" class="header-mark"></a>Volumes 介绍</h2><h3 id="pod-volumes" class="headerLink"><a href="#pod-volumes" class="header-mark"></a>Pod Volumes</h3><p>首先来看一下 Pod Volumes 的使用场景：</p>
+<ul>
+<li>场景一：如果 pod 中的某一个容器在运行时异常退出，被 kubelet 重新拉起之后，如何保证之前容器产生的重要数据没有丢失？</li>
+<li>场景二：如果同一个 pod 中的多个容器想要共享数据，应该如何去做？</li>
+</ul>
+<p>以上两个场景，其实都可以借助 Volumes 来很好地解决，接下来首先看一下 Pod Volumes 的常见类型：</p>
+<ol>
+<li>本地存储，常用的有 emptydir/hostpath；</li>
+<li>网络存储：网络存储当前的实现方式有两种，一种是 in-tree，它的实现的代码是放在 K8s 代码仓库中的，随着k8s对存储类型支持的增多，这种方式会给k8s本身的维护和发展带来很大的负担；而第二种实现方式是 out-of-tree，它的实现其实是给 K8s 本身解耦的，通过抽象接口将不同存储的driver实现从k8s代码仓库中剥离，因此out-of-tree 是后面社区主推的一种实现网络存储插件的方式；</li>
+<li>Projected Volumes：它其实是将一些配置信息，如 secret/configmap 用卷的形式挂载在容器中，让容器中的程序可以通过POSIX接口来访问配置数据；</li>
+<li>PV 与 PVC 就是本文要重点介绍的内容。</li>
+</ol>
+<h3 id="persistent-volumes" class="headerLink"><a href="#persistent-volumes" class="header-mark"></a>Persistent Volumes</h3><p>接下来看一下 PV（Persistent Volumes）。既然已经有了 Pod Volumes，为什么又要引入 PV 呢？我们知道 pod 中声明的 volume 生命周期与 pod 是相同的，以下有几种常见的场景：</p>
+<ul>
+<li>场景一：pod 重建销毁，如用 Deployment 管理的 pod，在做镜像升级的过程中，会产生新的 pod并且删除旧的 pod ，那新旧 pod 之间如何复用数据？</li>
+<li>场景二：宿主机宕机的时候，要把上面的 pod 迁移，这个时候 StatefulSet 管理的 pod，其实已经实现了带卷迁移的语义。这时通过 Pod Volumes 显然是做不到的；</li>
+<li>场景三：多个 pod 之间，如果想要共享数据，应该如何去声明呢？我们知道，同一个 pod 中多个容器想共享数据，可以借助 Pod Volumes 来解决；当多个 pod 想共享数据时，Pod Volumes 就很难去表达这种语义；</li>
+<li>场景四：如果要想对数据卷做一些功能扩展性，如：snapshot、resize 这些功能，又应该如何去做呢？</li>
+</ul>
+<p>以上场景中，通过 Pod Volumes 很难准确地表达它的复用/共享语义，对它的扩展也比较困难。因此 K8s 中又引入了 Persistent Volumes 概念，它可以将存储和计算分离，通过不同的组件来管理存储资源和计算资源，然后解耦 pod 和 Volume 之间生命周期的关联。这样，当把 pod 删除之后，它使用的PV仍然存在，还可以被新建的 pod 复用。</p>
+<h3 id="pvc设计意图" class="headerLink"><a href="#pvc%e8%ae%be%e8%ae%a1%e6%84%8f%e5%9b%be" class="header-mark"></a>PVC设计意图</h3><ol>
+<li>职责分离，PVC中只用声明自己需要的存储size、access node等业务真正关心的存储需求，PV和其对应的后端存储信息则由交给cluster admin统一运维和管控，安全访问策略更容易控制。</li>
+<li>PVC简化了User对存储的需求，PV才是存储的实际信息的承载体，通过kube-controller-manager中的PersisentVolumeController将PVC与合适的PV bound到一起，从而满足User对存储的实际需求。</li>
+<li>PVC像是面向对象编程中抽象出来的接口，PV是接口对应的实现。</li>
+</ol>
+<p>access node是什么？其实就是：我要使用的存储是可以被多个node共享还是只能单node独占访问(注意是node level而不是pod level)？只读还是读写访问？用户只用关心这些东西，与存储相关的实现细节是不需要关心的。</p>
+<h3 id="static-volume-provisioning" class="headerLink"><a href="#static-volume-provisioning" class="header-mark"></a>Static Volume Provisioning</h3><p>静态 Provisioning：由集群管理员事先去规划这个集群中的用户会怎样使用存储，它会先预分配一些存储，也就是预先创建一些 PV；然后用户在提交自己的存储需求（也就是 PVC）的时候，K8s 内部相关组件会帮助它把 PVC 和 PV 做绑定；之后用户再通过 pod 去使用存储的时候，就可以通过 PVC 找到相应的 PV，它就可以使用了。</p>
+<figure>
+    <img src="/images/202107/application-storage-and-persistent-data-volume-core-knowledge/static-volume-provisioning.png" width="400" height="600"/> <figcaption>
+            <h4>Static Volume Provisioning</h4>
+        </figcaption>
+</figure>
+
+<p>静态产生方式有什么不足呢？可以看到，首先需要集群管理员预分配，预分配其实是很难预测用户真实需求的。举一个最简单的例子：如果用户需要的是 20G，然而集群管理员在分配的时候可能有 80G 、100G 的，但没有 20G 的，这样就很难满足用户的真实需求，也会造成资源浪费。有没有更好的方式呢？</p>
+<h3 id="dynamic-volume-provisioning" class="headerLink"><a href="#dynamic-volume-provisioning" class="header-mark"></a>Dynamic Volume Provisioning</h3><p>动态供给是什么意思呢？就是说现在集群管理员不预分配 PV，他写了一个模板文件，这个模板文件是用来表示创建某一类型存储（块存储，文件存储等）所需的一些参数，这些参数是用户不关心的，给存储本身实现有关的参数。用户只需要提交自身的存储需求，也就是PVC文件，并在 PVC 中指定使用的存储模板（StorageClass）。</p>
+<figure>
+    <img src="/images/202107/application-storage-and-persistent-data-volume-core-knowledge/dynamic-volume-provisioning.png" width="400" height="600"/> <figcaption>
+            <h4>Dynamic Volume Provisioning</h4>
+        </figcaption>
+</figure>
+
+<p>K8s 集群中的管控组件，会结合 PVC 和 StorageClass 的信息动态，生成用户所需要的存储（PV），将 PVC 和 PV 进行绑定后，pod 就可以使用 PV 了。通过 StorageClass 配置生成存储所需要的存储模板，再结合用户的需求动态创建 PV 对象，做到按需分配，在没有增加用户使用难度的同时也解放了集群管理员的运维工作。</p>
+<h2 id="用例解读" class="headerLink"><a href="#%e7%94%a8%e4%be%8b%e8%a7%a3%e8%af%bb" class="header-mark"></a>用例解读</h2><p>接下来看一下 Pod Volumes、PV、PVC 及 StorageClass 具体是如何使用的。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Pod</span><span class="w">
+</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">test-pod</span><span class="w">
+</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">containers</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">container-1</span><span class="w">
+</span><span class="w">    </span><span class="nt">Image</span><span class="p">:</span><span class="w"> </span><span class="l">ubuntu:18.04</span><span class="w">
+</span><span class="w">    </span><span class="nt">volumeMounts</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">cache-volume</span><span class="w">
+</span><span class="w">      </span><span class="nt">mountPath</span><span class="p">:</span><span class="w"> </span><span class="l">/cache </span><span class="w"> </span><span class="c"># 容器内挂载路径</span><span class="w">
+</span><span class="w">      </span><span class="nt">subPath</span><span class="p">:</span><span class="w"> </span><span class="l">cache1   </span><span class="w"> </span><span class="c"># 在cache-volume建立子目录cache1</span><span class="w">
+</span><span class="w">    </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">hostpath-volume</span><span class="w">
+</span><span class="w">      </span><span class="nt">mountPath</span><span class="p">:</span><span class="w"> </span><span class="l">/data</span><span class="w">
+</span><span class="w">      </span><span class="nt">readOnly</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">     </span><span class="c"># 只读挂载</span><span class="w">
+</span><span class="w">    </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">container-2</span><span class="w">
+</span><span class="w">      </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">ubuntu:18.04</span><span class="w">
+</span><span class="w">      </span><span class="nt">volumeMounts</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- <span class="nt">mountPath</span><span class="p">:</span><span class="w"> </span><span class="l">/cache</span><span class="w">
+</span><span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">cache-volume</span><span class="w">
+</span><span class="w">        </span><span class="nt">subPath</span><span class="p">:</span><span class="w"> </span><span class="l">cache2</span><span class="w">
+</span><span class="w">    </span><span class="nt">volumes</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">cache-volume</span><span class="w"> </span><span class="c"># 宿主机上路径：/var/lib/kubelet/pods/&lt;PodUID&gt;/volumes/kubernetes.io-empty-dir/cache-volume</span><span class="w">
+</span><span class="w">      </span><span class="nt">emptyDir</span><span class="p">:</span><span class="w"> </span>{}<span class="w">
+</span><span class="w">    </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">hostpath-volume</span><span class="w">
+</span><span class="w">      </span><span class="nt">hostPath</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l">/tmp/data </span><span class="w"> </span><span class="c"># 宿主上路径，pod删除之后该目录仍然存在</span><span class="w">
+</span></code></pre></td></tr></table>
+</div>
+</div><p>声明的两个卷，一个是用的是 emptyDir，另外一个用的是 hostPath，这两种都是本地卷。在容器中应该怎么去使用这个卷呢？它其实可以通过 volumeMounts 这个字段，volumeMounts 字段里面指定的 name 其实就是它使用的哪个卷，mountPath 就是容器中的挂载路径。</p>
+<p>这里还有个 subPath，subPath 是什么？</p>
+<p>先看一下，这两个容器都指定使用了同一个卷，就是这个 cache-volume。那么，在多个容器共享同一个卷的时候，为了隔离数据，我们可以通过 subPath 来完成这个操作。它会在卷里面建立两个子目录，然后容器 1 往 cache 下面写的数据其实都写在子目录 cache1 了，容器 2 往 cache 写的目录，其数据最终会落在这个卷里子目录下面的 cache2 下。</p>
+<p>还有一个 readOnly 字段，readOnly 的意思其实就是只读挂载，这个挂载你往挂载点下面实际上是没有办法去写数据的。</p>
+<p>另外emptyDir、hostPath 都是本地存储，它们之间有什么细微的差别呢？emptyDir 其实是在 pod 创建的过程中会临时创建的一个目录，这个目录随着 pod 删除也会被删除，里面的数据会被清空掉；hostPath 顾名思义，其实就是宿主机上的一个路径，在 pod 删除之后，这个目录还是存在的，它的数据也不会被丢失。这就是它们两者之间一个细微的差别。</p>
+<h3 id="pv-spec-重要字段解析" class="headerLink"><a href="#pv-spec-%e9%87%8d%e8%a6%81%e5%ad%97%e6%ae%b5%e8%a7%a3%e6%9e%90" class="header-mark"></a>PV Spec 重要字段解析</h3><ul>
+<li>Capacity：这个很好理解，就是存储对象的大小；</li>
+<li>AccessModes：也是用户需要关心的，就是说我使用这个 PV 的方式。它有三种使用方式。
+<ul>
+<li>一种是单 node 读写访问；</li>
+<li>第二种是多个 node 只读访问，是常见的一种数据的共享方式；</li>
+<li>第三种是多个 node 上读写访问。</li>
+</ul>
+</li>
+</ul>
+<p>用户在提交 PVC 的时候，最重要的两个字段 —— Capacity 和 AccessModes。在提交 PVC 后，k8s 集群中的相关组件是如何去找到合适的 PV 呢？首先它是通过为 PV 建立的 AccessModes 索引找到所有能够满足用户的 PVC 里面的 AccessModes 要求的 PV list，然后根据PVC的 Capacity，StorageClassName, Label Selector 进一步筛选 PV，如果满足条件的 PV 有多个，选择 PV 的 size 最小的，accessmodes 列表最短的 PV，也即最小适合原则。</p>
+<ul>
+<li>ReclaimPolicy：这个就是刚才提到的，我的用户方 PV 的 PVC 在删除之后，我的 PV 应该做如何处理？常见的有三种方式。
+<ul>
+<li>第一种方式我们就不说了，现在 K8s 中已经不推荐使用了；</li>
+<li>第二种方式 delete，也就是说 PVC 被删除之后，PV 也会被删除；</li>
+<li>第三种方式 Retain，就是保留，保留之后，后面这个 PV 需要管理员来手动处理。</li>
+</ul>
+</li>
+<li>StorageClassName：StorageClassName 这个我们刚才说了，我们动态 Provisioning 时必须指定的一个字段，就是说我们要指定到底用哪一个模板文件来生成 PV ；</li>
+<li>NodeAffinity：就是说我创建出来的 PV，它能被哪些 node 去挂载使用，其实是有限制的。然后通过 NodeAffinity 来声明对node的限制，这样其实对 使用该PV的pod调度也有限制，就是说 pod 必须要调度到这些能访问 PV 的 node 上，才能使用这块 PV，这个字段在我们下一讲讲解存储拓扑调度时在细说。</li>
+</ul>
+<h3 id="pv状态流转" class="headerLink"><a href="#pv%e7%8a%b6%e6%80%81%e6%b5%81%e8%bd%ac" class="header-mark"></a>PV状态流转</h3><p><figure>
+    <img src="/images/202107/application-storage-and-persistent-data-volume-core-knowledge/PV-state-transformation.png" width="600" height="300"/> <figcaption>
+            <h4>PV State Flow</h4>
+        </figcaption>
+</figure>
+
+首先在创建 PV 对象后，它会处在短暂的pending 状态；等真正的 PV 创建好之后，它就处在 available 状态。</p>
+<p>available 状态意思就是可以使用的状态，用户在提交 PVC 之后，被 K8s 相关组件做完 bound（即：找到相应的 PV），这个时候 PV 和 PVC 就结合到一起了，此时两者都处在 bound 状态。当用户在使用完 PVC，将其删除后，这个 PV 就处在 released 状态，之后它应该被删除还是被保留呢？这个就会依赖我们刚才说的 ReclaimPolicy。</p>
+<p>这里有一个点需要特别说明一下：当 PV 已经处在 released 状态下，它是没有办法直接回到 available 状态，也就是说接下来无法被一个新的 PVC 去做绑定。如果我们想把已经 released 的 PV 复用，我们这个时候通常应该怎么去做呢？</p>
+<p>第一种方式：我们可以新建一个 PV 对象，然后把之前的 released 的 PV 的相关字段的信息填到新的 PV 对象里面，这样的话，这个 PV 就可以结合新的 PVC 了；第二种是我们在删除 pod 之后，不要去删除 PVC 对象，这样给 PV 绑定的 PVC 还是存在的，下次 pod 使用的时候，就可以直接通过 PVC 去复用。K8s中的 StatefulSet 管理的 Pod 带存储的迁移就是通过这种方式。</p>
+<h2 id="架构设计" class="headerLink"><a href="#%e6%9e%b6%e6%9e%84%e8%ae%be%e8%ae%a1" class="header-mark"></a>架构设计</h2><h3 id="pv和pvc的处理流程" class="headerLink"><a href="#pv%e5%92%8cpvc%e7%9a%84%e5%a4%84%e7%90%86%e6%b5%81%e7%a8%8b" class="header-mark"></a>PV和PVC的处理流程</h3><p><figure>
+    <img src="/images/202107/application-storage-and-persistent-data-volume-core-knowledge/architecture.png" width="600" height="800"/> <figcaption>
+            <h4>PV/PVC Handle Flow</h4>
+        </figcaption>
+</figure>
+
+csi 是什么？csi 的全称是 container storage interface，它是K8s社区后面对存储插件实现(out of tree)的官方推荐方式。csi 的实现大体可以分为两部分：</p>
+<ul>
+<li>第一部分是由k8s社区驱动实现的通用的部分，像我们这张图中的 csi-provisioner和 csi-attacher controller；</li>
+<li>另外一种是由云存储厂商实践的，对接云存储厂商的 OpenApi，主要是实现真正的 create/delete/mount/unmount 存储的相关操作，对应到上图中的csi-controller-server和csi-node-server。</li>
+</ul>
+<p>接下来看一下，当用户提交 yaml 之后，k8s内部的处理流程。用户在提交 PVCyaml 的时候，首先会在集群中生成一个 PVC 对象，然后 PVC 对象会被 csi-provisioner controller watch到，csi-provisioner 会结合 PVC 对象以及 PVC 对象中声明的 storageClass，通过 GRPC 调用 csi-controller-server，然后，到云存储服务这边去创建真正的存储，并最终创建出来 PV 对象。最后，由集群中的 PV controller 将 PVC 和 PV 对象做 bound 之后，这个 PV 就可以被使用了。</p>
+<p>用户在提交 pod 之后，首先会被调度器调度选中某一个合适的node，之后该 node 上面的 kubelet 在创建 pod 流程中会通过首先 csi-node-server 将我们之前创建的 PV 挂载到我们 pod 可以使用的路径，然后 kubelet 开始  create &amp;&amp; start pod 中的所有 container。</p>
+<h3 id="pvpvc以及通过csi使用存储流程" class="headerLink"><a href="#pvpvc%e4%bb%a5%e5%8f%8a%e9%80%9a%e8%bf%87csi%e4%bd%bf%e7%94%a8%e5%ad%98%e5%82%a8%e6%b5%81%e7%a8%8b" class="header-mark"></a>PV、PVC以及通过csi使用存储流程</h3><p><figure>
+    <img src="/images/202107/application-storage-and-persistent-data-volume-core-knowledge/usage-flow.png" width="600" height="800"/> <figcaption>
+            <h4>PV/PVC Usage Flow</h4>
+        </figcaption>
+</figure>
+
+主要分为三个阶段：</p>
+<ul>
+<li>第一个阶段(Create阶段)是用户提交完 PVC，由 csi-provisioner 创建存储，并生成 PV 对象，之后 PV controller 将 PVC 及生成的 PV 对象做 bound，bound 之后，create 阶段就完成了；</li>
+<li>之后用户在提交 pod yaml 的时候，首先会被调度选中某一个 合适的node，等 pod 的运行 node 被选出来之后，会被 AD Controller watch 到 pod 选中的 node，它会去查找 pod 中使用了哪些 PV。然后它会生成一个内部的对象叫 VolumeAttachment 对象，从而去触发 csi-attacher去调用csi-controller-server 去做真正的 attache 操作，attach操作调到云存储厂商OpenAPI。这个 attach 操作就是将存储 attach到 pod 将会运行的 node 上面。第二个阶段 —— attach阶段完成；</li>
+<li>然后我们接下来看第三个阶段。第三个阶段 发生在kubelet 创建 pod的过程中，它在创建 pod 的过程中，首先要去做一个 mount，这里的 mount 操作是为了将已经attach到这个 node 上面那块盘，进一步 mount 到 pod 可以使用的一个具体路径，之后 kubelet 才开始创建并启动容器。这就是 PV 加 PVC 创建存储以及使用存储的第三个阶段 —— mount 阶段。</li>
+</ul>
+<p>总的来说，有三个阶段：第一个 create 阶段，主要是创建存储；第二个 attach 阶段，就是将那块存储挂载到 node 上面(通常为将存储load到node的/dev下面)；第三个 mount 阶段，将对应的存储进一步挂载到 pod 可以使用的路径。这就是我们的 PVC、PV、已经通过CSI实现的卷从创建到使用的完整流程。</p>
+<h2 id="总结" class="headerLink"><a href="#%e6%80%bb%e7%bb%93" class="header-mark"></a>总结</h2><ul>
+<li>介绍了 K8s Volume 的使用场景，以及本身局限性；</li>
+<li>通过介绍 K8s 的 PVC 和 PV 体系，说明 K8s 通过 PVC 和 PV 体系增强了 K8s Volumes 在多 Pod 共享/迁移/存储扩展等场景下的能力的必要性以及设计思想；</li>
+<li>通过介绍 PV（存储）的不同供给模式 (static and dynamic)，学习了如何通过不同方式为集群中的 Pod 供给所需的存储；</li>
+<li>通过 PVC&amp;PV 在 K8s 中完整的处理流程，深入理解 PVC&amp;PV 的工作原理。</li>
+</ul>
+</div><footer>
+                        <div class="post">
+
+
+<div class="post-share"><div class="share-link">
+        <a class="share-icon share-twitter" href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://dcoliversun.github.io/application-storage-and-persistent-data-volume-core-knowledge/" data-title="应用存储和持久化数据卷 - 核心知识" data-hashtags="云原生,Kubernetes,存储,PV,PVC"><span class="svg-social-icon icon-twitter"></span></a>
+    </div><div class="share-link">
+        <a class="share-icon share-facebook" href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://dcoliversun.github.io/application-storage-and-persistent-data-volume-core-knowledge/" data-hashtag="云原生"><span class="svg-social-icon icon-facebook"></span></a>
+    </div><div class="share-link">
+        <a class="share-icon share-linkedin" href="javascript:void(0);" title="分享到 Linkedin" data-sharer="linkedin" data-url="https://dcoliversun.github.io/application-storage-and-persistent-data-volume-core-knowledge/"><span class="svg-social-icon icon-linkedin"></span></a>
+    </div></div>
+
+
+
+
+<div class="block-author">
+    <div class="author-avatar"><a href="https://dcoliversun.github.io" target="_blank"><img alt="Qian Sun -- Coder💻 | Blogger📝 | Swimmer🏊‍♀️" src="https://dcoliversun.github.io/images/me/avatar.png"></a></div>
+    <div class="author-info">
+        <div class="name"><a href="https://dcoliversun.github.io" target="_blank"></a></div>
+        <div class="number-posts">Qian Sun -- Coder💻 | Blogger📝 | Swimmer🏊‍♀️</span></div>
+    </div>
+</div>
+
+
+<div class="post-tags"><a href="/tags/%E4%BA%91%E5%8E%9F%E7%94%9F/" class="tag">云原生</a><a href="/tags/kubernetes/" class="tag">Kubernetes</a><a href="/tags/%E5%AD%98%E5%82%A8/" class="tag">存储</a><a href="/tags/pv/" class="tag">PV</a><a href="/tags/pvc/" class="tag">PVC</a></div></div>
+                </footer></div>
+
+        <div id="toc-final"></div>
+        </div>
+
+    
+    </article>
+    <section class="page single comments content-block-position">
+        <h1 class="display-hidden">Комментарии</h1><div id="comments"></div></section></div>
+
+</main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.79.1">Hugo</a> 强力驱动 | 主题 - <a href="https://ublogger.netlify.app/?utm_source=https://dcoliversun.github.io&utm_medium=footer&utm_campaign=config&utm_term=2.0.1" target="_blank" title="uBlogger 2.0.1">uBlogger</a>
+                </div><div class="footer-line"><i class="svg-icon icon-copyright"></i><span>2020 - 2021</span><span class="author">&nbsp;<a href="https://dcoliversun.github.io" target="_blank">Qian Sun</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <aside id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="svg-icon icon-arrow-up"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="svg-icon icon-comments-fixed"></i>
+            </a>
+        </aside><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/katex/copy-tex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/smooth-scroll/smooth-scroll.min.js"></script><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lunr/lunr.stemmer.support.min.js"></script><script src="/lib/lunr/lunr.zh.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/prismjs/prism.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/auto-render.min.js"></script><script src="/lib/katex/copy-tex.min.js"></script><script src="/lib/katex/mhchem.min.js"></script><script src="/lib/cookieconsent/cookieconsent.min.js"></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{},"cookieconsent":{"content":{"dismiss":"同意","link":"了解更多","message":"本网站使用 Cookies 来改善您的浏览体验."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":30,"type":"lunr"}};</script><script src="/js/theme.min.js"></script><script>
+                window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
+                gtag('config', 'G-K2QWGME5NC', { 'anonymize_ip': true });
+            </script><script src="https://www.googletagmanager.com/gtag/js?id=G-K2QWGME5NC" async></script></body>
+</html>
