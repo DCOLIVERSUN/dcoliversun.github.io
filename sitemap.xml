@@ -2,21 +2,24 @@
     xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
     xmlns:xhtml="http://www.w3.org/1999/xhtml"
     ><url>
-            <loc>https://dcoliversun.github.io/</loc><lastmod>2021-08-22T19:01:16&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://dcoliversun.github.io/categories/</loc><lastmod>2021-08-22T19:01:16&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://dcoliversun.github.io/tags/kubernetes/</loc><lastmod>2021-08-22T19:01:16&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://dcoliversun.github.io/</loc><lastmod>2021-08-28T16:23:52&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://dcoliversun.github.io/categories/</loc><lastmod>2021-08-28T16:23:52&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://dcoliversun.github.io/tags/kubernetes/</loc><lastmod>2021-08-28T16:23:52&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://dcoliversun.github.io/kubernetes-service/</loc><lastmod>2021-08-28T16:23:52&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://dcoliversun.github.io/posts/</loc><lastmod>2021-08-28T16:23:52&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://dcoliversun.github.io/tags/service/</loc><lastmod>2021-08-28T16:23:52&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://dcoliversun.github.io/tags/</loc><lastmod>2021-08-28T16:23:52&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://dcoliversun.github.io/tags/%E4%BA%91%E5%8E%9F%E7%94%9F/</loc><lastmod>2021-08-28T16:23:52&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://dcoliversun.github.io/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/</loc><lastmod>2021-08-28T16:23:52&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>https://dcoliversun.github.io/tags/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/</loc><lastmod>2021-08-28T16:23:52&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>https://dcoliversun.github.io/kubernetes-network-concept/</loc><lastmod>2021-08-22T19:01:16&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://dcoliversun.github.io/posts/</loc><lastmod>2021-08-22T19:01:16&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://dcoliversun.github.io/tags/</loc><lastmod>2021-08-22T19:01:16&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://dcoliversun.github.io/tags/%E4%BA%91%E5%8E%9F%E7%94%9F/</loc><lastmod>2021-08-22T19:01:16&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://dcoliversun.github.io/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/</loc><lastmod>2021-08-22T19:01:16&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
             <loc>https://dcoliversun.github.io/tags/%E7%BD%91%E7%BB%9C/</loc><lastmod>2021-08-22T19:01:16&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://dcoliversun.github.io/kubernetes-monitor-and-log/</loc><lastmod>2021-08-15T19:41:20&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://dcoliversun.github.io/tags/%E6%97%A5%E5%BF%97/</loc><lastmod>2021-08-15T19:41:20&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://dcoliversun.github.io/tags/%E7%9B%91%E6%8E%A7/</loc><lastmod>2021-08-15T19:41:20&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://dcoliversun.github.io/tags/%E9%97%AE%E9%A2%98%E8%AF%8A%E6%96%AD/</loc><lastmod>2021-08-15T19:41:20&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https://dcoliversun.github.io/tags/debug/</loc><lastmod>2021-08-07T16:43:50&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url><url>
-            <loc>https://dcoliversun.github.io/kubernetes-debug/</loc><lastmod>2021-08-07T16:43:50&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url><url>
+            <loc>https://dcoliversun.github.io/kubernetes-monitor-and-log/</loc><lastmod>2021-08-15T19:41:20&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url><url>
+            <loc>https://dcoliversun.github.io/tags/%E6%97%A5%E5%BF%97/</loc><lastmod>2021-08-15T19:41:20&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url><url>
+            <loc>https://dcoliversun.github.io/tags/%E7%9B%91%E6%8E%A7/</loc><lastmod>2021-08-15T19:41:20&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url><url>
+            <loc>https://dcoliversun.github.io/tags/%E9%97%AE%E9%A2%98%E8%AF%8A%E6%96%AD/</loc><lastmod>2021-08-15T19:41:20&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url><url>
+            <loc>https://dcoliversun.github.io/tags/debug/</loc><lastmod>2021-08-07T16:43:50&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url><url>
+            <loc>https://dcoliversun.github.io/kubernetes-debug/</loc><lastmod>2021-08-07T16:43:50&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url><url>
             <loc>https://dcoliversun.github.io/tags/%E5%AD%98%E5%82%A8/</loc><lastmod>2021-07-31T18:14:23&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url><url>
             <loc>https://dcoliversun.github.io/tags/%E5%AD%98%E5%82%A8%E5%BF%AB%E7%85%A7/</loc><lastmod>2021-07-31T18:14:23&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url><url>
             <loc>https://dcoliversun.github.io/application-storage-and-persistent-data-volume-storage-snapshot/</loc><lastmod>2021-07-31T18:14:23&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url><url>

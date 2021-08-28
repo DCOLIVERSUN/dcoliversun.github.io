@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Service - 标签 - @Qian Sun</title>
+        <link>https://dcoliversun.github.io/tags/service/</link>
+        <description>Service - 标签 - @Qian Sun</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Sat, 28 Aug 2021 16:23:52 &#43;0800</lastBuildDate><atom:link href="https://dcoliversun.github.io/tags/service/" rel="self" type="application/rss+xml" /><item>
+    <title>Kubernetes 服务发现与负载均衡</title>
+    <link>https://dcoliversun.github.io/kubernetes-service/</link>
+    <pubDate>Sat, 28 Aug 2021 16:23:52 &#43;0800</pubDate>
+    <author>author</author>
+    <guid>https://dcoliversun.github.io/kubernetes-service/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/202108/kubernetes-service/preview.png" referrerpolicy="no-referrer">
+            </div>本文介绍了为什么需要 K8s service 以及相关用例解读和架构设计]]></description>
+</item></channel>
+</rss>

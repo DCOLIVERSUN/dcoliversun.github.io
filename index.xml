@@ -3,9 +3,18 @@
         <title>@Qian Sun</title>
         <link>https://dcoliversun.github.io/</link>
         <description>Hi! I&#39;m Qian Sun. Coder💻 | Blogger📝 | Swimmer🏊‍♀️</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Sun, 22 Aug 2021 19:01:16 &#43;0800</lastBuildDate>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Sat, 28 Aug 2021 16:23:52 &#43;0800</lastBuildDate>
             <atom:link href="https://dcoliversun.github.io/index.xml" rel="self" type="application/rss+xml" />
         <item>
+    <title>Kubernetes 服务发现与负载均衡</title>
+    <link>https://dcoliversun.github.io/kubernetes-service/</link>
+    <pubDate>Sat, 28 Aug 2021 16:23:52 &#43;0800</pubDate>
+    <author>author</author>
+    <guid>https://dcoliversun.github.io/kubernetes-service/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/202108/kubernetes-service/preview.png" referrerpolicy="no-referrer">
+            </div>本文介绍了为什么需要 K8s service 以及相关用例解读和架构设计]]></description>
+</item><item>
     <title>Kubernetes网络概念及策略控制</title>
     <link>https://dcoliversun.github.io/kubernetes-network-concept/</link>
     <pubDate>Sun, 22 Aug 2021 19:01:16 &#43;0800</pubDate>
@@ -86,14 +95,5 @@
     <description><![CDATA[<div class="featured-image">
                 <img src="/images/202106/application-orchestration-and-management-deployment/preview.png" referrerpolicy="no-referrer">
             </div>Deployment 保证集群里可用 Pod 数量，为所有 Pod 更新镜像版本，保证更新过程中的服务可用性，实现快速回滚]]></description>
-</item><item>
-    <title>开源为你带来竞争优势的 4 种方式</title>
-    <link>https://dcoliversun.github.io/four-ways-open-source-gives-you-a-competitive-edge/</link>
-    <pubDate>Sat, 12 Jun 2021 10:06:54 &#43;0800</pubDate>
-    <author>author</author>
-    <guid>https://dcoliversun.github.io/four-ways-open-source-gives-you-a-competitive-edge/</guid>
-    <description><![CDATA[<div class="featured-image">
-                <img src="/images/202106/four-ways-open-source-gives-you-a-competitive-edge/preview.png" referrerpolicy="no-referrer">
-            </div>可拓展性与灵活性、安全性和高可信的协作、不受供应商限制、顶尖人才和社区]]></description>
 </item></channel>
 </rss>
