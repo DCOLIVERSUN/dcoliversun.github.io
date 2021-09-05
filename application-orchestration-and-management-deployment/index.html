@@ -8,10 +8,10 @@
 <meta name="twitter:description" content="Deployment 保证集群里可用 Pod 数量，为所有 Pod 更新镜像版本，保证更新过程中的服务可用性，实现快速回滚"/><meta name="Description" content="Deployment 保证集群里可用 Pod 数量，为所有 Pod 更新镜像版本，保证更新过程中的服务可用性，实现快速回滚"><meta property="og:title" content="应用编排与管理：Deployment" />
 <meta property="og:description" content="Deployment 保证集群里可用 Pod 数量，为所有 Pod 更新镜像版本，保证更新过程中的服务可用性，实现快速回滚" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://dcoliversun.github.io/application-orchestration-and-management-deployment/" />
-<meta property="og:image" content="https://dcoliversun.github.io/logo.png"/>
+<meta property="og:url" content="https://dcoliversun.github.io/application-orchestration-and-management-deployment/" /><meta property="og:image" content="https://dcoliversun.github.io/logo.png"/><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2021-06-27T11:31:13+08:00" />
 <meta property="article:modified_time" content="2021-06-27T11:31:13+08:00" />
+
 <meta name="application-name" content="@Qian Sun">
 <meta name="apple-mobile-web-app-title" content="@Qian Sun"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -222,8 +222,7 @@
                     </div><h2 id="需求来源" class="headerLink"><a href="#%e9%9c%80%e6%b1%82%e6%9d%a5%e6%ba%90" class="header-mark"></a>需求来源</h2><h3 id="背景问题" class="headerLink"><a href="#%e8%83%8c%e6%99%af%e9%97%ae%e9%a2%98" class="header-mark"></a>背景问题</h3><p>现在存在三个应用，分别对应一些 Pod，那么我们可以直接管理集群中所有的 Pod 吗？</p>
 <p>如果管理所有的 Pod，那么如何保证集群里可用 Pod 数量？如何为所有 Pod 更新镜像版本？更新的过程中，如何保证服务可用性？更新的过程中，发现问题如何快速回滚？</p>
 <h3 id="deployment管理部署发布的控制器" class="headerLink"><a href="#deployment%e7%ae%a1%e7%90%86%e9%83%a8%e7%bd%b2%e5%8f%91%e5%b8%83%e7%9a%84%e6%8e%a7%e5%88%b6%e5%99%a8" class="header-mark"></a>Deployment：管理部署发布的控制器</h3><p>可以通过 Deployment 将三个应用分别规划到不同的 Deployment，每个 Deployment 管理一组相同的应用 Pod，这组 Pod 是相同的一个副本。</p>
-<figure>
-    <img src="/images/202106/application-orchestration-and-management-deployment/deployment.png" width="450" height="400"/> <figcaption>
+<figure><img src="/images/202106/application-orchestration-and-management-deployment/deployment.png" width="450" height="400"/><figcaption>
             <h4>Deployment</h4>
         </figcaption>
 </figure>
@@ -234,29 +233,25 @@
 <li>配置 Pod 发布方式，即 controller 会按照用户给定的策略来更新 Pod，而且更新过程中，可以设定不可用 Pod 数量在多少范围内；</li>
 <li>更新过程中发现问题可以回滚。</li>
 </ol>
-<h2 id="架构设计" class="headerLink"><a href="#%e6%9e%b6%e6%9e%84%e8%ae%be%e8%ae%a1" class="header-mark"></a>架构设计</h2><h3 id="管理模式" class="headerLink"><a href="#%e7%ae%a1%e7%90%86%e6%a8%a1%e5%bc%8f" class="header-mark"></a>管理模式</h3><figure>
-    <img src="/images/202106/application-orchestration-and-management-deployment/management-model.png" width="200" height="400"/> <figcaption>
+<h2 id="架构设计" class="headerLink"><a href="#%e6%9e%b6%e6%9e%84%e8%ae%be%e8%ae%a1" class="header-mark"></a>架构设计</h2><h3 id="管理模式" class="headerLink"><a href="#%e7%ae%a1%e7%90%86%e6%a8%a1%e5%bc%8f" class="header-mark"></a>管理模式</h3><figure><img src="/images/202106/application-orchestration-and-management-deployment/management-model.png" width="200" height="400"/><figcaption>
             <h4>Management Model</h4>
         </figcaption>
 </figure>
 
 <p>Deployment 只管理不同版本的 ReplicaSet，由 ReplicaSet 来管理具体的 Pod 副本数，每个 ReplicaSet 对应 Deployment template 的一个版本。</p>
-<h3 id="deployment-控制器" class="headerLink"><a href="#deployment-%e6%8e%a7%e5%88%b6%e5%99%a8" class="header-mark"></a>Deployment 控制器</h3><figure>
-    <img src="/images/202106/application-orchestration-and-management-deployment/deployment-controller.png" width="650" height="600"/> <figcaption>
+<h3 id="deployment-控制器" class="headerLink"><a href="#deployment-%e6%8e%a7%e5%88%b6%e5%99%a8" class="header-mark"></a>Deployment 控制器</h3><figure><img src="/images/202106/application-orchestration-and-management-deployment/deployment-controller.png" width="650" height="600"/><figcaption>
             <h4>Deployment Controller</h4>
         </figcaption>
 </figure>
 
 <p>控制器通过 Informer 中的 Event 做一些 Handler 和 Watch，收到事件后会加入到队列中。而 Deployment controller 从队列中取出来之后，它的逻辑会判断 Check Paused，如果 Paused 设置为 true 的话，就表示这个 Deployment 只会做一个数量上的维持，不会做新的发布，如果为 false 的话，就会做 Rollout。</p>
-<h3 id="replicaset-控制器" class="headerLink"><a href="#replicaset-%e6%8e%a7%e5%88%b6%e5%99%a8" class="header-mark"></a>ReplicaSet 控制器</h3><figure>
-    <img src="/images/202106/application-orchestration-and-management-deployment/replicaset-controller.png" width="650" height="600"/> <figcaption>
+<h3 id="replicaset-控制器" class="headerLink"><a href="#replicaset-%e6%8e%a7%e5%88%b6%e5%99%a8" class="header-mark"></a>ReplicaSet 控制器</h3><figure><img src="/images/202106/application-orchestration-and-management-deployment/replicaset-controller.png" width="650" height="600"/><figcaption>
             <h4>Replicaset Controller</h4>
         </figcaption>
 </figure>
 
 <p>当 Deployment 分配 ReplicaSet 之后，ReplicaSet 控制器本身也是从 Informer 中 watch 一些事件，这些事件包含了 ReplicaSet 和 Pod 的事件。从队列中取出之后，ReplicaSet controller 的逻辑很简单，就只管理副本数。</p>
-<h3 id="发布模拟" class="headerLink"><a href="#%e5%8f%91%e5%b8%83%e6%a8%a1%e6%8b%9f" class="header-mark"></a>发布模拟</h3><figure>
-    <img src="/images/202106/application-orchestration-and-management-deployment/deployment-process.png" width="650" height="600"/> <figcaption>
+<h3 id="发布模拟" class="headerLink"><a href="#%e5%8f%91%e5%b8%83%e6%a8%a1%e6%8b%9f" class="header-mark"></a>发布模拟</h3><figure><img src="/images/202106/application-orchestration-and-management-deployment/deployment-process.png" width="650" height="600"/><figcaption>
             <h4>Deployment Process</h4>
         </figcaption>
 </figure>
@@ -312,7 +307,7 @@
         <h1 class="display-hidden">Комментарии</h1><div id="comments"></div></section></div>
 
 </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.79.1">Hugo</a> 强力驱动 | 主题 - <a href="https://ublogger.netlify.app/?utm_source=https://dcoliversun.github.io&utm_medium=footer&utm_campaign=config&utm_term=2.0.1" target="_blank" title="uBlogger 2.0.1">uBlogger</a>
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.87.0">Hugo</a> 强力驱动 | 主题 - <a href="https://ublogger.netlify.app/?utm_source=https://dcoliversun.github.io&utm_medium=footer&utm_campaign=config&utm_term=2.0.1" target="_blank" title="uBlogger 2.0.1">uBlogger</a>
                 </div><div class="footer-line"><i class="svg-icon icon-copyright"></i><span>2020 - 2021</span><span class="author">&nbsp;<a href="https://dcoliversun.github.io" target="_blank">Qian Sun</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>

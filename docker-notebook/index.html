@@ -8,10 +8,10 @@
 <meta name="twitter:description" content="什么是容器与镜像？容器的生命周期如何？容器与虚拟机的区别？"/><meta name="Description" content="什么是容器与镜像？容器的生命周期如何？容器与虚拟机的区别？"><meta property="og:title" content="容器基本概念" />
 <meta property="og:description" content="什么是容器与镜像？容器的生命周期如何？容器与虚拟机的区别？" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://dcoliversun.github.io/docker-notebook/" />
-<meta property="og:image" content="https://dcoliversun.github.io/logo.png"/>
+<meta property="og:url" content="https://dcoliversun.github.io/docker-notebook/" /><meta property="og:image" content="https://dcoliversun.github.io/logo.png"/><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2021-05-11T20:16:06+08:00" />
 <meta property="article:modified_time" content="2021-05-11T20:16:06+08:00" />
+
 <meta name="application-name" content="@Qian Sun">
 <meta name="apple-mobile-web-app-title" content="@Qian Sun"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -216,8 +216,7 @@
   </ul>
 </nav></div>
                     </div><h2 id="容器与镜像" class="headerLink"><a href="#%e5%ae%b9%e5%99%a8%e4%b8%8e%e9%95%9c%e5%83%8f" class="header-mark"></a>容器与镜像</h2><h3 id="什么是容器" class="headerLink"><a href="#%e4%bb%80%e4%b9%88%e6%98%af%e5%ae%b9%e5%99%a8" class="header-mark"></a>什么是容器？</h3><p>在介绍容器的具体概念之前，先简单回顾一下操作系统是如何管理进程的。</p>
-<figure>
-    <img src="/images/202105/docker-notebook/image.png" width="600" height="600"/> <figcaption>
+<figure><img src="/images/202105/docker-notebook/image.png" width="600" height="600"/><figcaption>
             <h4>操作系统与容器对比</h4>
         </figcaption>
 </figure>
@@ -245,8 +244,7 @@
 <p>容器具有一个独立的文件系统，因为使用的是系统的资源，所以在独立的文件系统内不需要具备内核相关的代码或工具，我们只需要提供容器所需的二进制文件、配置文件以及依赖即可。只要容器运行时所需的文件集合都能够具备，那么这个容器就能够运行起来。</p>
 <h3 id="什么是镜像" class="headerLink"><a href="#%e4%bb%80%e4%b9%88%e6%98%af%e9%95%9c%e5%83%8f" class="header-mark"></a>什么是镜像？</h3><p>综上所述，我们将这些容器运行时所需要的所有<strong>文件集合</strong>称之为容器镜像。</p>
 <p>那么，一般通过什么方式来构建镜像的呢？通常情况下，我们会采用 <code>Dockerfile</code> 来构建镜像，这是因为 <code>Dockerfile</code> 提供了非常便利的语法，能够帮助我们很好地描述构建的每个步骤。当然，每个构建步骤都会对已有的文件系统进行操作，这样就会带来文件系统内容的变化，我们将这些变化称之为 <code>changeset</code>。当我们把构建步骤所产生的变化依次作用到一个空文件夹上，就能得到一个完整的镜像。</p>
-<figure>
-    <img src="/images/202105/docker-notebook/changeset.png" width="250" height="600"/> <figcaption>
+<figure><img src="/images/202105/docker-notebook/changeset.png" width="250" height="600"/><figcaption>
             <h4>changeset 分层示意</h4>
         </figcaption>
 </figure>
@@ -260,7 +258,7 @@
 <h3 id="如何构建镜像" class="headerLink"><a href="#%e5%a6%82%e4%bd%95%e6%9e%84%e5%bb%ba%e9%95%9c%e5%83%8f" class="header-mark"></a>如何构建镜像？</h3><p>如下所示的 <code>Dockerfile</code> 适用于描述如何构建 Golang 应用的。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -279,7 +277,7 @@
 </span><span class="lnt">17
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-dockerfile" data-lang="dockerfile"><span class="c"># base on golang:1.12-alpine image</span><span class="err">
+<pre tabindex="0" class="chroma"><code class="language-dockerfile" data-lang="dockerfile"><span class="c"># base on golang:1.12-alpine image</span><span class="err">
 </span><span class="err"></span><span class="k">FROM</span><span class="s"> golang:1.12-alpine</span><span class="err">
 </span><span class="err">
 </span><span class="err"></span><span class="c"># setting current working dir (PWD -&gt; /go/src/app)</span><span class="err">
@@ -307,8 +305,7 @@
 <li>CMD 行表示使用镜像时的默认程序名字。</li>
 </ol>
 <p>当有了 <code>Dockerfile</code> 之后，就可以通过 <code>docker build</code> 命令构建出所需要的应用。构建出的结果存储在本地，一般情况下，镜像构建会在打包机或者其他的隔离环境下完成。</p>
-<h3 id="如何运行容器" class="headerLink"><a href="#%e5%a6%82%e4%bd%95%e8%bf%90%e8%a1%8c%e5%ae%b9%e5%99%a8" class="header-mark"></a>如何运行容器</h3><figure>
-    <img src="/images/202105/docker-notebook/docker-run.png" width="450" height="300"/> <figcaption>
+<h3 id="如何运行容器" class="headerLink"><a href="#%e5%a6%82%e4%bd%95%e8%bf%90%e8%a1%8c%e5%ae%b9%e5%99%a8" class="header-mark"></a>如何运行容器</h3><figure><img src="/images/202105/docker-notebook/docker-run.png" width="450" height="300"/><figcaption>
             <h4>容器运行过程</h4>
         </figcaption>
 </figure>
@@ -330,7 +327,7 @@
 </ul>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -346,7 +343,7 @@
 </span><span class="lnt">14
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="c1"># bind host dir into container</span>
+<pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="c1"># bind host dir into container</span>
 docker run -v /tmp:/tmp busybox:1.25 sh -c <span class="s2">&#34;data &gt; /tmp/demo.log&#34;</span>
 
 <span class="c1"># check result</span>
@@ -363,8 +360,7 @@ docker run -v demo:/tmp busybox:1.25 sh -c <span class="s2">&#34;cat /tmp/demo.l
 </code></pre></td></tr></table>
 </div>
 </div><h2 id="容器项目架构moby-容器引擎架构" class="headerLink"><a href="#%e5%ae%b9%e5%99%a8%e9%a1%b9%e7%9b%ae%e6%9e%b6%e6%9e%84moby-%e5%ae%b9%e5%99%a8%e5%bc%95%e6%93%8e%e6%9e%b6%e6%9e%84" class="header-mark"></a>容器项目架构：moby 容器引擎架构</h2><p>moby 是目前最流行的容器管理引擎，moby daemon 会对上提供有关于容器、镜像、网络以及 Volume的管理。moby daemon 所依赖的最重要的组件就是 containerd，containerd 是一个容器运行时管理引擎，其独立于 moby daemon ，可以对上提供容器、镜像的相关管理。
-<figure>
-    <img src="/images/202105/docker-notebook/moby.png" width="300" height="300"/> <figcaption>
+<figure><img src="/images/202105/docker-notebook/moby.png" width="300" height="300"/><figcaption>
             <h4>moby 引擎</h4>
         </figcaption>
 </figure>
@@ -375,8 +371,7 @@ docker run -v demo:/tmp busybox:1.25 sh -c <span class="s2">&#34;cat /tmp/demo.l
 <li>其次，因为 shim 插件化的实现，使其能够被 containerd 动态接管。如果不具备这样的能力，当 moby daemon 或者 containerd daemon 意外退出的时候，容器就没人管理了，那么它也会随之消失、退出，这样就会影响到应用的运行。</li>
 <li>最后，因为随时可能会对 moby 或者 containerd 进行升级，如果不提供 shim 机制，那么就无法做到原地升级，也无法做到不影响业务的升级，因此 containerd shim 非常重要，它实现了动态接管的能力。</li>
 </ul>
-<h2 id="容器-vs-vm" class="headerLink"><a href="#%e5%ae%b9%e5%99%a8-vs-vm" class="header-mark"></a>容器 VS VM</h2><figure>
-    <img src="/images/202105/docker-notebook/vm-docker.png" width="600" height="300"/> <figcaption>
+<h2 id="容器-vs-vm" class="headerLink"><a href="#%e5%ae%b9%e5%99%a8-vs-vm" class="header-mark"></a>容器 VS VM</h2><figure><img src="/images/202105/docker-notebook/vm-docker.png" width="600" height="300"/><figcaption>
             <h4>容器与虚拟机对比示意</h4>
         </figcaption>
 </figure>
@@ -445,7 +440,7 @@ docker run -v demo:/tmp busybox:1.25 sh -c <span class="s2">&#34;cat /tmp/demo.l
         <h1 class="display-hidden">Комментарии</h1><div id="comments"></div></section></div>
 
 </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.79.1">Hugo</a> 强力驱动 | 主题 - <a href="https://ublogger.netlify.app/?utm_source=https://dcoliversun.github.io&utm_medium=footer&utm_campaign=config&utm_term=2.0.1" target="_blank" title="uBlogger 2.0.1">uBlogger</a>
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.87.0">Hugo</a> 强力驱动 | 主题 - <a href="https://ublogger.netlify.app/?utm_source=https://dcoliversun.github.io&utm_medium=footer&utm_campaign=config&utm_term=2.0.1" target="_blank" title="uBlogger 2.0.1">uBlogger</a>
                 </div><div class="footer-line"><i class="svg-icon icon-copyright"></i><span>2020 - 2021</span><span class="author">&nbsp;<a href="https://dcoliversun.github.io" target="_blank">Qian Sun</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>

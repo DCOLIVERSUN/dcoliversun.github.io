@@ -8,10 +8,10 @@
 <meta name="twitter:description" content="通过类比 Deployment 控制器，我们理解了一下DaemonSet 控制器的工作流程与方式，并且通过对 DaemonSet 的更新了解了滚动更新的概念和相对应的操作方式。"/><meta name="Description" content="通过类比 Deployment 控制器，我们理解了一下DaemonSet 控制器的工作流程与方式，并且通过对 DaemonSet 的更新了解了滚动更新的概念和相对应的操作方式。"><meta property="og:title" content="应用编排与管理：DaemonSet" />
 <meta property="og:description" content="通过类比 Deployment 控制器，我们理解了一下DaemonSet 控制器的工作流程与方式，并且通过对 DaemonSet 的更新了解了滚动更新的概念和相对应的操作方式。" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://dcoliversun.github.io/application-orchestration-and-management-daemonset/" />
-<meta property="og:image" content="https://dcoliversun.github.io/logo.png"/>
+<meta property="og:url" content="https://dcoliversun.github.io/application-orchestration-and-management-daemonset/" /><meta property="og:image" content="https://dcoliversun.github.io/logo.png"/><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2021-07-10T16:09:14+08:00" />
 <meta property="article:modified_time" content="2021-07-10T16:09:14+08:00" />
+
 <meta name="application-name" content="@Qian Sun">
 <meta name="apple-mobile-web-app-title" content="@Qian Sun"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -235,7 +235,7 @@
 </ul>
 <h2 id="用例解读" class="headerLink"><a href="#%e7%94%a8%e4%be%8b%e8%a7%a3%e8%af%bb" class="header-mark"></a>用例解读</h2><h3 id="daemonset-语法" class="headerLink"><a href="#daemonset-%e8%af%ad%e6%b3%95" class="header-mark"></a>DaemonSet 语法</h3><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -256,7 +256,7 @@
 </span><span class="lnt">19
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">apps/v1</span><span class="w">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">apps/v1</span><span class="w">
 </span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">DaemonSet</span><span class="w">
 </span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
 </span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">fluentd-elasticsearch</span><span class="w">
@@ -287,12 +287,12 @@
 <h3 id="查看-daemonset-状态" class="headerLink"><a href="#%e6%9f%a5%e7%9c%8b-daemonset-%e7%8a%b6%e6%80%81" class="header-mark"></a>查看 DaemonSet 状态</h3><p>创建完 DaemonSet 之后，我们可以使用 kubectl get DaemonSet（DaemonSet 缩写为 ds）。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">kubectl get ds
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">kubectl get ds
 NAME					DESIRED	CURRENT	 READY	UP-TO-DATE	AVAILABLE NODE SELECTOR	AGE
 fluentd-elasticsearch	4		4		 4 		4			4		  &lt;none&gt;		4s
 </code></pre></td></tr></table>
@@ -311,8 +311,7 @@ fluentd-elasticsearch	4		4		 4 		4			4		  &lt;none&gt;		4s
 <li>RollingUpdate 其实比较好理解，就是会一个一个的更新。先更新第一个 pod，然后老的 pod 被移除，通过健康检查之后再去见第二个 pod，这样对于业务上来说会比较平滑地升级，不会中断；</li>
 <li>OnDelete 其实也是一个很好的更新策略，就是模板更新之后，pod 不会有任何变化，需要我们手动控制。我们去删除某一个节点对应的 pod，它就会重建，不删除的话它就不会重建，这样的话对于一些我们需要手动控制的特殊需求也会有特别好的作用。</li>
 </ul>
-<h2 id="架构设计" class="headerLink"><a href="#%e6%9e%b6%e6%9e%84%e8%ae%be%e8%ae%a1" class="header-mark"></a>架构设计</h2><h3 id="daemonset-管理模式" class="headerLink"><a href="#daemonset-%e7%ae%a1%e7%90%86%e6%a8%a1%e5%bc%8f" class="header-mark"></a>DaemonSet 管理模式</h3><figure>
-    <img src="/images/202107/application-orchestration-and-management-daemonset/architecture.png" width="250" height="400"/> <figcaption>
+<h2 id="架构设计" class="headerLink"><a href="#%e6%9e%b6%e6%9e%84%e8%ae%be%e8%ae%a1" class="header-mark"></a>架构设计</h2><h3 id="daemonset-管理模式" class="headerLink"><a href="#daemonset-%e7%ae%a1%e7%90%86%e6%a8%a1%e5%bc%8f" class="header-mark"></a>DaemonSet 管理模式</h3><figure><img src="/images/202107/application-orchestration-and-management-daemonset/architecture.png" width="250" height="400"/><figcaption>
             <h4>DaemonSet Architecture</h4>
         </figcaption>
 </figure>
@@ -322,8 +321,7 @@ fluentd-elasticsearch	4		4		 4 		4			4		  &lt;none&gt;		4s
 <li>DaemonSet Controller 跟踪 Job 状态，根据配置及时重试 Pod 或者继续创建</li>
 <li>DaemonSet Controller 会自动添加 affinity&amp;label 来跟踪对应的 pod，并根据配置在每个节点或者适应的部分节点创建 Pod</li>
 </ol>
-<h3 id="daemonset-控制器" class="headerLink"><a href="#daemonset-%e6%8e%a7%e5%88%b6%e5%99%a8" class="header-mark"></a>DaemonSet 控制器</h3><figure>
-    <img src="/images/202107/application-orchestration-and-management-daemonset/controller.png" width="650" height="600"/> <figcaption>
+<h3 id="daemonset-控制器" class="headerLink"><a href="#daemonset-%e6%8e%a7%e5%88%b6%e5%99%a8" class="header-mark"></a>DaemonSet 控制器</h3><figure><img src="/images/202107/application-orchestration-and-management-daemonset/controller.png" width="650" height="600"/><figcaption>
             <h4>DaemonSet Controller</h4>
         </figcaption>
 </figure>
@@ -368,7 +366,7 @@ fluentd-elasticsearch	4		4		 4 		4			4		  &lt;none&gt;		4s
         <h1 class="display-hidden">Комментарии</h1><div id="comments"></div></section></div>
 
 </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.79.1">Hugo</a> 强力驱动 | 主题 - <a href="https://ublogger.netlify.app/?utm_source=https://dcoliversun.github.io&utm_medium=footer&utm_campaign=config&utm_term=2.0.1" target="_blank" title="uBlogger 2.0.1">uBlogger</a>
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.87.0">Hugo</a> 强力驱动 | 主题 - <a href="https://ublogger.netlify.app/?utm_source=https://dcoliversun.github.io&utm_medium=footer&utm_campaign=config&utm_term=2.0.1" target="_blank" title="uBlogger 2.0.1">uBlogger</a>
                 </div><div class="footer-line"><i class="svg-icon icon-copyright"></i><span>2020 - 2021</span><span class="author">&nbsp;<a href="https://dcoliversun.github.io" target="_blank">Qian Sun</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>

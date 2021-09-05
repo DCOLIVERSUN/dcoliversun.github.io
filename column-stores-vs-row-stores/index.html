@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noodp"/><title>列式存储 vs 行式存储：它们之间的本质区别在哪里？ | </title><meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content=""/>
+<meta name="twitter:title" content="列式存储 vs 行式存储：它们之间的本质区别在哪里？"/>
+<meta name="twitter:description" content="列式存储因其自身架构设计与查询引擎优化带来 OLAP 性能的提升，行式存储无法模拟这样的设计范式"/><meta name="Description" content="列式存储因其自身架构设计与查询引擎优化带来 OLAP 性能的提升，行式存储无法模拟这样的设计范式"><meta property="og:title" content="列式存储 vs 行式存储：它们之间的本质区别在哪里？" />
+<meta property="og:description" content="列式存储因其自身架构设计与查询引擎优化带来 OLAP 性能的提升，行式存储无法模拟这样的设计范式" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://dcoliversun.github.io/column-stores-vs-row-stores/" /><meta property="og:image" content="https://dcoliversun.github.io/logo.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-09-05T09:41:17+08:00" />
+<meta property="article:modified_time" content="2021-09-05T09:41:17+08:00" />
+
+<meta name="application-name" content="@Qian Sun">
+<meta name="apple-mobile-web-app-title" content="@Qian Sun"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
+        <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://dcoliversun.github.io/column-stores-vs-row-stores/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/lib/prismjs/prism.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "列式存储 vs 行式存储：它们之间的本质区别在哪里？",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/dcoliversun.github.io\/column-stores-vs-row-stores\/"
+        },"genre": "posts","keywords": "论文, 存储, 列式存储, 行式存储","wordCount":  4456 ,
+        "url": "https:\/\/dcoliversun.github.io\/column-stores-vs-row-stores\/","datePublished": "2021-09-05T09:41:17+08:00","dateModified": "2021-09-05T09:41:17+08:00",
+        "publisher": {
+            "@type": "Person",
+            "name": "", "image": [
+            {
+            "@type": "ImageObject",
+            "url": "https:\/\/dcoliversun.github.io\/images\/me\/avatar.png"
+            }
+            ]},"author": {
+                "@type": "Person",
+                "name": ""
+            },"description": "列式存储因其自身架构设计与查询引擎优化带来 OLAP 性能的提升，行式存储无法模拟这样的设计范式"
+    }
+    </script><script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [{
+            "@type": "ListItem",
+            "position": 1,
+            "name": "主页",
+            "item": "https:\/\/dcoliversun.github.io"
+        },{
+            "@type": "ListItem",
+            "position": 2,
+            "name": "论文学习",
+            "item": "https://dcoliversun.github.io/categories/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0/"
+        },{
+                "@type": "ListItem",
+                "position": 3,
+                "name": "列式存储 vs 行式存储：它们之间的本质区别在哪里？"
+            }]
+    }
+</script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header>
+    <div class="desktop header" id="header-desktop">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="@Qian Sun" class="header-logo logo-svg">@Qian Sun</a>
+            </div>
+            <div class="menu">
+                <nav>
+                    <h2 class="display-hidden">Основная навигация</h2>
+                    <ul class="menu-inner"><li>
+                            <a class="menu-item" href="/posts/"> Posts </a>
+                        </li><li>
+                            <a class="menu-item" href="/tags/"> Tags </a>
+                        </li><li>
+                            <a class="menu-item" href="/categories/"> Categories </a>
+                        </li><li>
+                            <a class="menu-item" href="/donate"> Donate </a>
+                        </li><li>
+                            <a class="menu-item" href="/about"> About </a>
+                        </li></ul>
+                </nav><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <span class="svg-icon icon-search"></span>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <span class="svg-icon icon-cancel"></span>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <span class="svg-icon icon-loading"></span>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <span class="svg-icon icon-moon"></span>
+                </a>
+            </div>
+        </div>
+    </div><div class="mobile header" id="header-mobile">
+        <div class="header-container">
+            <div class="header-wrapper">
+                <div class="header-title">
+                    <a href="/" title="@Qian Sun" class="header-logo">@Qian Sun</a>
+                </div>
+                <div class="menu-toggle" id="menu-toggle-mobile">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+            <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                        <div class="search mobile" id="search-mobile">
+                            <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                            <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                                <span class="svg-icon icon-search"></span>
+                            </a>
+                            <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                                <span class="svg-icon icon-cancel"></span>
+                            </a>
+                            <span class="search-button search-loading" id="search-loading-mobile">
+                                <span class="svg-icon icon-loading"></span>
+                            </span>
+                        </div>
+                        <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                            取消
+                        </a>
+                    </div><nav>
+                    <h2 class="display-hidden">Основная навигация</h2>
+                    <ul><li>
+                            <a class="menu-item" href="/posts/" title="">Posts</a>
+                        </li><li>
+                            <a class="menu-item" href="/tags/" title="">Tags</a>
+                        </li><li>
+                            <a class="menu-item" href="/categories/" title="">Categories</a>
+                        </li><li>
+                            <a class="menu-item" href="/donate" title="">Donate</a>
+                        </li><li>
+                            <a class="menu-item" href="/about" title="">About</a>
+                        </li></ul>
+                </nav>
+                <a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <span class="svg-icon icon-moon"></span>
+                </a></div>
+        </div>
+    </div><div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div></header><main class="main">
+<div class="container content-article page-toc theme-full"><div class="toc" id="toc-auto">
+            <div class="toc-title">目录</div>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div>
+    
+
+    
+    
+    <article>
+    
+
+        <header class="header-post">
+
+            
+
+            
+            <div class="featured-image" style="background-image: url('/images/202109/column-store-vs-row-store/preview.png');"><div class="post-title">
+
+                    <div class="post-all-meta">
+                        <nav class="breadcrumbs">
+    <ol>
+        <li><a href="/">主页 </a></li><li><a href="/categories/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0/">论文学习 </a></li><li>列式存储 vs 行式存储：它们之间的本质区别在哪里？</li>
+    </ol>
+</nav>
+                        <h1 class="single-title flipInX">列式存储 vs 行式存储：它们之间的本质区别在哪里？</h1><div class="post-meta summary-post-meta"><span class="post-category meta-item">
+                                <a href="/categories/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0/"><span class="svg-icon icon-folder"></span>论文学习</a>
+                            </span><span class="post-meta-date meta-item">
+                                <span class="svg-icon icon-clock"></span><time class="timeago" datetime="2021-09-05">2021-09-05</time>
+                            </span><span class="post-meta-words meta-item">
+                                <span class="svg-icon icon-pencil"></span>约 4456 字
+                            </span>
+                            <span class="post-meta-reading meta-item">
+                                <span class="svg-icon icon-stopwatch"></span>预计阅读 9 分钟
+                            </span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                </div></header>
+
+        <div class="article-post toc-start">
+
+            <div class="content-block content-block-first content-block-position">
+
+                <div class="post single"><div class="details toc" id="toc-static"  data-kept="">
+                        <div class="details-summary toc-title">
+                            <span>目录</span>
+                        </div>
+                        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#概述">概述</a></li>
+    <li><a href="#简介">简介</a></li>
+    <li><a href="#面向行的执行">面向行的执行</a>
+      <ul>
+        <li><a href="#垂直分表">垂直分表</a></li>
+        <li><a href="#索引查询">索引查询</a></li>
+        <li><a href="#物化视图">物化视图</a></li>
+      </ul>
+    </li>
+    <li><a href="#面向列的执行">面向列的执行</a>
+      <ul>
+        <li><a href="#压缩">压缩</a></li>
+        <li><a href="#延迟物化">延迟物化</a></li>
+        <li><a href="#块遍历">块遍历</a></li>
+        <li><a href="#隐式连接">隐式连接</a></li>
+      </ul>
+    </li>
+    <li><a href="#总结">总结</a></li>
+  </ul>
+</nav></div>
+                    </div><div class="details admonition tip open">
+        <div class="details-summary admonition-title "><i class="icon admonition-icon icon-tip"></i>论文链接<i class="details-icon  admonition-icon admonition-icon-arrow-right"></i></div>
+        <div class="details-content">
+            <div class="admonition-content"><a href="http://www.cs.umd.edu/~abadi/papers/abadi-sigmod08.pdf" target="_blank" rel="noopener noreffer">Column-Stores vs. Row-Stores: How Different Are They
+Really?</a></div>
+        </div>
+    </div>
+<h2 id="概述" class="headerLink"><a href="#%e6%a6%82%e8%bf%b0" class="header-mark"></a>概述</h2><p>该文发表在 2008 年的 SIGMOD 会议上。从论文标题可以看出，论文主要内容不是陈述一种新的技术、架构，而是偏向议论、验证。其主要目的在于阐述清楚在 OLAP 下为什么<ruby>列式存储<rt>Column-Store</rt></ruby>优于<ruby>行式存储<rt>Row-Store</rt></ruby>。</p>
+<p>在 OLAP 场景下，基准测试的结论都是列式存储比行式存储快一个数量级。而大家普遍理解的原因是</p>
+<blockquote>
+<p>column-stores are more I/O efficient for read-only queries since they only have to read from disk (or from memory) those attributes accessed by a query.</p>
+<p>对于只读查询，列式存储的 I/O 效率更高，因为它们只需要从磁盘（或内存）中读取查询所需要的那些字段。</p>
+</blockquote>
+<p>从这个理解出发，大家想到即使是行式存储，也可以通过一些优化手段达到列式存储的性能，包括：</p>
+<ul>
+<li><ruby>垂直分表<rt>Vertically Partitioning</rt></ruby></li>
+<li><ruby>全列索引<rt>Indexing Every Column</rt></ruby></li>
+</ul>
+<h2 id="简介" class="headerLink"><a href="#%e7%ae%80%e4%bb%8b" class="header-mark"></a>简介</h2><p>作者认为当年面向列的系统性能测试方面过于“传统”——仍然以面向行的系统数据结构的设计思路来设计性能测试方案。虽然看出了列式存储的潜力，但没有回答本质问题：</p>
+<div class="details admonition question open">
+        <div class="details-summary admonition-title "><i class="icon admonition-icon icon-question"></i>问题<i class="details-icon  admonition-icon admonition-icon-arrow-right"></i></div>
+        <div class="details-content">
+            <div class="admonition-content"><p>Are these performance gains due to something fundamental about the way column-oriented DBMSs are internally architected, or would such gains also be possible in a conventional system that used a more column-oriented physical design?</p>
+<p>列式存储带来的性能提升是由于它内部架构的基本原理导致的，还是采用更加面向列式物理设计的传统系统中也有可能实现这些性能提升？</p>
+</div>
+        </div>
+    </div>
+<p>为了验证这个问题，作者采用了垂直分表、<ruby>索引查询<rt>Index-only Plans</rt></ruby>、<ruby>物化视图<rt>Materialized Views</rt></ruby>三种设计范式来实现更加面向列式物理设计的行式系统：</p>
+<ul>
+<li>垂直分表，将表结构拆分为二元组的形式，来实现对于一个查询，只需要访问特定列的目标；</li>
+<li>索引查询，为每个表创建一组索引，以确保可以覆盖所有查询中所需要的列，保证查询过程中直接从索引中提取字段的值；</li>
+<li>物化视图，针对所有查询做物化视图，以获取最佳的查询性能。</li>
+</ul>
+<p>经过模拟实验，作者得出结论，<strong>即使在面向行的系统中应用了面向列的思路来设计存储范式，在分析场景下，性能仍然无法与面向列的系统抗衡。</strong></p>
+<p>在得到上述结论后，作者又抛出下一个问题：</p>
+<div class="details admonition question open">
+        <div class="details-summary admonition-title "><i class="icon admonition-icon icon-question"></i>问题<i class="details-icon  admonition-icon admonition-icon-arrow-right"></i></div>
+        <div class="details-content">
+            <div class="admonition-content"><p>Which of the many column-database speciﬁc optimizations proposed in the literature are most responsible for the signiﬁcant performance advantage of column-stores over row-stores on warehouse workloads?</p>
+<p>在数仓场景下，究竟是哪些优化手段让面向列的系统性能优于面向行的系统性能？</p>
+</div>
+        </div>
+    </div>
+<p>论文直接给出结论，面向列的系统中优化主要有：</p>
+<ul>
+<li><ruby>延迟物化<rt>Late Materialization</rt></ruby></li>
+<li><ruby>块遍历<rt>Block Iteration</rt></ruby></li>
+<li><ruby>压缩<rt>Compression</rt></ruby></li>
+<li><ruby>隐式连接<rt>Invisible Joins</rt></ruby>（本文创新优化点）</li>
+</ul>
+<p>到这里，作者提出了第三个问题：</p>
+<div class="details admonition question open">
+        <div class="details-summary admonition-title "><i class="icon admonition-icon icon-question"></i>问题<i class="details-icon  admonition-icon admonition-icon-arrow-right"></i></div>
+        <div class="details-content">
+            <div class="admonition-content"><p>However, because each of these techniques was described in a separate research paper, no work has analyzed exactly which of these gains are most signiﬁcant.</p>
+<p>定量来看，这几种优化手段分别可以为面向列的系统提升多少性能呢？</p>
+</div>
+        </div>
+    </div>
+<p>接下来的工作中，作者逐个移除 C-Store 数据库中的上述优化手段来进行测试，最终发现：</p>
+<ul>
+<li>压缩带来的性能提升要看具体的数据，最多时可以提升一个数量级</li>
+<li>延迟物化可以提升 3 倍</li>
+<li>块遍历和隐式连接可以提升约 1.5 倍</li>
+</ul>
+<h2 id="面向行的执行" class="headerLink"><a href="#%e9%9d%a2%e5%90%91%e8%a1%8c%e7%9a%84%e6%89%a7%e8%a1%8c" class="header-mark"></a>面向行的执行</h2><h3 id="垂直分表" class="headerLink"><a href="#%e5%9e%82%e7%9b%b4%e5%88%86%e8%a1%a8" class="header-mark"></a>垂直分表</h3><p>垂直分表将表结构拆分成二元组，通过某种机制再将所有字段组合成之前的数据。第一反应可能需要在表中增加一个<ruby>主键字段<rt>Primary Key</rt></ruby>，但是主键字段可能会比较大，并且很多时候主键是复合主键，所以通常需要向每个表添加一个整数 &ldquo;position&rdquo; 列。但是查询中如果需要多个列，就得基于 position 列做额外的 join 操作。如果为了加速 join 再引入索引，则又会增加存储和 I/O 的开销，很难有优势。</p>
+<h3 id="索引查询" class="headerLink"><a href="#%e7%b4%a2%e5%bc%95%e6%9f%a5%e8%af%a2" class="header-mark"></a>索引查询</h3><p>垂直分表会引入两个新问题：</p>
+<ul>
+<li>它需要在每一列上增加一个 position 字段用来还原之前的记录，这会浪费大量的磁盘空间和磁盘带宽；</li>
+<li>大多数行式存储在每个元组上会存储一个大的头部数据，这又进一步浪费了磁盘空间。</li>
+</ul>
+<p>索引查询可以避免上述问题。为了不发生回表查询，势必要将 query 中任意条件的字段，都通过对应字段的索引来过滤出各种主键列表，然后做合并计算。如果某些字段对应的条件无法被其索引快速过滤数据的话，就会导致索引的全扫描，且这样的扫描可能会有多次。最终造成多个索引扫描，合并主键列的速度还不如一趟扫描原始表数据并过滤的速度。另外，大量冗余的元信息和头信息也会造成巨大的性能损失。因此，整体的存储、I/O 开销都很大。</p>
+<h3 id="物化视图" class="headerLink"><a href="#%e7%89%a9%e5%8c%96%e8%a7%86%e5%9b%be" class="header-mark"></a>物化视图</h3><p>完全根据预定义的 SQL 来生成确定的物化视图，且其中不会关联多余的列。显然这种方式查询性能很好（插入性能差），I/O 效率高，但这种方法又只能应付极其有限的场景。</p>
+<h2 id="面向列的执行" class="headerLink"><a href="#%e9%9d%a2%e5%90%91%e5%88%97%e7%9a%84%e6%89%a7%e8%a1%8c" class="header-mark"></a>面向列的执行</h2><h3 id="压缩" class="headerLink"><a href="#%e5%8e%8b%e7%bc%a9" class="header-mark"></a>压缩</h3><p>压缩，就是将相似度很高、信息熵很低的数据放在一起，用更小的空间表达相同的信息量。列存的数据往往类型相同，相同的特征更多，更容易被压缩，所以列存系统的压缩优化比行存系统更加有效。</p>
+<p>压缩优化带来的优势有：</p>
+<ul>
+<li>压缩后的数据量更小，可以减少硬盘存储空间，同时硬盘的数据量变少在读取时就可以减少 I/O 压力；</li>
+<li>有些时候解压缩的过程可以省略掉，从而直接对压缩后的数据进行操作。比如使用 Run-Length 编码方式进行压缩的数据，就可以直接进行某些运算。</li>
+</ul>
+<div class="details admonition info">
+        <div class="details-summary admonition-title "><i class="icon admonition-icon icon-info"></i>Run-Length 压缩<i class="details-icon  admonition-icon admonition-icon-arrow-right"></i></div>
+        <div class="details-content">
+            <div class="admonition-content">对于原始序列为 1, 1, 2, 2, 3, 3, 3 的数据，压缩后表达为 1 * 2,  2 * 2, 3 * 3。当我们要对这一列进行 sum 或者 count 运算时，原始数据可以直接转换为 $sum(1 * 2 + 2 * 2 + 3 * 3) $ 和 $ count(2 + 2 + 3)$，不仅不需要解压缩，而且还提高了计算效率。</div>
+        </div>
+    </div>
+<p>另外，压缩优化最好可以配合 <code>sort</code> 使用，如果数据是经过排序的，则更容易找到相邻数据的同质化特征，获得更好的压缩效果。</p>
+<h3 id="延迟物化" class="headerLink"><a href="#%e5%bb%b6%e8%bf%9f%e7%89%a9%e5%8c%96" class="header-mark"></a>延迟物化</h3><p><ruby>物化<rt>Materialization</rt></ruby> 是指为了把底层面向列的存储格式跟要求的行式格式对上，需要在查询的某个阶段转换一下。</p>
+<figure><img src="/images/202109/column-store-vs-row-store/materialization.png" width="700" height="500"/><figcaption>
+            <h4>Materialization</h4>
+        </figcaption>
+</figure>
+
+<p>理解物化的概念后，延迟物化就很好理解了，意思就是把物化的时机尽量地拖延到整个查询声明的后期。延迟物化意味着在查询执行的前一段时间内，查询执行的模型不是关系代数，而是基于 Column 的。</p>
+<p>例如下面的查询：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="k">select</span><span class="w"> </span><span class="n">name</span><span class="w"> 
+</span><span class="w"></span><span class="k">from</span><span class="w"> </span><span class="n">person</span><span class="w">
+</span><span class="w"></span><span class="k">where</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">10</span><span class="w"> 
+</span><span class="w">  </span><span class="k">and</span><span class="w"> </span><span class="n">age</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">20</span><span class="w">
+</span></code></pre></td></tr></table>
+</div>
+</div><p>一般的做法是从文件系统读出三列的数据，马上物化成一行行的 <code>person</code> 数据，然后应用两个过滤条件：$id &gt; 10$ 和 $age &gt; 20$，过滤完了之后从数据里面抽出 <code>name</code> 字段，作为最后的结果，大致的转换过程如下图：</p>
+<figure><img src="/images/202109/column-store-vs-row-store/early-materialization.png" width="800" height="600"/><figcaption>
+            <h4>Early Materialization</h4>
+        </figcaption>
+</figure>
+
+<p>而延迟物化的做法则会先不拼出行式数据，直接在 Column 数据上分别应用两个过滤条件，从而得到两个满足过滤条件的 bitmap，然后再把两个 bitmap 做位与的操作得到同时满足两个条件的所有的 bitmap，因为最后用户需要的只是 <code>name</code> 字段而已，因此下一步我们拿着这些 <code>position</code> 对 <code>name</code> 字段的数据进行过滤就得到了最终的结果。如下图：</p>
+<figure><img src="/images/202109/column-store-vs-row-store/late-materialization.png" width="800" height="600"/><figcaption>
+            <h4>Late Materialization</h4>
+        </figcaption>
+</figure>
+
+<p>延迟物化有四个方面的好处：</p>
+<ul>
+<li>关系代数里面的 <code>selection</code> 和 <code>aggregation</code> 操作下其实不需要整行数据，此时过早物化会浪费；</li>
+<li>如果数据是被压缩过的，物化的过程就必须对数据进行解压，这会影响压缩带来的好处；</li>
+<li>列式的内存组织形式对 CPU Cache 非常友好，从而提高计算效率，相反行式的组织形式因为非必要的列占用了 Cache Line 的空间，Cache 效率低；</li>
+<li>块遍历的优化手段对 Column 类型的数据效果更好，因为数据以 Column 形式保存在一起，数据是定长的可能性更大，而如果 Row 形式保存在一起数据是定长的可能性非常小（因为你一行数据里面只要有一个是非定长的，比如 VARCHAR，那么整行数据都是非定长的）。</li>
+</ul>
+<h3 id="块遍历" class="headerLink"><a href="#%e5%9d%97%e9%81%8d%e5%8e%86" class="header-mark"></a>块遍历</h3><p>行存模型中，每一个算子在处理数据的时候，都要先迭代一条数据，然后通过定义的接口从数据中获取到某个字段的值，然后再对值进行操作。这个流程使得每处理一条数据就得额外调用一两次用来获取数据的函数（一般称为火山模型）。</p>
+<p>而在列式存储中，每一次块迭代都可以获取到多条数据，并且当需要对某一列操作时，可以将一整块列的值传递给处理函数。同时不需要额外调用函数获取值，并且如果列是<ruby>等宽的<rt>fixed-width</rt></ruby>，可以直接作为数组来迭代。</p>
+<p>使用上述方法时，可以充分利用 CPU 的很多优势（SIMD加速、cache line适配、CPU pipeline等）。</p>
+<h3 id="隐式连接" class="headerLink"><a href="#%e9%9a%90%e5%bc%8f%e8%bf%9e%e6%8e%a5" class="header-mark"></a>隐式连接</h3><p>最后本文提出了一个具有创新性的性能优化措施：隐式连接。隐式连接针对的场景是数仓里面的<ruby>星型模型<rt>Star Schema</rt></ruby>， 如果用户查询符合下面的模式就可以应用隐式连接：</p>
+<figure><img src="/images/202109/column-store-vs-row-store/star-schema.png" width="600" height="600"/><figcaption>
+            <h4>Star Schema</h4>
+        </figcaption>
+</figure>
+
+<p>针对这个模型，我们给出一个 <code>Join</code> 的场景，例如以下的 SQL</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="k">SELECT</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">nation</span><span class="p">,</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">nation</span><span class="p">,</span><span class="w"> </span><span class="n">d</span><span class="p">.</span><span class="k">year</span><span class="p">,</span><span class="w"> </span><span class="k">sum</span><span class="p">(</span><span class="n">lo</span><span class="p">.</span><span class="n">revenue</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">revenue</span><span class="w">
+</span><span class="w"></span><span class="k">FROM</span><span class="w"> </span><span class="n">customer</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">c</span><span class="p">,</span><span class="w"> </span><span class="n">lineorder</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">lo</span><span class="p">,</span><span class="w"> </span><span class="n">supplier</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="n">dwdate</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">d</span><span class="w">
+</span><span class="w"></span><span class="k">WHERE</span><span class="w"> </span><span class="n">lo</span><span class="p">.</span><span class="n">custkey</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">custkey</span><span class="w">
+</span><span class="w">	</span><span class="k">AND</span><span class="w"> </span><span class="n">lo</span><span class="p">.</span><span class="n">suppkey</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">suppkey</span><span class="w">
+</span><span class="w">	</span><span class="k">AND</span><span class="w"> </span><span class="n">lo</span><span class="p">.</span><span class="n">orderdate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">d</span><span class="p">.</span><span class="n">datekey</span><span class="w">
+</span><span class="w">	</span><span class="k">AND</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">region</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">’</span><span class="n">ASIA</span><span class="err">’</span><span class="w">
+</span><span class="w">	</span><span class="k">AND</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">region</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">’</span><span class="n">ASIA</span><span class="err">’</span><span class="w">
+</span><span class="w">	</span><span class="k">AND</span><span class="w"> </span><span class="n">d</span><span class="p">.</span><span class="k">year</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">1992</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="n">d</span><span class="p">.</span><span class="k">year</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">1997</span><span class="w">
+</span><span class="w"></span><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">nation</span><span class="p">,</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">nation</span><span class="p">,</span><span class="w"> </span><span class="n">d</span><span class="p">.</span><span class="k">year</span><span class="w">
+</span><span class="w"></span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">d</span><span class="p">.</span><span class="k">year</span><span class="w"> </span><span class="k">asc</span><span class="p">,</span><span class="w"> </span><span class="n">revenue</span><span class="w"> </span><span class="k">desc</span><span class="p">;</span><span class="w">
+</span></code></pre></td></tr></table>
+</div>
+</div><p><strong>按照 Selectivity 依次 Join</strong></p>
+<p>这种方式很简单，就是按照谓词的选择性来依次执行 join。</p>
+<p>例如，<code>c.region = 'ASIA'</code> 的选择性很强，则首先使用这个条件过滤 <code>customer</code> 表，然后使用 <code>customer</code> 表去 <code>Join</code> <code>LineOrder</code> 表，所以 <code>customer</code> 表中的 <code>nation</code> 字段就被增加到了 <code>customer-order</code> 表中。依次类推，去完成 <code>supplier</code> 和 <code>date</code> 表的 <code>Join</code>。</p>
+<p>这种方式的缺点为：一开始就开始做 <code>Join</code> ，后续无法享受上面提到的延迟物化的好处。</p>
+<p><strong>传统延迟物化的 Join</strong></p>
+<p>这个方式可以规避一开始做 <code>Join</code> 的行为，具体方法为：</p>
+<ol>
+<li>用 <code>c.region = 'ASIA'</code> 过滤 <code>custom</code> 表，并拿到满足条件的 <code>custom key</code> 的集合，同时记录 <code>custom</code> 表中满足条件的记录的位置</li>
+<li>用 1 中获得的 <code>custom key</code> 来过滤 <code>orderline</code> 表，并拿到满足条件的记录的位置</li>
+<li>遍历 2 中获得的位置列表，提取 <code>suppplier key</code>、<code>order date</code> 和 <code>revenue</code> 并且借助 <code>custom key</code> 和 1 中获取到的位置信息，提取 <code>custom</code> 表中的 <code>c.nation</code> 字段</li>
+<li><code>supplier</code> 和 <code>date</code> 表的 <code>Join</code> 类似处理</li>
+</ol>
+<p>这种方式的缺点为：在 3 中提取 <code>c.nation</code> 的操作为<strong>随机访问</strong>，会产生较大的开销。</p>
+<p><strong>隐式连接</strong></p>
+<p>隐式连接是本文新提出的一种方法，用于上文中提到的星型模型的 <code>Join</code> 场景。它优化了传统延迟物化 <code>Join</code> 的缺点，尽可能减少随机读取的数据，从而提高性能。具体的执行步骤为：</p>
+<ol>
+<li>在每个维度表上应用对应的过滤条件，得到每个<ruby>维度表<rt>Dimension Table</rt></ruby>满足条件的记录的 <code>key</code>，同时这个 <code> key</code> 也应该是<ruby>事实表<rt>Fact Table</rt></ruby>的<ruby>外键<rt>Foreign Key</rt></ruby>。</li>
+</ol>
+<figure><img src="/images/202109/column-store-vs-row-store/first-phase.png" width="400" height="400"/><figcaption>
+            <h4>The first phase of the joins needed to execute Query 3.1 from the Star Schema benchmark on some sample data</h4>
+        </figcaption>
+</figure>
+
+<ol start="2">
+<li>遍历事实表的各个外键列，使用 1 中得到的 <code>key</code> 来判断是否满足条件，生成一个满足条件的记录的位置信息的 <code>bitmap</code>，并将这些 <code>bitmap</code> 做 <code>AND</code> 操作，生成最终过滤结果的 <code>bitmap</code>。</li>
+</ol>
+<figure><img src="/images/202109/column-store-vs-row-store/second-phase.png" width="400" height="400"/><figcaption>
+            <h4>The second phase of the joins needed to execute Query 3.1 from the Star Schema benchmark on some sample data</h4>
+        </figcaption>
+</figure>
+
+<ol start="3">
+<li>利用 2 中得到的 <code>bitmap</code> 依次提取各个维度表的外键，使用维度表的键来提取维度表中查询所需要的其他列。如果维度表的键是排过序的、从 1 开始连续的值，意味着维度表里面的列可以通过类似访问数组一样的方式提取出来（这一点会比传统的延迟物化方法快很多）。</li>
+</ol>
+<figure><img src="/images/202109/column-store-vs-row-store/third-phase.png" width="400" height="400"/><figcaption>
+            <h4>The third phase of the joins needed to execute Query 3.1 from the Star Schema benchmark on some sample data</h4>
+        </figcaption>
+</figure>
+
+<p>相比于延迟物化，隐式连接可以减少 I/O 的随机访问，但仅是这样，无法大幅度提升性能。论文认为在很多维度表内符合过滤条件的数据往往是连续的，这样就可以把<code>Lookup Join</code>变成范围查询。如果维度表的数据不连续，可以通过 <code>Dictionary Encoding</code> 方式，重新按序编码。</p>
+<div class="details admonition info">
+        <div class="details-summary admonition-title "><i class="icon admonition-icon icon-info"></i>Dictionary Encoding<i class="details-icon  admonition-icon admonition-icon-arrow-right"></i></div>
+        <div class="details-content">
+            <div class="admonition-content">Referennces doc: <a href="https://docs.kinetica.com/7.1/concepts/dictionary_encoding/" target="_blank" rel="noopener noreffer">https://docs.kinetica.com/7.1/concepts/dictionary_encoding/</a></div>
+        </div>
+    </div>
+<h2 id="总结" class="headerLink"><a href="#%e6%80%bb%e7%bb%93" class="header-mark"></a>总结</h2><p>读这篇论文最大的收获是首先明确了是哪些因素促使列式存储对 OLAP 性能可以大幅提升——压缩、延迟物化、块遍历、隐式连接。</p>
+<p>论文三位作者系统系统解答了列式存储与行式存储的区别，通过实验告诉我们，列式存储是因为其内部架构而具有更好的性能，而不是理所当然的理由——更少的 I/O。不仅仅限于内部架构，查询引擎层的各种优化也同样是列式存储性能提升的关键。</p>
+</div><footer>
+                        <div class="post">
+
+
+<div class="post-share"><div class="share-link">
+        <a class="share-icon share-twitter" href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://dcoliversun.github.io/column-stores-vs-row-stores/" data-title="列式存储 vs 行式存储：它们之间的本质区别在哪里？" data-hashtags="论文,存储,列式存储,行式存储"><span class="svg-social-icon icon-twitter"></span></a>
+    </div><div class="share-link">
+        <a class="share-icon share-facebook" href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://dcoliversun.github.io/column-stores-vs-row-stores/" data-hashtag="论文"><span class="svg-social-icon icon-facebook"></span></a>
+    </div><div class="share-link">
+        <a class="share-icon share-linkedin" href="javascript:void(0);" title="分享到 Linkedin" data-sharer="linkedin" data-url="https://dcoliversun.github.io/column-stores-vs-row-stores/"><span class="svg-social-icon icon-linkedin"></span></a>
+    </div></div>
+
+
+
+
+<div class="block-author">
+    <div class="author-avatar"><a href="https://dcoliversun.github.io" target="_blank"><img alt="Qian Sun -- Coder💻 | Blogger📝 | Swimmer🏊‍♀️" src="https://dcoliversun.github.io/images/me/avatar.png"></a></div>
+    <div class="author-info">
+        <div class="name"><a href="https://dcoliversun.github.io" target="_blank"></a></div>
+        <div class="number-posts">Qian Sun -- Coder💻 | Blogger📝 | Swimmer🏊‍♀️</span></div>
+    </div>
+</div>
+
+
+<div class="post-tags"><a href="/tags/%E8%AE%BA%E6%96%87/" class="tag">论文</a><a href="/tags/%E5%AD%98%E5%82%A8/" class="tag">存储</a><a href="/tags/%E5%88%97%E5%BC%8F%E5%AD%98%E5%82%A8/" class="tag">列式存储</a><a href="/tags/%E8%A1%8C%E5%BC%8F%E5%AD%98%E5%82%A8/" class="tag">行式存储</a></div></div>
+                </footer></div>
+
+        <div id="toc-final"></div>
+        </div>
+
+    
+    </article>
+    <section class="page single comments content-block-position">
+        <h1 class="display-hidden">Комментарии</h1><div id="comments"></div></section></div>
+
+</main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.87.0">Hugo</a> 强力驱动 | 主题 - <a href="https://ublogger.netlify.app/?utm_source=https://dcoliversun.github.io&utm_medium=footer&utm_campaign=config&utm_term=2.0.1" target="_blank" title="uBlogger 2.0.1">uBlogger</a>
+                </div><div class="footer-line"><i class="svg-icon icon-copyright"></i><span>2020 - 2021</span><span class="author">&nbsp;<a href="https://dcoliversun.github.io" target="_blank">Qian Sun</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <aside id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="svg-icon icon-arrow-up"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="svg-icon icon-comments-fixed"></i>
+            </a>
+        </aside><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/katex/copy-tex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/smooth-scroll/smooth-scroll.min.js"></script><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lunr/lunr.stemmer.support.min.js"></script><script src="/lib/lunr/lunr.zh.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/prismjs/prism.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/auto-render.min.js"></script><script src="/lib/katex/copy-tex.min.js"></script><script src="/lib/katex/mhchem.min.js"></script><script src="/lib/cookieconsent/cookieconsent.min.js"></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{},"cookieconsent":{"content":{"dismiss":"同意","link":"了解更多","message":"本网站使用 Cookies 来改善您的浏览体验."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":30,"type":"lunr"}};</script><script src="/js/theme.min.js"></script><script>
+                window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
+                gtag('config', 'G-K2QWGME5NC', { 'anonymize_ip': true });
+            </script><script src="https://www.googletagmanager.com/gtag/js?id=G-K2QWGME5NC" async></script></body>
+</html>

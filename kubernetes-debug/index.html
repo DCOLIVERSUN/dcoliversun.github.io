@@ -8,10 +8,10 @@
 <meta name="twitter:description" content="本文介绍了 K8s Liveness 和 Readiness 的使用方式、常见问题的诊断、远程调试的方式"/><meta name="Description" content="本文介绍了 K8s Liveness 和 Readiness 的使用方式、常见问题的诊断、远程调试的方式"><meta property="og:title" content="Kubernetes 问题诊断" />
 <meta property="og:description" content="本文介绍了 K8s Liveness 和 Readiness 的使用方式、常见问题的诊断、远程调试的方式" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://dcoliversun.github.io/kubernetes-debug/" />
-<meta property="og:image" content="https://dcoliversun.github.io/logo.png"/>
+<meta property="og:url" content="https://dcoliversun.github.io/kubernetes-debug/" /><meta property="og:image" content="https://dcoliversun.github.io/logo.png"/><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2021-08-07T16:43:50+08:00" />
 <meta property="article:modified_time" content="2021-08-07T16:43:50+08:00" />
+
 <meta name="application-name" content="@Qian Sun">
 <meta name="apple-mobile-web-app-title" content="@Qian Sun"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -254,23 +254,20 @@
 <h2 id="liveness-与-readiness" class="headerLink"><a href="#liveness-%e4%b8%8e-readiness" class="header-mark"></a>Liveness 与 Readiness</h2><h3 id="初识-liveness-与-readiness" class="headerLink"><a href="#%e5%88%9d%e8%af%86-liveness-%e4%b8%8e-readiness" class="header-mark"></a>初识 Liveness 与 Readiness</h3><p>Liveness probe 也叫就绪指针，用来判断一个 pod 是否处在就绪状态。当一个 pod 处在就绪状态的时候，它才能够对外提供相应的服务，也就是说接入层的流量才能打到相应的 pod。当这个 pod 不处在就绪状态的时候，接入层会把相应的流量从这个 pod 上面进行摘除。</p>
 <p>来看一下简单的一个例子：</p>
 <p>如下图其实就是一个 Readiness 就绪的一个例子：</p>
-<figure>
-    <img src="/images/202108/kubernetes-debug/readniess-probe.png" width="400" height="400"/> <figcaption>
+<figure><img src="/images/202108/kubernetes-debug/readniess-probe.png" width="400" height="400"/><figcaption>
             <h4>Readiness Probe Ready</h4>
         </figcaption>
 </figure>
 
 <p>当这个 pod 指针判断一直处在失败状态的时候，其实接入层的流量不会打到现在这个 pod 上。</p>
-<figure>
-    <img src="/images/202108/kubernetes-debug/readniess-probe-1.png" width="400" height="400"/> <figcaption>
+<figure><img src="/images/202108/kubernetes-debug/readniess-probe-1.png" width="400" height="400"/><figcaption>
             <h4>Readiness Probe Fail</h4>
         </figcaption>
 </figure>
 
 <p>当这个 pod 的状态从 FAIL 的状态转换成 success 的状态时，它才能够真实地承载这个流量。</p>
 <p>Liveness 指针也是类似的，它是存活指针，用来判断一个 pod 是否处在存活状态。当一个 pod 处在不存活状态的时候，会出现什么事情呢？</p>
-<figure>
-    <img src="/images/202108/kubernetes-debug/liveness-probe.png" width="400" height="400"/> <figcaption>
+<figure><img src="/images/202108/kubernetes-debug/liveness-probe.png" width="400" height="400"/><figcaption>
             <h4>Liveness Probe Fail</h4>
         </figcaption>
 </figure>
@@ -293,7 +290,7 @@
 <p>首先先看一下 exec，exec 的使用其实非常简单。如下YAML所示，大家可以看到这是一个 Liveness probe，它里面配置了一个 exec 的一个诊断。接下来，它又配置了一个 command 的字段，这个 command 字段里面通过 cat 一个具体的文件来判断当前 Liveness probe 的状态，当这个文件里面返回的结果是 0 时，或者说这个命令返回是 0 时，它会认为此时这个 pod 是处在健康的一个状态。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -316,7 +313,7 @@
 </span><span class="lnt">21
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
 </span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Pod</span><span class="w">
 </span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
 </span><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
@@ -342,7 +339,7 @@
 </div><p>那再来看一下这个 httpGet，httpGet 里面有一个字段是路径，第二个字段是 port，第三个是 headers。这个地方有时需要通过类似像 header 头的一个机制做 health 的一个判断时，需要配置这个 header，通常情况下，可能只需要通过 health 和 port 的方式就可以了。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -365,7 +362,7 @@
 </span><span class="lnt">21
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
 </span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Pod</span><span class="w">
 </span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
 </span><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
@@ -391,7 +388,7 @@
 </div><p>第三种是 tcpSocket，tcpSocket 的使用方式其实也比较简单，你只需要设置一个检测的端口，像这个例子里面使用的是 8080 端口，当这个 8080 端口 tcp connect 审核正常被建立的时候，那 tecSocket，Probe 会认为是健康的一个状态。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -415,7 +412,7 @@
 </span><span class="lnt">22
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
 </span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Pod</span><span class="w">
 </span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
 </span><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
@@ -487,19 +484,19 @@
 <p>进入一个正在运行的Pod</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">kubectl <span class="nb">exec</span> -it pod-name /bin/bash
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">kubectl <span class="nb">exec</span> -it pod-name /bin/bash
 </code></pre></td></tr></table>
 </div>
 </div><p>进入一个正在运行包含多容器的Pod</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">kubectl <span class="nb">exec</span> -it pod-name -c container-name /bin/bash
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">kubectl <span class="nb">exec</span> -it pod-name -c container-name /bin/bash
 </code></pre></td></tr></table>
 </div>
 </div><p>比如说可以通过 exec 的方式进入一个 pod。像这条命令里面，通过 kubectl exec-it pod-name 后面再填写一个相应的命令，比如说 /bin/bash，表示希望到这个 pod 里面进入一个交互式的一个 bash。然后在 bash 里面可以做一些相应的命令，比如说修改一些配置，通过 supervisor 去重新拉起这个应用，都是可以的。</p>
@@ -514,10 +511,10 @@
 <p>第二个是如果本地应用需要调用远程集群的服务时候，可以通过 port-forward 的方式将远程的应用调用到本地的端口之上。比如说现在远程的里面有一个 API server，这个 API server 提供了一些端口，本地在调试 Code 时候，想要直接调用这个 API server，那么这时，比较简单的一个方式就是通过 port-forward 的方式。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">kubectl port-forward svc/app -n app-namespace
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">kubectl port-forward svc/app -n app-namespace
 </code></pre></td></tr></table>
 </div>
 </div><p>它的使用方式是 kubectl port-forward，然后 service 加上远程的 service name，再加上相应的 namespace，后面还可以加上一些额外的参数，比如说端口的一个映射，通过这种机制就可以把远程的一个应用代理到本地的端口之上，此时通过访问本地端口就可以访问远程的服务。</p>
@@ -567,7 +564,7 @@
         <h1 class="display-hidden">Комментарии</h1><div id="comments"></div></section></div>
 
 </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.79.1">Hugo</a> 强力驱动 | 主题 - <a href="https://ublogger.netlify.app/?utm_source=https://dcoliversun.github.io&utm_medium=footer&utm_campaign=config&utm_term=2.0.1" target="_blank" title="uBlogger 2.0.1">uBlogger</a>
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.87.0">Hugo</a> 强力驱动 | 主题 - <a href="https://ublogger.netlify.app/?utm_source=https://dcoliversun.github.io&utm_medium=footer&utm_campaign=config&utm_term=2.0.1" target="_blank" title="uBlogger 2.0.1">uBlogger</a>
                 </div><div class="footer-line"><i class="svg-icon icon-copyright"></i><span>2020 - 2021</span><span class="author">&nbsp;<a href="https://dcoliversun.github.io" target="_blank">Qian Sun</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>

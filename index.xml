@@ -3,9 +3,18 @@
         <title>@Qian Sun</title>
         <link>https://dcoliversun.github.io/</link>
         <description>Hi! I&#39;m Qian Sun. Coder💻 | Blogger📝 | Swimmer🏊‍♀️</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Sat, 28 Aug 2021 16:23:52 &#43;0800</lastBuildDate>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Sun, 05 Sep 2021 09:41:17 &#43;0800</lastBuildDate>
             <atom:link href="https://dcoliversun.github.io/index.xml" rel="self" type="application/rss+xml" />
         <item>
+    <title>列式存储 vs 行式存储：它们之间的本质区别在哪里？</title>
+    <link>https://dcoliversun.github.io/column-stores-vs-row-stores/</link>
+    <pubDate>Sun, 05 Sep 2021 09:41:17 &#43;0800</pubDate>
+    <author>author</author>
+    <guid>https://dcoliversun.github.io/column-stores-vs-row-stores/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/202109/column-store-vs-row-store/preview.png" referrerpolicy="no-referrer">
+            </div>列式存储因其自身架构设计与查询引擎优化带来 OLAP 性能的提升，行式存储无法模拟这样的设计范式]]></description>
+</item><item>
     <title>Kubernetes 服务发现与负载均衡</title>
     <link>https://dcoliversun.github.io/kubernetes-service/</link>
     <pubDate>Sat, 28 Aug 2021 16:23:52 &#43;0800</pubDate>
@@ -86,14 +95,5 @@
     <description><![CDATA[<div class="featured-image">
                 <img src="/images/202107/application-orchestration-and-management-job/preview.png" referrerpolicy="no-referrer">
             </div>如何管理 Pod 中的进程？一切秘密都在这里]]></description>
-</item><item>
-    <title>应用编排与管理：Deployment</title>
-    <link>https://dcoliversun.github.io/application-orchestration-and-management-deployment/</link>
-    <pubDate>Sun, 27 Jun 2021 11:31:13 &#43;0800</pubDate>
-    <author>author</author>
-    <guid>https://dcoliversun.github.io/application-orchestration-and-management-deployment/</guid>
-    <description><![CDATA[<div class="featured-image">
-                <img src="/images/202106/application-orchestration-and-management-deployment/preview.png" referrerpolicy="no-referrer">
-            </div>Deployment 保证集群里可用 Pod 数量，为所有 Pod 更新镜像版本，保证更新过程中的服务可用性，实现快速回滚]]></description>
 </item></channel>
 </rss>

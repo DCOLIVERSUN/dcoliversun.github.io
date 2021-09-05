@@ -8,10 +8,10 @@
 <meta name="twitter:description" content="本文介绍了监控和日志的背景信息、监控方案的演进、日志采集的一些细节以及常见的日志的开源系统"/><meta name="Description" content="本文介绍了监控和日志的背景信息、监控方案的演进、日志采集的一些细节以及常见的日志的开源系统"><meta property="og:title" content="Kubernetes 监控与日志" />
 <meta property="og:description" content="本文介绍了监控和日志的背景信息、监控方案的演进、日志采集的一些细节以及常见的日志的开源系统" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://dcoliversun.github.io/kubernetes-monitor-and-log/" />
-<meta property="og:image" content="https://dcoliversun.github.io/logo.png"/>
+<meta property="og:url" content="https://dcoliversun.github.io/kubernetes-monitor-and-log/" /><meta property="og:image" content="https://dcoliversun.github.io/logo.png"/><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2021-08-15T19:41:20+08:00" />
 <meta property="article:modified_time" content="2021-08-15T19:41:20+08:00" />
+
 <meta name="application-name" content="@Qian Sun">
 <meta name="apple-mobile-web-app-title" content="@Qian Sun"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -240,8 +240,7 @@
 </li>
 </ol>
 <h3 id="k8s-监控演进" class="headerLink"><a href="#k8s-%e7%9b%91%e6%8e%a7%e6%bc%94%e8%bf%9b" class="header-mark"></a>K8s 监控演进</h3><p>在早期，也就是 1.10 以前的 K8s 版本。大家都会使用类似像 Heapster 这样的组件来去进行监控的采集，Heapster 的设计原理其实也比较简单。</p>
-<figure>
-    <img src="/images/202108/kubernetes-monitor-and-log/heapster.png" width="600" height="400"/> <figcaption>
+<figure><img src="/images/202108/kubernetes-monitor-and-log/heapster.png" width="600" height="400"/><figcaption>
             <h4>Heapster 采集和消费链路</h4>
         </figcaption>
 </figure>
@@ -260,8 +259,7 @@
 </ul>
 <p>但是后来社区发现，这些 sink 很多时候都是没有人来维护的。这也导致整个 Heapster 的项目有很多的 bug，这个 bug 一直存留在社区里面，是没有人修复的，这个也是会给社区的项目的活跃度包括项目的稳定性带来了很多的挑战。</p>
 <p>基于这两点原因，K8s 把 Heapster 进行了 break 掉，然后做了一个精简版的监控采集组件，叫做 metrics-server。</p>
-<figure>
-    <img src="/images/202108/kubernetes-monitor-and-log/inner-heapster.png" width="800" height="200"/> <figcaption>
+<figure><img src="/images/202108/kubernetes-monitor-and-log/inner-heapster.png" width="800" height="200"/><figcaption>
             <h4>Heapster 内部组成</h4>
         </figcaption>
 </figure>
@@ -274,8 +272,7 @@
 <li>最后是 sink 部分，sink 部分是负责数据离线的，这个是早期的 Heapster 的一个应用的架构。</li>
 </ul>
 <p>那到后期的时候呢，K8s 做了这个监控接口的一个标准化，逐渐就把 Heapster 进行了裁剪，转化成了 metrics-server。</p>
-<figure>
-    <img src="/images/202108/kubernetes-monitor-and-log/metrics-server.png" width="500" height="400"/> <figcaption>
+<figure><img src="/images/202108/kubernetes-monitor-and-log/metrics-server.png" width="500" height="400"/><figcaption>
             <h4>Metrics Server 内部组成</h4>
         </figcaption>
 </figure>
@@ -295,8 +292,7 @@
 <li>一是因为首先 Prometheus 是 CNCF 云原生社区的一个毕业项目。然后第二个是现在有越来越多的开源项目都以 Prometheus 作为监控标准，类似说我们比较常见的 Spark、Tensorflow、Flink 这些项目，其实它都有标准的 Prometheus 的采集接口。</li>
 <li>第二个是对于类似像比较常见的一些数据库、中间件这类的项目，它都有相应的 Prometheus 采集客户端。类似像 ETCD、zookeeper、MySQL 或者说 PostgreSQL，这些其实都有相应的这个 Prometheus 的接口，如果没有的，社区里面也会有相应的 exporter 进行接口的一个实现。</li>
 </ul>
-<figure>
-    <img src="/images/202108/kubernetes-monitor-and-log/promethues.png" width="700" height="500"/> <figcaption>
+<figure><img src="/images/202108/kubernetes-monitor-and-log/promethues.png" width="700" height="500"/><figcaption>
             <h4>Promethues</h4>
         </figcaption>
 </figure>
@@ -337,8 +333,7 @@
 <p>还有的就是类似像一些核心的中间件，如 Ingress 这种网络中间件，它可以帮我们来看到整个的一个接入层的一个流量，通过 Ingress 的日志，可以做到一个很好的接入层的一个应用分析。</p>
 <p><strong>4. 部署应用的日志</strong>
 最后是部署应用的日志，可以通过应用的日志来查看业务层的一个状态。比如说可以看业务层有没有 500 的请求？有没有一些 panic？有没有一些异常的错误的访问？那这些其实都可以通过应用日志来进行查看的。</p>
-<h3 id="日志的采集" class="headerLink"><a href="#%e6%97%a5%e5%bf%97%e7%9a%84%e9%87%87%e9%9b%86" class="header-mark"></a>日志的采集</h3><figure>
-    <img src="/images/202108/kubernetes-monitor-and-log/log.png" width="700" height="300"/> <figcaption>
+<h3 id="日志的采集" class="headerLink"><a href="#%e6%97%a5%e5%bf%97%e7%9a%84%e9%87%87%e9%9b%86" class="header-mark"></a>日志的采集</h3><figure><img src="/images/202108/kubernetes-monitor-and-log/log.png" width="700" height="300"/><figcaption>
             <h4>Logging</h4>
         </figcaption>
 </figure>
@@ -395,7 +390,7 @@
         <h1 class="display-hidden">Комментарии</h1><div id="comments"></div></section></div>
 
 </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.79.1">Hugo</a> 强力驱动 | 主题 - <a href="https://ublogger.netlify.app/?utm_source=https://dcoliversun.github.io&utm_medium=footer&utm_campaign=config&utm_term=2.0.1" target="_blank" title="uBlogger 2.0.1">uBlogger</a>
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.87.0">Hugo</a> 强力驱动 | 主题 - <a href="https://ublogger.netlify.app/?utm_source=https://dcoliversun.github.io&utm_medium=footer&utm_campaign=config&utm_term=2.0.1" target="_blank" title="uBlogger 2.0.1">uBlogger</a>
                 </div><div class="footer-line"><i class="svg-icon icon-copyright"></i><span>2020 - 2021</span><span class="author">&nbsp;<a href="https://dcoliversun.github.io" target="_blank">Qian Sun</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>

@@ -8,10 +8,10 @@
 <meta name="twitter:description" content="本文介绍了为什么需要 K8s service 以及相关用例解读和架构设计"/><meta name="Description" content="本文介绍了为什么需要 K8s service 以及相关用例解读和架构设计"><meta property="og:title" content="Kubernetes 服务发现与负载均衡" />
 <meta property="og:description" content="本文介绍了为什么需要 K8s service 以及相关用例解读和架构设计" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://dcoliversun.github.io/kubernetes-service/" />
-<meta property="og:image" content="https://dcoliversun.github.io/logo.png"/>
+<meta property="og:url" content="https://dcoliversun.github.io/kubernetes-service/" /><meta property="og:image" content="https://dcoliversun.github.io/logo.png"/><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2021-08-28T16:23:52+08:00" />
 <meta property="article:modified_time" content="2021-08-28T16:23:52+08:00" />
+
 <meta name="application-name" content="@Qian Sun">
 <meta name="apple-mobile-web-app-title" content="@Qian Sun"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -223,8 +223,7 @@
                     </div><h2 id="需求来源" class="headerLink"><a href="#%e9%9c%80%e6%b1%82%e6%9d%a5%e6%ba%90" class="header-mark"></a>需求来源</h2><h3 id="为什么需要服务发现" class="headerLink"><a href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e9%9c%80%e8%a6%81%e6%9c%8d%e5%8a%a1%e5%8f%91%e7%8e%b0" class="header-mark"></a>为什么需要服务发现</h3><p>在 K8s 集群里面会通过 pod 去部署应用，与传统的应用部署不同，传统应用部署在给定的机器上面去部署，我们知道怎么去调用别的机器的 IP 地址。但是在 K8s 集群里面应用是通过 pod 去部署的， 而 pod 生命周期是短暂的。在 pod 的生命周期过程中，比如它创建或销毁，它的 IP 地址都会发生变化，这样就不能使用传统的部署方式，不能指定 IP 去访问指定的应用。</p>
 <p>另外在 K8s 的应用部署里，之前虽然学习了 deployment 的应用部署模式，但还是需要创建一个 pod 组，然后这些 pod 组需要提供一个统一的访问入口，以及怎么去控制流量负载均衡到这个组里面。比如说测试环境、预发环境和线上环境，其实在部署的过程中需要保持同样的一个部署模板以及访问方式。因为这样就可以用同一套应用的模板在不同的环境中直接发布。</p>
 <h3 id="servicekubernetes-中的服务发现与负载均衡" class="headerLink"><a href="#servicekubernetes-%e4%b8%ad%e7%9a%84%e6%9c%8d%e5%8a%a1%e5%8f%91%e7%8e%b0%e4%b8%8e%e8%b4%9f%e8%bd%bd%e5%9d%87%e8%a1%a1" class="header-mark"></a>Service：Kubernetes 中的服务发现与负载均衡</h3><p>最后应用服务需要暴露到外部去访问，需要提供给外部的用户去调用的。我们上节了解到 pod 的网络跟机器不是同一个段的网络，那怎么让 pod 网络暴露到去给外部访问呢？这时就需要服务发现。</p>
-<figure>
-    <img src="/images/202108/kubernetes-service/service.png" width="700" height="500"/> <figcaption>
+<figure><img src="/images/202108/kubernetes-service/service.png" width="700" height="500"/><figcaption>
             <h4>Service</h4>
         </figcaption>
 </figure>
@@ -234,7 +233,7 @@
 <h2 id="用例解读" class="headerLink"><a href="#%e7%94%a8%e4%be%8b%e8%a7%a3%e8%af%bb" class="header-mark"></a>用例解读</h2><p>下面进行实际的一个用例解读，看 pod K8s 的 service 要怎么去声明、怎么去使用？</p>
 <h3 id="service-语法" class="headerLink"><a href="#service-%e8%af%ad%e6%b3%95" class="header-mark"></a>Service 语法</h3><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -249,7 +248,7 @@
 </span><span class="lnt">13
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
 </span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Service</span><span class="w">
 </span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
 </span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">my-service</span><span class="w">
@@ -270,28 +269,28 @@
 <h3 id="创建和查看-service" class="headerLink"><a href="#%e5%88%9b%e5%bb%ba%e5%92%8c%e6%9f%a5%e7%9c%8b-service" class="header-mark"></a>创建和查看 Service</h3><p>如何去创建刚才声明的这个 service 对象，以及它创建之后是什么样的效果呢？通过简单的命令：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">kubectl apply -f service.yaml
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">kubectl apply -f service.yaml
 </code></pre></td></tr></table>
 </div>
 </div><p>或者是</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">kubectl created -f service.yaml
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">kubectl created -f service.yaml
 </code></pre></td></tr></table>
 </div>
 </div><p>上面的命令可以简单地去创建这样一个 service。创建好后，可以通过</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-shell" data-lang="shell">kubectl discribe service
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">kubectl discribe service
 </code></pre></td></tr></table>
 </div>
 </div><p>去查看 service 创建之后的一个结果。</p>
@@ -311,7 +310,7 @@
 <p>它是这样来操作的：pod 可以直接通过 service_name 用 DNS 的方式解析到所有后端 pod 的 IP 地址，通过 DNS 的 A 记录的方式会解析到所有后端的 Pod 的地址，由客户端选择一个后端的 IP 地址，这个 A 记录会随着 pod 的生命周期变化，返回的 A 记录列表也发生变化，这样就要求客户端应用要从 A 记录把所有 DNS 返回到 A 记录的列表里面 IP 地址中，客户端自己去选择一个合适的地址去访问 pod。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt"> 1
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
 </span><span class="lnt"> 2
 </span><span class="lnt"> 3
 </span><span class="lnt"> 4
@@ -327,7 +326,7 @@
 </span><span class="lnt">14
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
 </span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Service</span><span class="w">
 </span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
 </span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">my-service</span><span class="w">
@@ -343,16 +342,14 @@
 </span><span class="w">    </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="m">9376</span><span class="w">
 </span></code></pre></td></tr></table>
 </div>
-</div><figure>
-    <img src="/images/202108/kubernetes-service/headless-service.png" width="700" height="500"/> <figcaption>
+</div><figure><img src="/images/202108/kubernetes-service/headless-service.png" width="700" height="500"/><figcaption>
             <h4>Headless Service</h4>
         </figcaption>
 </figure>
 
 <p>可以从上图看一下跟刚才我们声明的模板的区别，就是在中间加了一个 clusterIP:None，即表明不需要虚拟 IP。实际效果就是集群的 pod 访问 my-service 时，会直接解析到所有的 service 对应 pod 的 IP 地址，返回给 pod，然后 pod 里面自己去选择一个 IP 地址去直接访问。</p>
 <h3 id="向集群外暴露-service" class="headerLink"><a href="#%e5%90%91%e9%9b%86%e7%be%a4%e5%a4%96%e6%9a%b4%e9%9c%b2-service" class="header-mark"></a>向集群外暴露 Service</h3><p>前面介绍的都是在集群里面 node 或者 pod 去访问 service，service 怎么去向外暴露呢？怎么把应用实际暴露给公网去访问呢？这里 service 也有两种类型去解决这个问题，一个是 NodePort，一个是 LoadBalancer。</p>
-<figure>
-    <img src="/images/202108/kubernetes-service/service-expose.png" width="500" height="400"/> <figcaption>
+<figure><img src="/images/202108/kubernetes-service/service-expose.png" width="500" height="400"/><figcaption>
             <h4>NodePort and LoadBalancer</h4>
         </figcaption>
 </figure>
@@ -365,8 +362,7 @@
 <p>LoadBalancer 类型就是在 NodePort 上面又做了一层转换，刚才所说的 NodePort 其实是集群里面每个节点上面一个端口，LoadBalancer 是在所有的节点前又挂一个负载均衡。比如在阿里云上挂一个 SLB，这个负载均衡会提供一个统一的入口，并把所有它接触到的流量负载均衡到每一个集群节点的 node pod 上面去。然后 node pod 再转化成 ClusterIP，去访问到实际的 pod 上面。</p>
 </li>
 </ul>
-<h2 id="架构设计" class="headerLink"><a href="#%e6%9e%b6%e6%9e%84%e8%ae%be%e8%ae%a1" class="header-mark"></a>架构设计</h2><figure>
-    <img src="/images/202108/kubernetes-service/architecture.png" width="700" height="500"/> <figcaption>
+<h2 id="架构设计" class="headerLink"><a href="#%e6%9e%b6%e6%9e%84%e8%ae%be%e8%ae%a1" class="header-mark"></a>架构设计</h2><figure><img src="/images/202108/kubernetes-service/architecture.png" width="700" height="500"/><figcaption>
             <h4>Kubernetes Service Architecture</h4>
         </figcaption>
 </figure>
@@ -427,7 +423,7 @@
         <h1 class="display-hidden">Комментарии</h1><div id="comments"></div></section></div>
 
 </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.79.1">Hugo</a> 强力驱动 | 主题 - <a href="https://ublogger.netlify.app/?utm_source=https://dcoliversun.github.io&utm_medium=footer&utm_campaign=config&utm_term=2.0.1" target="_blank" title="uBlogger 2.0.1">uBlogger</a>
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.87.0">Hugo</a> 强力驱动 | 主题 - <a href="https://ublogger.netlify.app/?utm_source=https://dcoliversun.github.io&utm_medium=footer&utm_campaign=config&utm_term=2.0.1" target="_blank" title="uBlogger 2.0.1">uBlogger</a>
                 </div><div class="footer-line"><i class="svg-icon icon-copyright"></i><span>2020 - 2021</span><span class="author">&nbsp;<a href="https://dcoliversun.github.io" target="_blank">Qian Sun</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
         </div>
     </footer></div>
