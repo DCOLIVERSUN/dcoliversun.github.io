@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>MR3 - 标签 - @Qian Sun</title>
+        <link>https://dcoliversun.github.io/tags/mr3/</link>
+        <description>MR3 - 标签 - @Qian Sun</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Sat, 11 Sep 2021 14:16:52 &#43;0800</lastBuildDate><atom:link href="https://dcoliversun.github.io/tags/mr3/" rel="self" type="application/rss+xml" /><item>
+    <title>Spark on MR3——运行 Apache Spark 的新方式</title>
+    <link>https://dcoliversun.github.io/spark-on-mr3/</link>
+    <pubDate>Sat, 11 Sep 2021 14:16:52 &#43;0800</pubDate>
+    <author>author</author>
+    <guid>https://dcoliversun.github.io/spark-on-mr3/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/202109/spark-on-mr3/preview.png" referrerpolicy="no-referrer">
+            </div>Spark on MR3 允许多个 Spark 应用程序共享计算资源，达到降低开销与时间的效果]]></description>
+</item></channel>
+</rss>
