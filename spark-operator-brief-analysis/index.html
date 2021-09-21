@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noodp"/><title>Spark Operator 浅析 | </title><meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content=""/>
+<meta name="twitter:title" content="Spark Operator 浅析"/>
+<meta name="twitter:description" content="本文总结了 Spark 计算框架的基础架构，介绍了 Spark on K8s 的多种方案，着重介绍了 Spark Operator 的设计和实现。"/><meta name="Description" content="本文总结了 Spark 计算框架的基础架构，介绍了 Spark on K8s 的多种方案，着重介绍了 Spark Operator 的设计和实现。"><meta property="og:title" content="Spark Operator 浅析" />
+<meta property="og:description" content="本文总结了 Spark 计算框架的基础架构，介绍了 Spark on K8s 的多种方案，着重介绍了 Spark Operator 的设计和实现。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://dcoliversun.github.io/spark-operator-brief-analysis/" /><meta property="og:image" content="https://dcoliversun.github.io/logo.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-09-21T10:04:49+08:00" />
+<meta property="article:modified_time" content="2021-09-21T10:04:49+08:00" />
+
+<meta name="application-name" content="@Qian Sun">
+<meta name="apple-mobile-web-app-title" content="@Qian Sun"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
+        <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://dcoliversun.github.io/spark-operator-brief-analysis/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/lib/prismjs/prism.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Spark Operator 浅析",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/dcoliversun.github.io\/spark-operator-brief-analysis\/"
+        },"genre": "posts","keywords": "Spark, Operator, Kubernetes","wordCount":  3698 ,
+        "url": "https:\/\/dcoliversun.github.io\/spark-operator-brief-analysis\/","datePublished": "2021-09-21T10:04:49+08:00","dateModified": "2021-09-21T10:04:49+08:00",
+        "publisher": {
+            "@type": "Person",
+            "name": "", "image": [
+            {
+            "@type": "ImageObject",
+            "url": "https:\/\/dcoliversun.github.io\/images\/me\/avatar.png"
+            }
+            ]},"author": {
+                "@type": "Person",
+                "name": ""
+            },"description": "本文总结了 Spark 计算框架的基础架构，介绍了 Spark on K8s 的多种方案，着重介绍了 Spark Operator 的设计和实现。"
+    }
+    </script><script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [{
+            "@type": "ListItem",
+            "position": 1,
+            "name": "主页",
+            "item": "https:\/\/dcoliversun.github.io"
+        },{
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Apache Spark",
+            "item": "https://dcoliversun.github.io/categories/apache-spark/"
+        },{
+                "@type": "ListItem",
+                "position": 3,
+                "name": "Spark Operator 浅析"
+            }]
+    }
+</script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header>
+    <div class="desktop header" id="header-desktop">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="@Qian Sun" class="header-logo logo-svg">@Qian Sun</a>
+            </div>
+            <div class="menu">
+                <nav>
+                    <h2 class="display-hidden">Основная навигация</h2>
+                    <ul class="menu-inner"><li>
+                            <a class="menu-item" href="/posts/"> Posts </a>
+                        </li><li>
+                            <a class="menu-item" href="/tags/"> Tags </a>
+                        </li><li>
+                            <a class="menu-item" href="/categories/"> Categories </a>
+                        </li><li>
+                            <a class="menu-item" href="/donate"> Donate </a>
+                        </li><li>
+                            <a class="menu-item" href="/about"> About </a>
+                        </li></ul>
+                </nav><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <span class="svg-icon icon-search"></span>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <span class="svg-icon icon-cancel"></span>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <span class="svg-icon icon-loading"></span>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <span class="svg-icon icon-moon"></span>
+                </a>
+            </div>
+        </div>
+    </div><div class="mobile header" id="header-mobile">
+        <div class="header-container">
+            <div class="header-wrapper">
+                <div class="header-title">
+                    <a href="/" title="@Qian Sun" class="header-logo">@Qian Sun</a>
+                </div>
+                <div class="menu-toggle" id="menu-toggle-mobile">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+            <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                        <div class="search mobile" id="search-mobile">
+                            <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                            <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                                <span class="svg-icon icon-search"></span>
+                            </a>
+                            <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                                <span class="svg-icon icon-cancel"></span>
+                            </a>
+                            <span class="search-button search-loading" id="search-loading-mobile">
+                                <span class="svg-icon icon-loading"></span>
+                            </span>
+                        </div>
+                        <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                            取消
+                        </a>
+                    </div><nav>
+                    <h2 class="display-hidden">Основная навигация</h2>
+                    <ul><li>
+                            <a class="menu-item" href="/posts/" title="">Posts</a>
+                        </li><li>
+                            <a class="menu-item" href="/tags/" title="">Tags</a>
+                        </li><li>
+                            <a class="menu-item" href="/categories/" title="">Categories</a>
+                        </li><li>
+                            <a class="menu-item" href="/donate" title="">Donate</a>
+                        </li><li>
+                            <a class="menu-item" href="/about" title="">About</a>
+                        </li></ul>
+                </nav>
+                <a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <span class="svg-icon icon-moon"></span>
+                </a></div>
+        </div>
+    </div><div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div></header><main class="main">
+<div class="container content-article page-toc theme-full"><div class="toc" id="toc-auto">
+            <div class="toc-title">目录</div>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div>
+    
+
+    
+    
+    <article>
+    
+
+        <header class="header-post">
+
+            
+
+            
+            <div class="featured-image" style="background-image: url('/images/202109/spark-operator-brief-analysis/preview.png');"><div class="post-title">
+
+                    <div class="post-all-meta">
+                        <nav class="breadcrumbs">
+    <ol>
+        <li><a href="/">主页 </a></li><li><a href="/categories/apache-spark/">Apache Spark </a></li><li>Spark Operator 浅析</li>
+    </ol>
+</nav>
+                        <h1 class="single-title flipInX">Spark Operator 浅析</h1><div class="post-meta summary-post-meta"><span class="post-category meta-item">
+                                <a href="/categories/apache-spark/"><span class="svg-icon icon-folder"></span>Apache Spark</a>
+                            </span><span class="post-meta-date meta-item">
+                                <span class="svg-icon icon-clock"></span><time class="timeago" datetime="2021-09-21">2021-09-21</time>
+                            </span><span class="post-meta-words meta-item">
+                                <span class="svg-icon icon-pencil"></span>约 3698 字
+                            </span>
+                            <span class="post-meta-reading meta-item">
+                                <span class="svg-icon icon-stopwatch"></span>预计阅读 8 分钟
+                            </span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                </div></header>
+
+        <div class="article-post toc-start">
+
+            <div class="content-block content-block-first content-block-position">
+
+                <div class="post single"><div class="details toc" id="toc-static"  data-kept="">
+                        <div class="details-summary toc-title">
+                            <span>目录</span>
+                        </div>
+                        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#spark-运行时架构">Spark 运行时架构</a></li>
+    <li><a href="#spark-on-kubernetes">Spark on Kubernetes</a></li>
+    <li><a href="#spark-operator-浅析">Spark Operator 浅析</a>
+      <ul>
+        <li><a href="#系统架构">系统架构</a></li>
+        <li><a href="#工程结构">工程结构</a></li>
+        <li><a href="#spark-application-控制器">Spark Application 控制器</a>
+          <ul>
+            <li><a href="#提交作业">提交作业</a></li>
+            <li><a href="#状态流转控制">状态流转控制</a></li>
+            <li><a href="#度量监控">度量监控</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+                    </div><div class="details admonition tip open">
+        <div class="details-summary admonition-title admonition-title-none"></div>
+        <div class="details-content">
+            <div class="admonition-content">中秋快乐 🌕🥮</div>
+        </div>
+    </div>
+<h2 id="spark-运行时架构" class="headerLink"><a href="#spark-%e8%bf%90%e8%a1%8c%e6%97%b6%e6%9e%b6%e6%9e%84" class="header-mark"></a>Spark 运行时架构</h2><p>经过近几年的高速发展，分布式计算框架的架构逐渐趋同。资源管理模块作为其中最通用的模块逐渐与框架解耦，独立成通用的组件。目前大部分分布式计算框架都支持接入多款不同的资源管理器。资源管理器负责集群资源的管理和调度，为计算任务分配资源容器并保证资源隔离。Apache Spark 作为通用分布式计算平台，目前同时支持多款资源管理器，包括：</p>
+<ul>
+<li>YARN</li>
+<li>Mesos</li>
+<li>Kubernetes</li>
+<li>Spark Standalone</li>
+</ul>
+<p>Apache Spark 的运行时框架如下图所示，其与各类资源调度器的交互流程比较类似：</p>
+<figure><img src="/images/202109/spark-operator-brief-analysis/spark-runtime-architecture.png" width="700" height="500"/><figcaption>
+            <h4>Spark运行时框架（Client模式）</h4>
+        </figcaption>
+</figure>
+
+<p>其中，Driver 负责作业逻辑的调度和任务的监控，资源管理器负责资源分配和监控。Driver 根据部署模式的不同，启动和运行的物理位置有所不同。其中，Client 模式下，Driver 模块运行在 Spark-Submit 进程中，Cluster 模式下，Driver 的启动过程和Executor 类似，运行在资源调度器分配的资源容器内。</p>
+<p>K8s 是 Spark 在 2.3 开始支持资源管理器，而相关讨论早在2016年就已经开始展开。Spark对 K8s 的支持随着版本的迭代也逐步深入，在发布的 3.0 中，Spark on K8s 提供了更好的 Kerberos 支持和资源动态支持的特性。</p>
+<h2 id="spark-on-kubernetes" class="headerLink"><a href="#spark-on-kubernetes" class="header-mark"></a>Spark on Kubernetes</h2><p>Kubernetes 是由 Google 开源的一款面向应用的容器集群部署和管理系统,近年来发展十分迅猛，相关生态已经日趋完善。在 Spark 官方接入 K8s 前，社区通常通过在 K8s 集群上部署一个 Spark Standalone 集群的方式来实现在 K8s 集群上运行 Spark 任务的目的。方案架构如下图所示：</p>
+<figure><img src="/images/202109/spark-operator-brief-analysis/spark-standalone-on-k8s.png" width="700" height="500"/><figcaption>
+            <h4>Spark Standalone on K8s</h4>
+        </figcaption>
+</figure>
+
+<p>这个模式简单易用，但存在相当大的缺陷：</p>
+<ul>
+<li>无法按需扩展，Spark Standalone 部署后集群规模固定，无法根据作业需求自动扩展集群；</li>
+<li>无法利用K8s原生能力，Spark Standalone 内建的资源调度器不支持扩展，难以接入K8s 调度，无法利用 K8s 提供的云原生特性；</li>
+<li>Spark Standalone 集群在多租户资源隔离上天生存在短板。</li>
+</ul>
+<p>Spark on Kubernetes 方案架构如下图所示，设计细节可以参考：<a href="https://issues.apache.org/jira/browse/SPARK-18278?spm=a2c6h.12873639.0.0.35f321c4BcQgLG" target="_blank" rel="noopener noreffer">SPARK-18278</a></p>
+<figure><img src="/images/202109/spark-operator-brief-analysis/spark-on-k8s.png" width="700" height="500"/><figcaption>
+            <h4>Spark on K8s</h4>
+        </figcaption>
+</figure>
+
+<p>在这个方案中，</p>
+<ol>
+<li>Spark-Submit 通过调用 K8s API 在 K8s 集群中启动一个 Spark Driver Pod；</li>
+<li>Driver 通过调用 K8s API 启动相应的 Executor Pod，组成一个 Spark Application 集群，并指派作业任务到这些 Executor 中执行;</li>
+<li>作业结束后，Executor Pod 会被销毁，而 Driver Pod 会持久化相关日志，并保持在 <code>completed</code> 状态，直到用户手清理或被 K8s 集群的垃圾回收机制回收。</li>
+</ol>
+<p>当前的方案已经解决了 Spark Standalone on K8s 方案的部分缺陷，然而，Spark Application 的生命周期管理方式和调度方式与 K8s 内置的工作负载（如 Deployments、DaemonSets、StatefulSets等）存在较大差异，在 K8s 上执行作业仍然存在不少问题：</p>
+<ol>
+<li>Spark-submit 在 K8s 集群之外，使用非声明式的提交接口；</li>
+<li>Spark Application 之间没有协同调度，在小集群中很容易出现调度饿死的情况；</li>
+<li>需要手动配置网络，来访问 WebUI；</li>
+<li>任务监控比较麻烦，没有接入 Prometheus 集群监控。</li>
+</ol>
+<p>当然Spark on Kubernetes 方案目前还在快速开发中，更多特性不久会发布出来，相信未来和 K8s 的集成会更加紧密和 Native，这些特性包括：</p>
+<ul>
+<li>动态资源分配和外部 Shuffle 服务</li>
+<li>本地文件依赖管理器</li>
+<li>Spark Application 管理器</li>
+<li>作业队列和资源管理器</li>
+</ul>
+<h2 id="spark-operator-浅析" class="headerLink"><a href="#spark-operator-%e6%b5%85%e6%9e%90" class="header-mark"></a>Spark Operator 浅析</h2><p>在分析 Spark Operator 的实现之前，先简单梳理下 Kubernetes Operator 的基本概念。Kubernetes Operator 是由 CoreOS 开发的 Kubernetes 扩展特性，目标是通过定义一系列 CRD 和实现控制器，将特定领域的应用程序运维技术和知识（如部署方法、监控、故障恢复等）通过代码的方式固化下来。Spark Operator 是 Google 基于 Operator 模式开发的一款的工具(<a href="https://github.com/GoogleCloudPlatform/spark-on-k8s-operator" target="_blank" rel="noopener noreffer">https://github.com/GoogleCloudPlatform/spark-on-k8s-operator</a>)，用于通过声明式的方式向 K8s 集群提交 Spark 作业。使用 Spark Operator 管理 Spark 应用，能更好的利用 K8s 原生能力控制和管理 Spark 应用的生命周期，包括应用状态监控、日志获取、应用运行控制等，弥补 Spark on K8s 方案在集成 K8s 上与其他类型的负载之间存在的差距。
+下面简单分析下Spark Operator的实现细节。</p>
+<h3 id="系统架构" class="headerLink"><a href="#%e7%b3%bb%e7%bb%9f%e6%9e%b6%e6%9e%84" class="header-mark"></a>系统架构</h3><figure><img src="/images/202109/spark-operator-brief-analysis/spark-operator-architecture.png" width="700" height="500"/><figcaption>
+            <h4>Spark Operator 架构</h4>
+        </figcaption>
+</figure>
+
+<p>可以看出，Spark Operator 相比 Spark on K8s，架构上要复杂一些，实际上 Spark Operator 集成了 Spark on K8s 的方案，提供了更全面管控特性。通过 Spark Operator，用户可以使用更加符合 K8s 理念的方式来控制 Spark 应用的生命周期。Spark Operator 包括如下几个组件：</p>
+<ol>
+<li>SparkApplication 控制器：该控制器用于创建、更新、删除SparkApplication对象，同时控制器还会监控相应的事件,执行相应的动作；</li>
+<li>Submission Runner：负责调用 spark-submit 提交 Spark 作业，作业提交的流程完全复用 Spark on K8s 的模式；</li>
+<li>Spark Pod Monitor：监控 Spark 作业相关 Pod 的状态，并同步到控制器中；</li>
+<li>Mutating Admission Webhook：可选模块，基于注解来实现 Driver/Executor Pod 的一些定制化需求；</li>
+<li>SparkCtl：用于和 Spark Operator 交互的命令行工具。</li>
+</ol>
+<p>Spark Operator 除了实现基本的作业提交外，还支持如下特性：</p>
+<ul>
+<li>声明式的作业管理；</li>
+<li>支持更新 SparkApplication 对象后自动重新提交作业；</li>
+<li>支持可配置的重启策略；</li>
+<li>支持失败重试；</li>
+<li>集成 Prometheus，可以收集和转发 Spark 应用级别的度量和 Driver/Executor 的度量到 Prometheus 中。</li>
+</ul>
+<h3 id="工程结构" class="headerLink"><a href="#%e5%b7%a5%e7%a8%8b%e7%bb%93%e6%9e%84" class="header-mark"></a>工程结构</h3><p>Spark Operator 的项目是标准的 K8s Operator 结构，其中最重要的包括：</p>
+<ul>
+<li>manifest：定义了 Spark 相关的 CRD，包括:
+<ul>
+<li>ScheduledSparkApplication：表示一个定时执行的 Spark 作业</li>
+<li>SparkApplication：表示一个 Spark 作业</li>
+</ul>
+</li>
+<li>pkg：具体的 Operator 逻辑实现
+<ul>
+<li>api：定义了 Operator 的多个版本的 API</li>
+<li>client：用于对接的 client-go SDK</li>
+<li>controller：自定义控制器的实现,包括：
+<ul>
+<li>ScheduledSparkApplication 控制器</li>
+<li>SparkApplication 控制器</li>
+</ul>
+</li>
+<li>batchscheduler: 批处理调度器集成模块, 目前已经集成了 K8s volcano 调度器</li>
+</ul>
+</li>
+<li>spark-docker：spark docker 镜像</li>
+<li>sparkctl：spark operator 命令行工具</li>
+</ul>
+<h3 id="spark-application-控制器" class="headerLink"><a href="#spark-application-%e6%8e%a7%e5%88%b6%e5%99%a8" class="header-mark"></a>Spark Application 控制器</h3><p>控制器的代码主要位于<code>pkg/controller/sparkapplication/controller.go</code>中。</p>
+<h4 id="提交作业" class="headerLink"><a href="#%e6%8f%90%e4%ba%a4%e4%bd%9c%e4%b8%9a" class="header-mark"></a>提交作业</h4><p>提交作业的提交作业的主流程在 submitSparkApplication 方法中。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="c1">// controller.go
+</span><span class="c1">// submitSparkApplication creates a new submission for the given SparkApplication and submits it using spark-submit.
+</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">Controller</span><span class="p">)</span> <span class="nf">submitSparkApplication</span><span class="p">(</span><span class="nx">app</span> <span class="o">*</span><span class="nx">v1beta2</span><span class="p">.</span><span class="nx">SparkApplication</span><span class="p">)</span> <span class="o">*</span><span class="nx">v1beta2</span><span class="p">.</span><span class="nx">SparkApplication</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="nx">app</span><span class="p">.</span><span class="nf">PrometheusMonitoringEnabled</span><span class="p">()</span> <span class="p">{</span>
+        <span class="o">...</span>
+        <span class="nf">configPrometheusMonitoring</span><span class="p">(</span><span class="nx">app</span><span class="p">,</span> <span class="nx">c</span><span class="p">.</span><span class="nx">kubeClient</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="c1">// Use batch scheduler to perform scheduling task before submitting (before build command arguments).
+</span><span class="c1"></span>    <span class="k">if</span> <span class="nx">needScheduling</span><span class="p">,</span> <span class="nx">scheduler</span> <span class="o">:=</span> <span class="nx">c</span><span class="p">.</span><span class="nf">shouldDoBatchScheduling</span><span class="p">(</span><span class="nx">app</span><span class="p">);</span> <span class="nx">needScheduling</span> <span class="p">{</span>
+        <span class="nx">newApp</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">scheduler</span><span class="p">.</span><span class="nf">DoBatchSchedulingOnSubmission</span><span class="p">(</span><span class="nx">app</span><span class="p">)</span>
+        <span class="o">...</span>
+        <span class="c1">//Spark submit will use the updated app to submit tasks(Spec will not be updated into API server)
+</span><span class="c1"></span>        <span class="nx">app</span> <span class="p">=</span> <span class="nx">newApp</span>
+    <span class="p">}</span>
+
+    <span class="nx">driverPodName</span> <span class="o">:=</span> <span class="nf">getDriverPodName</span><span class="p">(</span><span class="nx">app</span><span class="p">)</span>
+    <span class="nx">submissionID</span> <span class="o">:=</span> <span class="nx">uuid</span><span class="p">.</span><span class="nf">New</span><span class="p">().</span><span class="nf">String</span><span class="p">()</span>
+    <span class="nx">submissionCmdArgs</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nf">buildSubmissionCommandArgs</span><span class="p">(</span><span class="nx">app</span><span class="p">,</span> <span class="nx">driverPodName</span><span class="p">,</span> <span class="nx">submissionID</span><span class="p">)</span>
+    <span class="o">...</span>
+    <span class="c1">// Try submitting the application by running spark-submit.
+</span><span class="c1"></span>    <span class="nx">submitted</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nf">runSparkSubmit</span><span class="p">(</span><span class="nf">newSubmission</span><span class="p">(</span><span class="nx">submissionCmdArgs</span><span class="p">,</span> <span class="nx">app</span><span class="p">))</span>
+    <span class="o">...</span>
+    <span class="nx">app</span><span class="p">.</span><span class="nx">Status</span> <span class="p">=</span> <span class="nx">v1beta2</span><span class="p">.</span><span class="nx">SparkApplicationStatus</span><span class="p">{</span>
+        <span class="nx">SubmissionID</span><span class="p">:</span> <span class="nx">submissionID</span><span class="p">,</span>
+        <span class="nx">AppState</span><span class="p">:</span> <span class="nx">v1beta2</span><span class="p">.</span><span class="nx">ApplicationState</span><span class="p">{</span>
+            <span class="nx">State</span><span class="p">:</span> <span class="nx">v1beta2</span><span class="p">.</span><span class="nx">SubmittedState</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="nx">DriverInfo</span><span class="p">:</span> <span class="nx">v1beta2</span><span class="p">.</span><span class="nx">DriverInfo</span><span class="p">{</span>
+            <span class="nx">PodName</span><span class="p">:</span> <span class="nx">driverPodName</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="nx">SubmissionAttempts</span><span class="p">:</span>        <span class="nx">app</span><span class="p">.</span><span class="nx">Status</span><span class="p">.</span><span class="nx">SubmissionAttempts</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="nx">ExecutionAttempts</span><span class="p">:</span>         <span class="nx">app</span><span class="p">.</span><span class="nx">Status</span><span class="p">.</span><span class="nx">ExecutionAttempts</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="nx">LastSubmissionAttemptTime</span><span class="p">:</span> <span class="nx">metav1</span><span class="p">.</span><span class="nf">Now</span><span class="p">(),</span>
+    <span class="p">}</span>
+    <span class="nx">c</span><span class="p">.</span><span class="nf">recordSparkApplicationEvent</span><span class="p">(</span><span class="nx">app</span><span class="p">)</span>
+
+    <span class="nx">service</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nf">createSparkUIService</span><span class="p">(</span><span class="nx">app</span><span class="p">,</span> <span class="nx">c</span><span class="p">.</span><span class="nx">kubeClient</span><span class="p">)</span>
+    <span class="o">...</span>
+    <span class="nx">ingress</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nf">createSparkUIIngress</span><span class="p">(</span><span class="nx">app</span><span class="p">,</span> <span class="o">*</span><span class="nx">service</span><span class="p">,</span> <span class="nx">c</span><span class="p">.</span><span class="nx">ingressURLFormat</span><span class="p">,</span> <span class="nx">c</span><span class="p">.</span><span class="nx">kubeClient</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nx">app</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>提交作业的核心逻辑在 <code>submission.go</code> 这个模块中：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="c1">// submission.go
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">runSparkSubmit</span><span class="p">(</span><span class="nx">submission</span> <span class="o">*</span><span class="nx">submission</span><span class="p">)</span> <span class="p">(</span><span class="kt">bool</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">sparkHome</span><span class="p">,</span> <span class="nx">present</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">LookupEnv</span><span class="p">(</span><span class="nx">sparkHomeEnvVar</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">!</span><span class="nx">present</span> <span class="p">{</span>
+        <span class="nx">glog</span><span class="p">.</span><span class="nf">Error</span><span class="p">(</span><span class="s">&#34;SPARK_HOME is not specified&#34;</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="kd">var</span> <span class="nx">command</span> <span class="p">=</span> <span class="nx">filepath</span><span class="p">.</span><span class="nf">Join</span><span class="p">(</span><span class="nx">sparkHome</span><span class="p">,</span> <span class="s">&#34;/bin/spark-submit&#34;</span><span class="p">)</span>
+
+    <span class="nx">cmd</span> <span class="o">:=</span> <span class="nf">execCommand</span><span class="p">(</span><span class="nx">command</span><span class="p">,</span> <span class="nx">submission</span><span class="p">.</span><span class="nx">args</span><span class="o">...</span><span class="p">)</span>
+    <span class="nx">glog</span><span class="p">.</span><span class="nf">V</span><span class="p">(</span><span class="mi">2</span><span class="p">).</span><span class="nf">Infof</span><span class="p">(</span><span class="s">&#34;spark-submit arguments: %v&#34;</span><span class="p">,</span> <span class="nx">cmd</span><span class="p">.</span><span class="nx">Args</span><span class="p">)</span>
+    <span class="nx">output</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">cmd</span><span class="p">.</span><span class="nf">Output</span><span class="p">()</span>
+    <span class="nx">glog</span><span class="p">.</span><span class="nf">V</span><span class="p">(</span><span class="mi">3</span><span class="p">).</span><span class="nf">Infof</span><span class="p">(</span><span class="s">&#34;spark-submit output: %s&#34;</span><span class="p">,</span> <span class="nb">string</span><span class="p">(</span><span class="nx">output</span><span class="p">))</span>
+    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">errorMsg</span> <span class="kt">string</span>
+        <span class="k">if</span> <span class="nx">exitErr</span><span class="p">,</span> <span class="nx">ok</span> <span class="o">:=</span> <span class="nx">err</span><span class="p">.(</span><span class="o">*</span><span class="nx">exec</span><span class="p">.</span><span class="nx">ExitError</span><span class="p">);</span> <span class="nx">ok</span> <span class="p">{</span>
+            <span class="nx">errorMsg</span> <span class="p">=</span> <span class="nb">string</span><span class="p">(</span><span class="nx">exitErr</span><span class="p">.</span><span class="nx">Stderr</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="c1">// The driver pod of the application already exists.
+</span><span class="c1"></span>        <span class="k">if</span> <span class="nx">strings</span><span class="p">.</span><span class="nf">Contains</span><span class="p">(</span><span class="nx">errorMsg</span><span class="p">,</span> <span class="nx">podAlreadyExistsErrorCode</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">glog</span><span class="p">.</span><span class="nf">Warningf</span><span class="p">(</span><span class="s">&#34;trying to resubmit an already submitted SparkApplication %s/%s&#34;</span><span class="p">,</span> <span class="nx">submission</span><span class="p">.</span><span class="nx">namespace</span><span class="p">,</span> <span class="nx">submission</span><span class="p">.</span><span class="nx">name</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="p">,</span> <span class="kc">nil</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="nx">errorMsg</span> <span class="o">!=</span> <span class="s">&#34;&#34;</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="p">,</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Errorf</span><span class="p">(</span><span class="s">&#34;failed to run spark-submit for SparkApplication %s/%s: %s&#34;</span><span class="p">,</span> <span class="nx">submission</span><span class="p">.</span><span class="nx">namespace</span><span class="p">,</span> <span class="nx">submission</span><span class="p">.</span><span class="nx">name</span><span class="p">,</span> <span class="nx">errorMsg</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="kc">false</span><span class="p">,</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Errorf</span><span class="p">(</span><span class="s">&#34;failed to run spark-submit for SparkApplication %s/%s: %v&#34;</span><span class="p">,</span> <span class="nx">submission</span><span class="p">.</span><span class="nx">namespace</span><span class="p">,</span> <span class="nx">submission</span><span class="p">.</span><span class="nx">name</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="kc">true</span><span class="p">,</span> <span class="kc">nil</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">buildSubmissionCommandArgs</span><span class="p">(</span><span class="nx">app</span> <span class="o">*</span><span class="nx">v1beta2</span><span class="p">.</span><span class="nx">SparkApplication</span><span class="p">,</span> <span class="nx">driverPodName</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">submissionID</span> <span class="kt">string</span><span class="p">)</span> <span class="p">([]</span><span class="kt">string</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+    <span class="o">...</span>
+    <span class="nx">options</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nf">addDriverConfOptions</span><span class="p">(</span><span class="nx">app</span><span class="p">,</span> <span class="nx">submissionID</span><span class="p">)</span>
+    <span class="o">...</span>
+    <span class="nx">options</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nf">addExecutorConfOptions</span><span class="p">(</span><span class="nx">app</span><span class="p">,</span> <span class="nx">submissionID</span><span class="p">)</span>
+    <span class="o">...</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">getMasterURL</span><span class="p">()</span> <span class="p">(</span><span class="kt">string</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">kubernetesServiceHost</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">Getenv</span><span class="p">(</span><span class="nx">kubernetesServiceHostEnvVar</span><span class="p">)</span>
+    <span class="o">...</span>
+    <span class="nx">kubernetesServicePort</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">Getenv</span><span class="p">(</span><span class="nx">kubernetesServicePortEnvVar</span><span class="p">)</span>
+    <span class="o">...</span>
+    <span class="k">return</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Sprintf</span><span class="p">(</span><span class="s">&#34;k8s://https://%s:%s&#34;</span><span class="p">,</span> <span class="nx">kubernetesServiceHost</span><span class="p">,</span> <span class="nx">kubernetesServicePort</span><span class="p">),</span> <span class="kc">nil</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>可以看出,</p>
+<ol>
+<li>可以配置控制器启用 Prometheus 进行度量收集；</li>
+<li>Spark Operator 通过拼装一个 spark-submit 命令并执行，实现提交 Spark 作业到 K8s 集群中的目的；</li>
+<li>在每次提交前，Spark Operator 都会生成一个 UUID 作为 Session ID，并通过 Spark 相关配置对 Driver/Executor 的 Pod 进行标记。我们可以使用这个 ID 来跟踪和控制这个 Spark 作业；</li>
+<li>Controller 通过监控相关作业的 Pod 的状态来更新 SparkApplication 的状态，同时驱动 SparkApplication 对象的状态流转；</li>
+<li>提交成功后，还会做如下几件事情:</li>
+<li>更新作业的状态；</li>
+<li>启动一个Service，并配置好Ingress，方便用户访问Spark WebUI。</li>
+</ol>
+<h4 id="状态流转控制" class="headerLink"><a href="#%e7%8a%b6%e6%80%81%e6%b5%81%e8%bd%ac%e6%8e%a7%e5%88%b6" class="header-mark"></a>状态流转控制</h4><p>在 Spark Operator 中，Controller 使用状态机来维护 Spark Application 的状态信息，状态流转和 Action 的关系如下图所示：</p>
+<figure><img src="/images/202109/spark-operator-brief-analysis/state-machine-for-sparkapplication.png" width="700" height="500"/><figcaption>
+            <h4>State Machine for SparkApplication</h4>
+        </figcaption>
+</figure>
+
+<p>作业提交后，Spark Application 的状态更新都是通过 <code>getAndUpdateAppState()</code> 方法来实现的。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span><span class="lnt">76
+</span><span class="lnt">77
+</span><span class="lnt">78
+</span><span class="lnt">79
+</span><span class="lnt">80
+</span><span class="lnt">81
+</span><span class="lnt">82
+</span><span class="lnt">83
+</span><span class="lnt">84
+</span><span class="lnt">85
+</span><span class="lnt">86
+</span><span class="lnt">87
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="c1">// controller.go
+</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">Controller</span><span class="p">)</span> <span class="nf">getAndUpdateAppState</span><span class="p">(</span><span class="nx">app</span> <span class="o">*</span><span class="nx">v1beta2</span><span class="p">.</span><span class="nx">SparkApplication</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">c</span><span class="p">.</span><span class="nf">getAndUpdateDriverState</span><span class="p">(</span><span class="nx">app</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">err</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">c</span><span class="p">.</span><span class="nf">getAndUpdateExecutorState</span><span class="p">(</span><span class="nx">app</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">err</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="kc">nil</span>
+<span class="p">}</span>
+<span class="c1">// getAndUpdateDriverState finds the driver pod of the application
+</span><span class="c1">// and updates the driver state based on the current phase of the pod.
+</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">Controller</span><span class="p">)</span> <span class="nf">getAndUpdateDriverState</span><span class="p">(</span><span class="nx">app</span> <span class="o">*</span><span class="nx">v1beta2</span><span class="p">.</span><span class="nx">SparkApplication</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+    <span class="c1">// Either the driver pod doesn&#39;t exist yet or its name has not been updated.
+</span><span class="c1"></span>    <span class="o">...</span>
+    <span class="nx">driverPod</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">c</span><span class="p">.</span><span class="nf">getDriverPod</span><span class="p">(</span><span class="nx">app</span><span class="p">)</span>
+    <span class="o">...</span>
+    <span class="k">if</span> <span class="nx">driverPod</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+        <span class="nx">app</span><span class="p">.</span><span class="nx">Status</span><span class="p">.</span><span class="nx">AppState</span><span class="p">.</span><span class="nx">ErrorMessage</span> <span class="p">=</span> <span class="s">&#34;Driver Pod not found&#34;</span>
+        <span class="nx">app</span><span class="p">.</span><span class="nx">Status</span><span class="p">.</span><span class="nx">AppState</span><span class="p">.</span><span class="nx">State</span> <span class="p">=</span> <span class="nx">v1beta2</span><span class="p">.</span><span class="nx">FailingState</span>
+        <span class="nx">app</span><span class="p">.</span><span class="nx">Status</span><span class="p">.</span><span class="nx">TerminationTime</span> <span class="p">=</span> <span class="nx">metav1</span><span class="p">.</span><span class="nf">Now</span><span class="p">()</span>
+        <span class="k">return</span> <span class="kc">nil</span>
+    <span class="p">}</span>
+    
+    <span class="nx">app</span><span class="p">.</span><span class="nx">Status</span><span class="p">.</span><span class="nx">SparkApplicationID</span> <span class="p">=</span> <span class="nf">getSparkApplicationID</span><span class="p">(</span><span class="nx">driverPod</span><span class="p">)</span>
+    <span class="o">...</span>
+    <span class="nx">newState</span> <span class="o">:=</span> <span class="nf">driverStateToApplicationState</span><span class="p">(</span><span class="nx">driverPod</span><span class="p">.</span><span class="nx">Status</span><span class="p">)</span>
+    <span class="c1">// Only record a driver event if the application state (derived from the driver pod phase) has changed.
+</span><span class="c1"></span>    <span class="k">if</span> <span class="nx">newState</span> <span class="o">!=</span> <span class="nx">app</span><span class="p">.</span><span class="nx">Status</span><span class="p">.</span><span class="nx">AppState</span><span class="p">.</span><span class="nx">State</span> <span class="p">{</span>
+        <span class="nx">c</span><span class="p">.</span><span class="nf">recordDriverEvent</span><span class="p">(</span><span class="nx">app</span><span class="p">,</span> <span class="nx">driverPod</span><span class="p">.</span><span class="nx">Status</span><span class="p">.</span><span class="nx">Phase</span><span class="p">,</span> <span class="nx">driverPod</span><span class="p">.</span><span class="nx">Name</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="nx">app</span><span class="p">.</span><span class="nx">Status</span><span class="p">.</span><span class="nx">AppState</span><span class="p">.</span><span class="nx">State</span> <span class="p">=</span> <span class="nx">newState</span>
+
+    <span class="k">return</span> <span class="kc">nil</span>
+<span class="p">}</span>
+
+<span class="c1">// getAndUpdateExecutorState lists the executor pods of the application
+</span><span class="c1">// and updates the executor state based on the current phase of the pods.
+</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">Controller</span><span class="p">)</span> <span class="nf">getAndUpdateExecutorState</span><span class="p">(</span><span class="nx">app</span> <span class="o">*</span><span class="nx">v1beta2</span><span class="p">.</span><span class="nx">SparkApplication</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+    <span class="nx">pods</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">c</span><span class="p">.</span><span class="nf">getExecutorPods</span><span class="p">(</span><span class="nx">app</span><span class="p">)</span>
+    <span class="o">...</span>
+    <span class="nx">executorStateMap</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="nx">v1beta2</span><span class="p">.</span><span class="nx">ExecutorState</span><span class="p">)</span>
+    <span class="kd">var</span> <span class="nx">executorApplicationID</span> <span class="kt">string</span>
+    <span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">pod</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">pods</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="nx">util</span><span class="p">.</span><span class="nf">IsExecutorPod</span><span class="p">(</span><span class="nx">pod</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">newState</span> <span class="o">:=</span> <span class="nf">podPhaseToExecutorState</span><span class="p">(</span><span class="nx">pod</span><span class="p">.</span><span class="nx">Status</span><span class="p">.</span><span class="nx">Phase</span><span class="p">)</span>
+            <span class="nx">oldState</span><span class="p">,</span> <span class="nx">exists</span> <span class="o">:=</span> <span class="nx">app</span><span class="p">.</span><span class="nx">Status</span><span class="p">.</span><span class="nx">ExecutorState</span><span class="p">[</span><span class="nx">pod</span><span class="p">.</span><span class="nx">Name</span><span class="p">]</span>
+            <span class="c1">// Only record an executor event if the executor state is new or it has changed.
+</span><span class="c1"></span>            <span class="k">if</span> <span class="p">!</span><span class="nx">exists</span> <span class="o">||</span> <span class="nx">newState</span> <span class="o">!=</span> <span class="nx">oldState</span> <span class="p">{</span>
+                <span class="nx">c</span><span class="p">.</span><span class="nf">recordExecutorEvent</span><span class="p">(</span><span class="nx">app</span><span class="p">,</span> <span class="nx">newState</span><span class="p">,</span> <span class="nx">pod</span><span class="p">.</span><span class="nx">Name</span><span class="p">)</span>
+            <span class="p">}</span>
+            <span class="nx">executorStateMap</span><span class="p">[</span><span class="nx">pod</span><span class="p">.</span><span class="nx">Name</span><span class="p">]</span> <span class="p">=</span> <span class="nx">newState</span>
+
+            <span class="k">if</span> <span class="nx">executorApplicationID</span> <span class="o">==</span> <span class="s">&#34;&#34;</span> <span class="p">{</span>
+                <span class="nx">executorApplicationID</span> <span class="p">=</span> <span class="nf">getSparkApplicationID</span><span class="p">(</span><span class="nx">pod</span><span class="p">)</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="c1">// ApplicationID label can be different on driver/executors. Prefer executor ApplicationID if set.
+</span><span class="c1"></span>    <span class="c1">// Refer https://issues.apache.org/jira/projects/SPARK/issues/SPARK-25922 for details.
+</span><span class="c1"></span>    <span class="o">...</span>
+    <span class="k">if</span> <span class="nx">app</span><span class="p">.</span><span class="nx">Status</span><span class="p">.</span><span class="nx">ExecutorState</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+        <span class="nx">app</span><span class="p">.</span><span class="nx">Status</span><span class="p">.</span><span class="nx">ExecutorState</span> <span class="p">=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="nx">v1beta2</span><span class="p">.</span><span class="nx">ExecutorState</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="k">for</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">execStatus</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">executorStateMap</span> <span class="p">{</span>
+        <span class="nx">app</span><span class="p">.</span><span class="nx">Status</span><span class="p">.</span><span class="nx">ExecutorState</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="p">=</span> <span class="nx">execStatus</span>
+    <span class="p">}</span>
+
+    <span class="c1">// Handle missing/deleted executors.
+</span><span class="c1"></span>    <span class="k">for</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">oldStatus</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">app</span><span class="p">.</span><span class="nx">Status</span><span class="p">.</span><span class="nx">ExecutorState</span> <span class="p">{</span>
+        <span class="nx">_</span><span class="p">,</span> <span class="nx">exists</span> <span class="o">:=</span> <span class="nx">executorStateMap</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span>
+        <span class="k">if</span> <span class="p">!</span><span class="nf">isExecutorTerminated</span><span class="p">(</span><span class="nx">oldStatus</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">!</span><span class="nx">exists</span> <span class="p">{</span>
+            <span class="c1">// If ApplicationState is SUCCEEDING, in other words, the driver pod has been completed
+</span><span class="c1"></span>            <span class="c1">// successfully. The executor pods terminate and are cleaned up, so we could not found
+</span><span class="c1"></span>            <span class="c1">// the executor pod, under this circumstances, we assume the executor pod are completed.
+</span><span class="c1"></span>            <span class="k">if</span> <span class="nx">app</span><span class="p">.</span><span class="nx">Status</span><span class="p">.</span><span class="nx">AppState</span><span class="p">.</span><span class="nx">State</span> <span class="o">==</span> <span class="nx">v1beta2</span><span class="p">.</span><span class="nx">SucceedingState</span> <span class="p">{</span>
+                <span class="nx">app</span><span class="p">.</span><span class="nx">Status</span><span class="p">.</span><span class="nx">ExecutorState</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="p">=</span> <span class="nx">v1beta2</span><span class="p">.</span><span class="nx">ExecutorCompletedState</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="nx">glog</span><span class="p">.</span><span class="nf">Infof</span><span class="p">(</span><span class="s">&#34;Executor pod %s not found, assuming it was deleted.&#34;</span><span class="p">,</span> <span class="nx">name</span><span class="p">)</span>
+                <span class="nx">app</span><span class="p">.</span><span class="nx">Status</span><span class="p">.</span><span class="nx">ExecutorState</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="p">=</span> <span class="nx">v1beta2</span><span class="p">.</span><span class="nx">ExecutorFailedState</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="kc">nil</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>从这段代码可以看到，Spark Application 提交后，Controller 会通过监听 Driver Pod 和Executor Pod 状态来计算 Spark Application 的状态，推动状态机的流转。</p>
+<h4 id="度量监控" class="headerLink"><a href="#%e5%ba%a6%e9%87%8f%e7%9b%91%e6%8e%a7" class="header-mark"></a>度量监控</h4><p>如果一个 SparkApplication 示例配置了开启度量监控特性，那么 Spark Operator 会在Spark-Submit 提交参数中向 Driver 和 Executor 的 JVM 参数中添加类似<code>-javaagent:/prometheus/jmx_prometheus_javaagent-0.11.0.jar=8090:/etc/metrics/conf/prometheus.yaml</code>的 JavaAgent 参数来开启 SparkApplication 度量监控，实现通过 JmxExporter 向 Prometheus 发送度量数据。</p>
+<figure><img src="/images/202109/spark-operator-brief-analysis/prometheus-architecture.png" width="700" height="500"/><figcaption>
+            <h4>Prometheus 架构</h4>
+        </figcaption>
+</figure>
+
+</div><footer>
+                        <div class="post">
+
+
+<div class="post-share"><div class="share-link">
+        <a class="share-icon share-twitter" href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://dcoliversun.github.io/spark-operator-brief-analysis/" data-title="Spark Operator 浅析" data-hashtags="Spark,Operator,Kubernetes"><span class="svg-social-icon icon-twitter"></span></a>
+    </div><div class="share-link">
+        <a class="share-icon share-facebook" href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://dcoliversun.github.io/spark-operator-brief-analysis/" data-hashtag="Spark"><span class="svg-social-icon icon-facebook"></span></a>
+    </div><div class="share-link">
+        <a class="share-icon share-linkedin" href="javascript:void(0);" title="分享到 Linkedin" data-sharer="linkedin" data-url="https://dcoliversun.github.io/spark-operator-brief-analysis/"><span class="svg-social-icon icon-linkedin"></span></a>
+    </div></div>
+
+
+
+
+<div class="block-author">
+    <div class="author-avatar"><a href="https://dcoliversun.github.io" target="_blank"><img alt="Qian Sun -- Coder💻 | Blogger📝 | Swimmer🏊‍♀️" src="https://dcoliversun.github.io/images/me/avatar.png"></a></div>
+    <div class="author-info">
+        <div class="name"><a href="https://dcoliversun.github.io" target="_blank"></a></div>
+        <div class="number-posts">Qian Sun -- Coder💻 | Blogger📝 | Swimmer🏊‍♀️</span></div>
+    </div>
+</div>
+
+
+<div class="post-tags"><a href="/tags/spark/" class="tag">Spark</a><a href="/tags/operator/" class="tag">Operator</a><a href="/tags/kubernetes/" class="tag">Kubernetes</a></div></div>
+                </footer></div>
+
+        <div id="toc-final"></div>
+        </div>
+
+    
+    </article>
+    <section class="page single comments content-block-position">
+        <h1 class="display-hidden">Комментарии</h1><div id="comments"></div></section></div>
+
+</main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.87.0">Hugo</a> 强力驱动 | 主题 - <a href="https://ublogger.netlify.app/?utm_source=https://dcoliversun.github.io&utm_medium=footer&utm_campaign=config&utm_term=2.0.1" target="_blank" title="uBlogger 2.0.1">uBlogger</a>
+                </div><div class="footer-line"><i class="svg-icon icon-copyright"></i><span>2020 - 2021</span><span class="author">&nbsp;<a href="https://dcoliversun.github.io" target="_blank">Qian Sun</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <aside id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="svg-icon icon-arrow-up"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="svg-icon icon-comments-fixed"></i>
+            </a>
+        </aside><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/katex/copy-tex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/smooth-scroll/smooth-scroll.min.js"></script><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lunr/lunr.stemmer.support.min.js"></script><script src="/lib/lunr/lunr.zh.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/prismjs/prism.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/auto-render.min.js"></script><script src="/lib/katex/copy-tex.min.js"></script><script src="/lib/katex/mhchem.min.js"></script><script src="/lib/cookieconsent/cookieconsent.min.js"></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{},"cookieconsent":{"content":{"dismiss":"同意","link":"了解更多","message":"本网站使用 Cookies 来改善您的浏览体验."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":30,"type":"lunr"}};</script><script src="/js/theme.min.js"></script><script>
+                window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
+                gtag('config', 'G-K2QWGME5NC', { 'anonymize_ip': true });
+            </script><script src="https://www.googletagmanager.com/gtag/js?id=G-K2QWGME5NC" async></script></body>
+</html>
