@@ -3,9 +3,18 @@
         <title>@Qian Sun</title>
         <link>https://dcoliversun.github.io/</link>
         <description>Hi! I&#39;m Qian Sun. Coder💻 | Blogger📝 | Swimmer🏊‍♀️</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Tue, 21 Sep 2021 10:04:49 &#43;0800</lastBuildDate>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Sun, 07 Nov 2021 11:30:35 &#43;0800</lastBuildDate>
             <atom:link href="https://dcoliversun.github.io/index.xml" rel="self" type="application/rss+xml" />
         <item>
+    <title>Apache Spark3 内存监控</title>
+    <link>https://dcoliversun.github.io/spark3-memory-monitoring/</link>
+    <pubDate>Sun, 07 Nov 2021 11:30:35 &#43;0800</pubDate>
+    <author>author</author>
+    <guid>https://dcoliversun.github.io/spark3-memory-monitoring/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/202111/spark3-memory-monitoring/preview.png" referrerpolicy="no-referrer">
+            </div>Spark 3.0 对内存监控有重要改进，分析峰值内存使用情况为解决 OOM 错误和 Spark 作业内存大小调整提供了重要依据。]]></description>
+</item><item>
     <title>Spark Operator 浅析</title>
     <link>https://dcoliversun.github.io/spark-operator-brief-analysis/</link>
     <pubDate>Tue, 21 Sep 2021 10:04:49 &#43;0800</pubDate>
@@ -86,14 +95,5 @@
     <description><![CDATA[<div class="featured-image">
                 <img src="/images/202107/application-storage-and-persistent-data-volume-core-knowledge/preview.png" referrerpolicy="no-referrer">
             </div>本文介绍了 K8s Volume 使用场景、PVC/PV/StorageClass 基本操作和概念解析、PVC+PV 体系的设计与实现原理]]></description>
-</item><item>
-    <title>应用配置管理</title>
-    <link>https://dcoliversun.github.io/application-configuration-management/</link>
-    <pubDate>Sat, 17 Jul 2021 17:17:26 &#43;0800</pubDate>
-    <author>author</author>
-    <guid>https://dcoliversun.github.io/application-configuration-management/</guid>
-    <description><![CDATA[<div class="featured-image">
-                <img src="/images/202107/application-configuration-management/preview.png" referrerpolicy="no-referrer">
-            </div>本文系统介绍了 ConfigMap、Secret、Pod 身份认证、容器资源和安全、InitContainer]]></description>
 </item></channel>
 </rss>

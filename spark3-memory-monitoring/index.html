@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noodp"/><title>Apache Spark3 内存监控 | </title><meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content=""/>
+<meta name="twitter:title" content="Apache Spark3 内存监控"/>
+<meta name="twitter:description" content="Spark 3.0 对内存监控有重要改进，分析峰值内存使用情况为解决 OOM 错误和 Spark 作业内存大小调整提供了重要依据。"/><meta name="Description" content="Spark 3.0 对内存监控有重要改进，分析峰值内存使用情况为解决 OOM 错误和 Spark 作业内存大小调整提供了重要依据。"><meta property="og:title" content="Apache Spark3 内存监控" />
+<meta property="og:description" content="Spark 3.0 对内存监控有重要改进，分析峰值内存使用情况为解决 OOM 错误和 Spark 作业内存大小调整提供了重要依据。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://dcoliversun.github.io/spark3-memory-monitoring/" /><meta property="og:image" content="https://dcoliversun.github.io/logo.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-11-07T11:30:35+08:00" />
+<meta property="article:modified_time" content="2021-11-07T11:30:35+08:00" />
+
+<meta name="application-name" content="@Qian Sun">
+<meta name="apple-mobile-web-app-title" content="@Qian Sun"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
+        <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://dcoliversun.github.io/spark3-memory-monitoring/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/lib/prismjs/prism.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Apache Spark3 内存监控",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/dcoliversun.github.io\/spark3-memory-monitoring\/"
+        },"genre": "posts","keywords": "Spark, Performance, Troubleshooting, Tools","wordCount":  1732 ,
+        "url": "https:\/\/dcoliversun.github.io\/spark3-memory-monitoring\/","datePublished": "2021-11-07T11:30:35+08:00","dateModified": "2021-11-07T11:30:35+08:00",
+        "publisher": {
+            "@type": "Person",
+            "name": "", "image": [
+            {
+            "@type": "ImageObject",
+            "url": "https:\/\/dcoliversun.github.io\/images\/me\/avatar.png"
+            }
+            ]},"author": {
+                "@type": "Person",
+                "name": ""
+            },"description": "Spark 3.0 对内存监控有重要改进，分析峰值内存使用情况为解决 OOM 错误和 Spark 作业内存大小调整提供了重要依据。"
+    }
+    </script><script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [{
+            "@type": "ListItem",
+            "position": 1,
+            "name": "主页",
+            "item": "https:\/\/dcoliversun.github.io"
+        },{
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Apache Spark",
+            "item": "https://dcoliversun.github.io/categories/apache-spark/"
+        },{
+                "@type": "ListItem",
+                "position": 3,
+                "name": "Apache Spark3 内存监控"
+            }]
+    }
+</script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header>
+    <div class="desktop header" id="header-desktop">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="@Qian Sun" class="header-logo logo-svg">@Qian Sun</a>
+            </div>
+            <div class="menu">
+                <nav>
+                    <h2 class="display-hidden">Основная навигация</h2>
+                    <ul class="menu-inner"><li>
+                            <a class="menu-item" href="/posts/"> Posts </a>
+                        </li><li>
+                            <a class="menu-item" href="/tags/"> Tags </a>
+                        </li><li>
+                            <a class="menu-item" href="/categories/"> Categories </a>
+                        </li><li>
+                            <a class="menu-item" href="/donate"> Donate </a>
+                        </li><li>
+                            <a class="menu-item" href="/about"> About </a>
+                        </li></ul>
+                </nav><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <span class="svg-icon icon-search"></span>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <span class="svg-icon icon-cancel"></span>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <span class="svg-icon icon-loading"></span>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <span class="svg-icon icon-moon"></span>
+                </a>
+            </div>
+        </div>
+    </div><div class="mobile header" id="header-mobile">
+        <div class="header-container">
+            <div class="header-wrapper">
+                <div class="header-title">
+                    <a href="/" title="@Qian Sun" class="header-logo">@Qian Sun</a>
+                </div>
+                <div class="menu-toggle" id="menu-toggle-mobile">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+            <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                        <div class="search mobile" id="search-mobile">
+                            <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                            <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                                <span class="svg-icon icon-search"></span>
+                            </a>
+                            <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                                <span class="svg-icon icon-cancel"></span>
+                            </a>
+                            <span class="search-button search-loading" id="search-loading-mobile">
+                                <span class="svg-icon icon-loading"></span>
+                            </span>
+                        </div>
+                        <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                            取消
+                        </a>
+                    </div><nav>
+                    <h2 class="display-hidden">Основная навигация</h2>
+                    <ul><li>
+                            <a class="menu-item" href="/posts/" title="">Posts</a>
+                        </li><li>
+                            <a class="menu-item" href="/tags/" title="">Tags</a>
+                        </li><li>
+                            <a class="menu-item" href="/categories/" title="">Categories</a>
+                        </li><li>
+                            <a class="menu-item" href="/donate" title="">Donate</a>
+                        </li><li>
+                            <a class="menu-item" href="/about" title="">About</a>
+                        </li></ul>
+                </nav>
+                <a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <span class="svg-icon icon-moon"></span>
+                </a></div>
+        </div>
+    </div><div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div></header><main class="main">
+<div class="container content-article page-toc theme-full"><div class="toc" id="toc-auto">
+            <div class="toc-title">目录</div>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div>
+    
+
+    
+    
+    <article>
+    
+
+        <header class="header-post">
+
+            
+
+            
+            <div class="featured-image" style="background-image: url('/images/202111/spark3-memory-monitoring/preview.png');"><div class="post-title">
+
+                    <div class="post-all-meta">
+                        <nav class="breadcrumbs">
+    <ol>
+        <li><a href="/">主页 </a></li><li><a href="/categories/apache-spark/">Apache Spark </a></li><li>Apache Spark3 内存监控</li>
+    </ol>
+</nav>
+                        <h1 class="single-title flipInX">Apache Spark3 内存监控</h1><div class="post-meta summary-post-meta"><span class="post-category meta-item">
+                                <a href="/categories/apache-spark/"><span class="svg-icon icon-folder"></span>Apache Spark</a>
+                            </span><span class="post-meta-date meta-item">
+                                <span class="svg-icon icon-clock"></span><time class="timeago" datetime="2021-11-07">2021-11-07</time>
+                            </span><span class="post-meta-words meta-item">
+                                <span class="svg-icon icon-pencil"></span>约 1732 字
+                            </span>
+                            <span class="post-meta-reading meta-item">
+                                <span class="svg-icon icon-stopwatch"></span>预计阅读 4 分钟
+                            </span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                </div></header>
+
+        <div class="article-post toc-start">
+
+            <div class="content-block content-block-first content-block-position">
+
+                <div class="post single"><div class="details toc" id="toc-static"  data-kept="">
+                        <div class="details-summary toc-title">
+                            <span>目录</span>
+                        </div>
+                        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#spark-如何使用内存">Spark 如何使用内存？</a>
+      <ul>
+        <li><a href="#executor-内存配置">executor 内存配置</a></li>
+        <li><a href="#spark-统一内存池">spark 统一内存池</a></li>
+      </ul>
+    </li>
+    <li><a href="#spark-30-的内存监控">Spark 3.0 的内存监控</a>
+      <ul>
+        <li><a href="#使用-rest-api-获取内存使用情况和峰值">使用 REST API 获取内存使用情况和峰值</a></li>
+        <li><a href="#spark-作业性能数据大盘">Spark 作业性能数据大盘</a></li>
+      </ul>
+    </li>
+    <li><a href="#实验">实验</a></li>
+    <li><a href="#总结">总结</a></li>
+    <li><a href="#参考资料">参考资料</a></li>
+  </ul>
+</nav></div>
+                    </div><p>Apache 3.0 改进了运行时的内存监控，可以帮助用户解决内存使用问题，并且优化 Spark 作业的内存配置。具体情况请参阅 <a href="https://issues.apache.org/jira/browse/SPARK-23429" target="_blank" rel="noopener noreffer">SPARK-23429</a> 和 <a href="https://issues.apache.org/jira/browse/SPARK-27189" target="_blank" rel="noopener noreffer">SPARK-27189</a>。</p>
+<p><strong>内存问题</strong></p>
+<p>内存是 Spark 作业性能和稳定性的关键。如果没有为 Spark 作业分配足够的内存，则有可能遇到 OOM 错误或者作业性能大幅度降低。Spark 需要内存来高效执行 Dataframe/RDD 操作，提升算法性能，否则作业在处理过程中必须 shuffle 到磁盘。此外，内存还可以用于缓存数据，减少 I/O。在实践过程中，怎么知道一个作业需要多少内存？</p>
+<p><strong>基本方法</strong></p>
+<p>为 Spark 作业调整内存大小的一个基本方法就是通过 <code>spark.executor.memory</code> 配置内存资源。在 local 模式下，可以使用 <code>spark.driver.memory</code> 进行配置。通过反复试验，用户可以确认所需内存的大概数值。这种方法不是最佳方案，缺点在于繁琐，且不可靠。</p>
+<p><strong>改进方法</strong></p>
+<p>用户可以根据监控数据来了解 Spark 应用程序使用了多少内存、哪些作业请求更多内存以及使用哪些内存区域。这种方法有助于深入解决 OOM 问题，也有助于更加精确地为 Spark 应用程序分配内存。</p>
+<h2 id="spark-如何使用内存" class="headerLink"><a href="#spark-%e5%a6%82%e4%bd%95%e4%bd%bf%e7%94%a8%e5%86%85%e5%ad%98" class="header-mark"></a>Spark 如何使用内存？</h2><h3 id="executor-内存配置" class="headerLink"><a href="#executor-%e5%86%85%e5%ad%98%e9%85%8d%e7%bd%ae" class="header-mark"></a>executor 内存配置</h3><p><code>spark.executor.memory</code> 是配置 executor 内存的主要参数，通过增加内存开销以覆盖额外内存使用，例如操作系统、冗余计算和文件缓存，计算公式为 $memory-overhead-factor \times spark.executor.memory$ 。<em>memory-overhead-factor</em> 默认值为 0.1，当 Spark 运行在 Kubernetes 上时，可以通过 <code>spark.kubernetes.memoryOverheadFactor</code> 配置。在使用 PySpark 时，额外内存可以通过 <code>spark.executor.pyspark.memory</code> 配置。堆外内存可以用 <code>spark.memory.offHeap.size=&lt;size&gt;</code>  和 <code>spark.memory.offHeap.enable=true</code> 配置，这样的配置对 YARN 有效。K8s 的配置方式参阅 <a href="https://issues.apache.org/jira/browse/SPARK-32661" target="_blank" rel="noopener noreffer">SPARK-32661</a>。</p>
+<p>还有 driver 内存分配参数：<code>spark.driver.memory</code> 、<code>spark.driver.memoryOverhead</code>。</p>
+<figure><img src="/images/202111/spark3-memory-monitoring/SparkExecutorMemory.png" width="700" height="500"/><figcaption>
+            <h4>Spark Executor Memory</h4>
+        </figcaption>
+</figure>
+
+<h3 id="spark-统一内存池" class="headerLink"><a href="#spark-%e7%bb%9f%e4%b8%80%e5%86%85%e5%ad%98%e6%b1%a0" class="header-mark"></a>spark 统一内存池</h3><p>Spark 任务使用的内存由 <a href="https://github.com/apache/spark/blob/master/core/src/main/scala/org/apache/spark/memory/package.scala" target="_blank" rel="noopener noreffer">Spark 内存管理系统</a>统一管理，从 executor 的 JVM 堆中分配。<a href="https://github.com/apache/spark/blob/master/core/src/main/scala/org/apache/spark/memory/UnifiedMemoryManager.scala" target="_blank" rel="noopener noreffer">Unified memory</a> 默认占用 60% JVM 堆大小。系统可以通过 <code>spark.memory.fraction</code> 配置。剩余 40% 的内存用于用户数据结构、Spark 内部元数据、防止 OOM 错误。</p>
+<p>Spark 通过统一内存池管理执行、存储内存请求。执行和存储可以相互占用对方剩余内存资源。执行/存储的内存资源大小可以通过 spark.memory.storageFraction（默认为 0.5）调整，这就意味着执行内存资源占比默认为 $spark.memory.fraction \times spark.memory.storageFraction=0.6\times0.5=0.3$。统一内存池也可以由堆外内存配置，相关配置参数为 <code>spark.memory.offHeap</code>、<code>spark.memory.offHeap.enabled</code>。</p>
+<h2 id="spark-30-的内存监控" class="headerLink"><a href="#spark-30-%e7%9a%84%e5%86%85%e5%ad%98%e7%9b%91%e6%8e%a7" class="header-mark"></a>Spark 3.0 的内存监控</h2><p>Spark 3.0 有两个关于内存监控的主要改进点：</p>
+<ul>
+<li><a href="https://issues.apache.org/jira/browse/SPARK-23429" target="_blank" rel="noopener noreffer">SPARK-23429</a>：将 executor 内存指标添加到心跳并用 REST API 暴露</li>
+<li><a href="https://issues.apache.org/jira/browse/SPARK-27189" target="_blank" rel="noopener noreffer">SPARK-27189</a>：将 executor 指标和内存使用检测添加到指标系统</li>
+</ul>
+<h3 id="使用-rest-api-获取内存使用情况和峰值" class="headerLink"><a href="#%e4%bd%bf%e7%94%a8-rest-api-%e8%8e%b7%e5%8f%96%e5%86%85%e5%ad%98%e4%bd%bf%e7%94%a8%e6%83%85%e5%86%b5%e5%92%8c%e5%b3%b0%e5%80%bc" class="header-mark"></a>使用 REST API 获取内存使用情况和峰值</h3><div class="details admonition tip open">
+        <div class="details-summary admonition-title "><i class="icon admonition-icon icon-tip"></i>This is a tip<i class="details-icon  admonition-icon admonition-icon-arrow-right"></i></div>
+        <div class="details-content">
+            <div class="admonition-content">REST API：https://spark.apache.org/docs/latest/monitoring.html#rest-api</div>
+        </div>
+    </div>
+<p><strong>WebUI URL + /api/v1/applications/&lt;application_id&gt;/executors</strong></p>
+<p>executor 内存指标如下所示：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback">&#34;peakMemoryMetrics&#34; : {
+    &#34;JVMHeapMemory&#34; : 29487812552,
+    &#34;JVMOffHeapMemory&#34; : 149957200,
+    &#34;OnHeapExecutionMemory&#34; : 12458956272,
+    &#34;OffHeapExecutionMemory&#34; : 0,
+    &#34;OnHeapStorageMemory&#34; : 83578970,
+    &#34;OffHeapStorageMemory&#34; : 0,
+    &#34;OnHeapUnifiedMemory&#34; : 12540212490,
+    &#34;OffHeapUnifiedMemory&#34; : 0,
+    &#34;DirectPoolMemory&#34; : 66809076,
+    &#34;MappedPoolMemory&#34; : 0,
+    &#34;ProcessTreeJVMVMemory&#34; : 38084534272,
+    &#34;ProcessTreeJVMRSSMemory&#34; : 36998328320,
+    &#34;ProcessTreePythonVMemory&#34; : 0,
+    &#34;ProcessTreePythonRSSMemory&#34; : 0,
+    &#34;ProcessTreeOtherVMemory&#34; : 0,
+    &#34;ProcessTreeOtherRSSMemory&#34; : 0,
+    &#34;MinorGCCount&#34; : 561,
+    &#34;MinorGCTime&#34; : 49918,
+    &#34;MajorGCCount&#34; : 0,
+    &#34;MajorGCTime&#34; : 0
+  },
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="spark-作业性能数据大盘" class="headerLink"><a href="#spark-%e4%bd%9c%e4%b8%9a%e6%80%a7%e8%83%bd%e6%95%b0%e6%8d%ae%e5%a4%a7%e7%9b%98" class="header-mark"></a>Spark 作业性能数据大盘</h3><p><a href="https://spark.apache.org/docs/latest/monitoring.html#metrics" target="_blank" rel="noopener noreffer">Spark 指标系统</a>为 Spark 数据大盘提供数据源。Grafana 对数据源进行可视化，优点如下：</p>
+<ul>
+<li>可以实时查看指标值的变化，并将它们与工作负载的其他关键指标进行比较；</li>
+<li>可以聚合指标进行检查或者深入 executor 级别的指标，可以帮助用户了解是否存在异常值；</li>
+<li>例如，可以研究指标随时间的演变，了解工作负载的哪一部分在给定指标中产生了某些峰值。</li>
+</ul>
+<figure><img src="/images/202111/spark3-memory-monitoring/SparkDashboard.png" width="700" height="500"/><figcaption>
+            <h4>Spark Performance Dashboard</h4>
+        </figcaption>
+</figure>
+
+<h2 id="实验" class="headerLink"><a href="#%e5%ae%9e%e9%aa%8c" class="header-mark"></a>实验</h2><ul>
+<li>使用 Spark 3.0 on YARN/Kubernetes</li>
+<li>Spark 性能数据大盘：配置、安装方式请参阅 <a href="https://github.com/cerndb/spark-dashboard" target="_blank" rel="noopener noreffer">https://github.com/cerndb/spark-dashboard</a></li>
+<li>提交作业：TPCDS benchmark</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell">bin/spark-shell --master yarn --num-executors <span class="m">16</span> --executor-cores <span class="m">8</span> <span class="se">\
+</span><span class="se"></span>--driver-memory 4g --executor-memory 32g <span class="se">\
+</span><span class="se"></span>--jars /home/luca/spark-sql-perf/target/scala-2.12/spark-sql-perf_2.12-0.5.1-SNAPSHOT.jar <span class="se">\
+</span><span class="se"></span>--conf spark.eventLog.enabled<span class="o">=</span><span class="nb">false</span> <span class="se">\
+</span><span class="se"></span>--conf spark.sql.shuffle.partitions<span class="o">=</span><span class="m">512</span> <span class="se">\
+</span><span class="se"></span>--conf spark.sql.autoBroadcastJoinThreshold<span class="o">=</span><span class="m">100000000</span> <span class="se">\
+</span><span class="se"></span>--conf spark.executor.processTreeMetrics.enabled<span class="o">=</span><span class="nb">true</span>
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-scala" data-lang="scala"><span class="k">import</span> <span class="nn">com.databricks.spark.sql.perf.tpcds.TPCDSTables</span>
+<span class="k">val</span> <span class="n">tables</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">TPCDSTables</span><span class="o">(</span><span class="n">spark</span><span class="o">.</span><span class="n">sqlContext</span><span class="o">,</span> <span class="s">&#34;/home/luca/tpcds-kit/tools&#34;</span><span class="o">,</span><span class="s">&#34;1500&#34;</span><span class="o">)</span>
+<span class="n">tables</span><span class="o">.</span><span class="n">createTemporaryTables</span><span class="o">(</span><span class="s">&#34;/project/spark/TPCDS/tpcds_1500_parquet_1.10.1&#34;</span><span class="o">,</span> <span class="s">&#34;parquet&#34;</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">tpcds</span> <span class="k">=</span> <span class="k">new</span> <span class="n">com</span><span class="o">.</span><span class="n">databricks</span><span class="o">.</span><span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="o">.</span><span class="n">perf</span><span class="o">.</span><span class="n">tpcds</span><span class="o">.</span><span class="nc">TPCDS</span><span class="o">(</span><span class="n">spark</span><span class="o">.</span><span class="n">sqlContext</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">experiment</span> <span class="k">=</span> <span class="n">tpcds</span><span class="o">.</span><span class="n">runExperiment</span><span class="o">(</span><span class="n">tpcds</span><span class="o">.</span><span class="n">tpcds2_4Queries</span><span class="o">)</span>
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="总结" class="headerLink"><a href="#%e6%80%bb%e7%bb%93" class="header-mark"></a>总结</h2><p>正确调整 Spark 作业内存配置大小很重要，提高了多租户环境中性能、稳定性和资源利用率。Spark 3.0 对内存监控有重要改进，分析峰值内存使用情况为解决 OOM 错误和 Spark 作业内存大小调整提供了重要依据。</p>
+<h2 id="参考资料" class="headerLink"><a href="#%e5%8f%82%e8%80%83%e8%b5%84%e6%96%99" class="header-mark"></a>参考资料</h2><p>Talks：</p>
+<ul>
+<li><a href="https://databricks.com/session/metrics-driven-tuning-of-apache-spark-at-scale" target="_blank" rel="noopener noreffer">Metrics-Driven Tuning of Apache Spark at Scale</a>, Spark Summit 2018.</li>
+<li><a href="https://databricks.com/session_eu19/performance-troubleshooting-using-apache-spark-metrics" target="_blank" rel="noopener noreffer">Performance Troubleshooting Using Apache Spark Metrics</a>, Spark Summit 2019</li>
+<li><a href="https://databricks.com/session/tuning-apache-spark-for-large-scale-workloads" target="_blank" rel="noopener noreffer">Tuning Apache Spark for Large-Scale Workloads</a>, Spark summit 2017</li>
+<li><a href="https://databricks.com/session/deep-dive-apache-spark-memory-management" target="_blank" rel="noopener noreffer">Deep Dive: Apache Spark Memory Management</a>, Spark Summit 2016.</li>
+<li><a href="https://databricks.com/session/understanding-memory-management-in-spark-for-fun-and-profit" target="_blank" rel="noopener noreffer">Understanding Memory Management In Spark For Fun And Profit</a>, Spark Summit 2016.</li>
+</ul>
+<p>Spark 文档和博客：</p>
+<ul>
+<li>Monitoring guide: <a href="https://spark.apache.org/docs/latest/monitoring.html#rest-api" target="_blank" rel="noopener noreffer">REST API</a>, <a href="https://spark.apache.org/docs/latest/monitoring.html#executor-task-metrics" target="_blank" rel="noopener noreffer">Executor Task Metrics</a>. <a href="https://spark.apache.org/docs/latest/monitoring.html#executor-metrics" target="_blank" rel="noopener noreffer">Executor Metrics</a>, <a href="https://spark.apache.org/docs/latest/monitoring.html#metrics" target="_blank" rel="noopener noreffer">Spark Metrics System</a></li>
+<li>Tuning guide: <a href="https://spark.apache.org/docs/latest/tuning.html#memory-management-overview" target="_blank" rel="noopener noreffer">Memory Management Overview</a></li>
+<li><a href="https://www.waitingforcode.com/apache-spark/apache-spark-off-heap-memory/read" target="_blank" rel="noopener noreffer">Apache Spark and off-heap memory</a></li>
+<li><a href="https://db-blog.web.cern.ch/blog/luca-canali/2019-02-performance-dashboard-apache-spark" target="_blank" rel="noopener noreffer">A Performance Dashboard for Apache Spark</a></li>
+</ul>
+<p>JIRAs：</p>
+<ul>
+<li><a href="https://issues.apache.org/jira/browse/SPARK-23206" target="_blank" rel="noopener noreffer">SPARK-23206</a></li>
+<li><a href="https://issues.apache.org/jira/browse/SPARK-23429" target="_blank" rel="noopener noreffer">SPARK-23429</a></li>
+<li><a href="https://issues.apache.org/jira/browse/SPARK-27189" target="_blank" rel="noopener noreffer">SPARK-27189</a></li>
+</ul>
+<p>Spark Code：</p>
+<ul>
+<li><a href="https://github.com/apache/spark/blob/master/core/src/main/scala/org/apache/spark/memory/package.scala" target="_blank" rel="noopener noreffer">Spark Memory Manager</a></li>
+<li><a href="https://github.com/apache/spark/blob/master/core/src/main/scala/org/apache/spark/memory/UnifiedMemoryManager.scala" target="_blank" rel="noopener noreffer">Unified memory</a></li>
+</ul>
+</div><footer>
+                        <div class="post">
+
+
+<div class="post-share"><div class="share-link">
+        <a class="share-icon share-twitter" href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://dcoliversun.github.io/spark3-memory-monitoring/" data-title="Apache Spark3 内存监控" data-hashtags="Spark,Performance,Troubleshooting,Tools"><span class="svg-social-icon icon-twitter"></span></a>
+    </div><div class="share-link">
+        <a class="share-icon share-facebook" href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://dcoliversun.github.io/spark3-memory-monitoring/" data-hashtag="Spark"><span class="svg-social-icon icon-facebook"></span></a>
+    </div><div class="share-link">
+        <a class="share-icon share-linkedin" href="javascript:void(0);" title="分享到 Linkedin" data-sharer="linkedin" data-url="https://dcoliversun.github.io/spark3-memory-monitoring/"><span class="svg-social-icon icon-linkedin"></span></a>
+    </div></div>
+
+
+
+
+<div class="block-author">
+    <div class="author-avatar"><a href="https://dcoliversun.github.io" target="_blank"><img alt="Qian Sun -- Coder💻 | Blogger📝 | Swimmer🏊‍♀️" src="https://dcoliversun.github.io/images/me/avatar.png"></a></div>
+    <div class="author-info">
+        <div class="name"><a href="https://dcoliversun.github.io" target="_blank"></a></div>
+        <div class="number-posts">Qian Sun -- Coder💻 | Blogger📝 | Swimmer🏊‍♀️</span></div>
+    </div>
+</div>
+
+
+<div class="post-tags"><a href="/tags/spark/" class="tag">Spark</a><a href="/tags/performance/" class="tag">Performance</a><a href="/tags/troubleshooting/" class="tag">Troubleshooting</a><a href="/tags/tools/" class="tag">Tools</a></div></div>
+                </footer></div>
+
+        <div id="toc-final"></div>
+        </div>
+
+    
+    </article>
+    <section class="page single comments content-block-position">
+        <h1 class="display-hidden">Комментарии</h1><div id="comments"></div></section></div>
+
+</main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.88.1">Hugo</a> 强力驱动 | 主题 - <a href="https://ublogger.netlify.app/?utm_source=https://dcoliversun.github.io&utm_medium=footer&utm_campaign=config&utm_term=2.0.1" target="_blank" title="uBlogger 2.0.1">uBlogger</a>
+                </div><div class="footer-line"><i class="svg-icon icon-copyright"></i><span>2020 - 2021</span><span class="author">&nbsp;<a href="https://dcoliversun.github.io" target="_blank">Qian Sun</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <aside id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="svg-icon icon-arrow-up"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="svg-icon icon-comments-fixed"></i>
+            </a>
+        </aside><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/katex/copy-tex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/smooth-scroll/smooth-scroll.min.js"></script><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lunr/lunr.stemmer.support.min.js"></script><script src="/lib/lunr/lunr.zh.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/prismjs/prism.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/auto-render.min.js"></script><script src="/lib/katex/copy-tex.min.js"></script><script src="/lib/katex/mhchem.min.js"></script><script src="/lib/cookieconsent/cookieconsent.min.js"></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{},"cookieconsent":{"content":{"dismiss":"同意","link":"了解更多","message":"本网站使用 Cookies 来改善您的浏览体验."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":30,"type":"lunr"}};</script><script src="/js/theme.min.js"></script><script>
+                window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
+                gtag('config', 'G-K2QWGME5NC', { 'anonymize_ip': true });
+            </script><script src="https://www.googletagmanager.com/gtag/js?id=G-K2QWGME5NC" async></script></body>
+</html>
