@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noodp"/><title>Spark Catalog Plugin机制浅析 | </title><meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content=""/>
+<meta name="twitter:title" content="Spark Catalog Plugin机制浅析"/>
+<meta name="twitter:description" content="本文介绍了 Spark Catalog Plugin 发展背景以及实现方式，对全链路梳理一通，可以帮助读者对 Spark 元数据服务形成初步认识。"/><meta name="Description" content="本文介绍了 Spark Catalog Plugin 发展背景以及实现方式，对全链路梳理一通，可以帮助读者对 Spark 元数据服务形成初步认识。"><meta property="og:title" content="Spark Catalog Plugin机制浅析" />
+<meta property="og:description" content="本文介绍了 Spark Catalog Plugin 发展背景以及实现方式，对全链路梳理一通，可以帮助读者对 Spark 元数据服务形成初步认识。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://dcoliversun.github.io/spark-catalog-plugin/" /><meta property="og:image" content="https://dcoliversun.github.io/logo.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-02-13T14:44:51+08:00" />
+<meta property="article:modified_time" content="2022-02-13T14:44:51+08:00" />
+
+<meta name="application-name" content="@Qian Sun">
+<meta name="apple-mobile-web-app-title" content="@Qian Sun"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
+        <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://dcoliversun.github.io/spark-catalog-plugin/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/lib/prismjs/prism.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Spark Catalog Plugin机制浅析",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/dcoliversun.github.io\/spark-catalog-plugin\/"
+        },"genre": "posts","keywords": "Spark, Metadata, Catalog","wordCount":  1445 ,
+        "url": "https:\/\/dcoliversun.github.io\/spark-catalog-plugin\/","datePublished": "2022-02-13T14:44:51+08:00","dateModified": "2022-02-13T14:44:51+08:00",
+        "publisher": {
+            "@type": "Person",
+            "name": "", "image": [
+            {
+            "@type": "ImageObject",
+            "url": "https:\/\/dcoliversun.github.io\/images\/me\/avatar.png"
+            }
+            ]},"author": {
+                "@type": "Person",
+                "name": ""
+            },"description": "本文介绍了 Spark Catalog Plugin 发展背景以及实现方式，对全链路梳理一通，可以帮助读者对 Spark 元数据服务形成初步认识。"
+    }
+    </script><script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [{
+            "@type": "ListItem",
+            "position": 1,
+            "name": "主页",
+            "item": "https:\/\/dcoliversun.github.io"
+        },{
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Apache Spark",
+            "item": "https://dcoliversun.github.io/categories/apache-spark/"
+        },{
+                "@type": "ListItem",
+                "position": 3,
+                "name": "Spark Catalog Plugin机制浅析"
+            }]
+    }
+</script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header>
+    <div class="desktop header" id="header-desktop">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="@Qian Sun" class="header-logo logo-svg">@Qian Sun</a>
+            </div>
+            <div class="menu">
+                <nav>
+                    <h2 class="display-hidden">Основная навигация</h2>
+                    <ul class="menu-inner"><li>
+                            <a class="menu-item" href="/posts/"> Posts </a>
+                        </li><li>
+                            <a class="menu-item" href="/tags/"> Tags </a>
+                        </li><li>
+                            <a class="menu-item" href="/categories/"> Categories </a>
+                        </li><li>
+                            <a class="menu-item" href="/donate"> Donate </a>
+                        </li><li>
+                            <a class="menu-item" href="/about"> About </a>
+                        </li></ul>
+                </nav><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <span class="svg-icon icon-search"></span>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <span class="svg-icon icon-cancel"></span>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <span class="svg-icon icon-loading"></span>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <span class="svg-icon icon-moon"></span>
+                </a>
+            </div>
+        </div>
+    </div><div class="mobile header" id="header-mobile">
+        <div class="header-container">
+            <div class="header-wrapper">
+                <div class="header-title">
+                    <a href="/" title="@Qian Sun" class="header-logo">@Qian Sun</a>
+                </div>
+                <div class="menu-toggle" id="menu-toggle-mobile">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+            <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                        <div class="search mobile" id="search-mobile">
+                            <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                            <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                                <span class="svg-icon icon-search"></span>
+                            </a>
+                            <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                                <span class="svg-icon icon-cancel"></span>
+                            </a>
+                            <span class="search-button search-loading" id="search-loading-mobile">
+                                <span class="svg-icon icon-loading"></span>
+                            </span>
+                        </div>
+                        <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                            取消
+                        </a>
+                    </div><nav>
+                    <h2 class="display-hidden">Основная навигация</h2>
+                    <ul><li>
+                            <a class="menu-item" href="/posts/" title="">Posts</a>
+                        </li><li>
+                            <a class="menu-item" href="/tags/" title="">Tags</a>
+                        </li><li>
+                            <a class="menu-item" href="/categories/" title="">Categories</a>
+                        </li><li>
+                            <a class="menu-item" href="/donate" title="">Donate</a>
+                        </li><li>
+                            <a class="menu-item" href="/about" title="">About</a>
+                        </li></ul>
+                </nav>
+                <a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <span class="svg-icon icon-moon"></span>
+                </a></div>
+        </div>
+    </div><div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div></header><main class="main">
+<div class="container content-article page-toc theme-full"><div class="toc" id="toc-auto">
+            <div class="toc-title">目录</div>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div>
+    
+
+    
+    
+    <article>
+    
+
+        <header class="header-post">
+
+            
+
+            
+            <div class="featured-image" style="background-image: url('/images/202202/spark-catalog-plugin/preview.png');"><div class="post-title">
+
+                    <div class="post-all-meta">
+                        <nav class="breadcrumbs">
+    <ol>
+        <li><a href="/">主页 </a></li><li><a href="/categories/apache-spark/">Apache Spark </a></li><li>Spark Catalog Plugin机制浅析</li>
+    </ol>
+</nav>
+                        <h1 class="single-title flipInX">Spark Catalog Plugin机制浅析</h1><div class="post-meta summary-post-meta"><span class="post-category meta-item">
+                                <a href="/categories/apache-spark/"><span class="svg-icon icon-folder"></span>Apache Spark</a>
+                            </span><span class="post-meta-date meta-item">
+                                <span class="svg-icon icon-clock"></span><time class="timeago" datetime="2022-02-13">2022-02-13</time>
+                            </span><span class="post-meta-words meta-item">
+                                <span class="svg-icon icon-pencil"></span>约 1445 字
+                            </span>
+                            <span class="post-meta-reading meta-item">
+                                <span class="svg-icon icon-stopwatch"></span>预计阅读 3 分钟
+                            </span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                </div></header>
+
+        <div class="article-post toc-start">
+
+            <div class="content-block content-block-first content-block-position">
+
+                <div class="post single"><div class="details toc" id="toc-static"  data-kept="">
+                        <div class="details-summary toc-title">
+                            <span>目录</span>
+                        </div>
+                        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#背景">背景</a></li>
+    <li><a href="#catalog-plugin-interface">Catalog Plugin Interface</a></li>
+    <li><a href="#tablecatalog">TableCatalog</a></li>
+    <li><a href="#catalogmanager">CatalogManager</a></li>
+    <li><a href="#catalogextension--delegatingcatalogextension">CatalogExtension &amp; DelegatingCatalogExtension</a></li>
+    <li><a href="#catalog-plugin-全链路流程">Catalog Plugin 全链路流程</a></li>
+  </ul>
+</nav></div>
+                    </div><h2 id="背景" class="headerLink"><a href="#%e8%83%8c%e6%99%af" class="header-mark"></a>背景</h2><p>DataSource V2 是 Spark 2.X 新推出的 API，主要目的是集成外部数据存储，实现读写操作。但这里缺少了关键的一环：对表的<ruby>元数据<rt>metadata</rt></ruby>进行操作，比如创建、修改、删除表等。</p>
+<p>Spark SQL 和 DataFrame 操作都支持 CTAS（Create Table As Select）用来创建一个表并向该表写入数据。由于缺少创建表的 API，CTAS 失败后，表可能被保存也可能被删除。在某些 SaveMode 下，我们无法区分 CTAS 和普通写操作，那么很有可能在 Append 模式下写表的时候会因为表被删除而失败。最后一点，Spark 无法设置由 CTAS 创建的表，比如分区。</p>
+<p>此外，用户希望 CTAS 的 high-level 操作在数据源上面进行操作时能保持行为一致。举个例子，Spark 使用 CTAS 写入失败的时候，当元数据管理不可用，CTAS 可能会无法删表。这要求 Catalog API 能对那些数据源进行创建、修改以及删除等操作。</p>
+<p>另外，使用 DataFrame 编写 Spark 程序时可以使用 SQL 引擎，但没有类似创建、修改、删除这种 Catalog API 提供。</p>
+<p>Catalog Plugin 的首要目标其实是提供一组 catalog API 用来创建、修改、加载和删除表。</p>
+<p>更详细情况，请参考 Spark Catalog Plugin 设计文档：
+<a href="https://docs.google.com/document/d/1zLFiA1VuaWeVxeTDXNg8bL6GP3BVoOZBkewFtEnjEoo/edit" target="_blank" rel="noopener noreffer">https://docs.google.com/document/d/1zLFiA1VuaWeVxeTDXNg8bL6GP3BVoOZBkewFtEnjEoo/edit</a></p>
+<h2 id="catalog-plugin-interface" class="headerLink"><a href="#catalog-plugin-interface" class="header-mark"></a>Catalog Plugin Interface</h2><p>自定义 Catalog 必须实现 <code>CatalogPlugin</code> 接口，通过 <code>load(String, SQLConf)#Catalogs</code> 进行加载，加载时会调用具体 Catalogs 的无参构造函数方法进行初始化，初始化之后会调用 <code>initialize#CatalogPlugin</code>(Line #60)进行初始化。</p>
+<script src="https://gist.github.com/dcoliversun/1f5658a44d2629c1e9958ed71a9212e7.js"></script>
+<p>使用 Catalog Plugin 需要添加如下配置，其中第二个配置是通过 <code>catalogOptions#Catalogs</code>(Line #87) 传递给 <code>initialize#CatalogPlugin</code> 的参数</p>
+<ul>
+<li>spark.sql.catalog.&lt;catalog-name&gt;=&lt;YourCatalogClass&gt;</li>
+<li>spark.sql.catalog.catalog-name.(key)=(value)</li>
+</ul>
+<p>Catalog Plugin Interface 的实现和继承关系如下图所示，可以看到 TableCatalog Interface 继承了 <code>CatalogPlugin</code>，然后 <code>V2SessionCatalog</code> 和 <code>JDBCTableCatalog</code> 是两个具体的 class，实现了 TableCatalog。
+<figure><img src="/images/202202/spark-catalog-plugin/CatalogPlugin.png" width="700" height="500"/><figcaption>
+            <h4>Implementations of CatalogPlugin</h4>
+        </figcaption>
+</figure>
+</p>
+<h2 id="tablecatalog" class="headerLink"><a href="#tablecatalog" class="header-mark"></a>TableCatalog</h2><p>TableCatalog 定义了 Catalog 和表交互的方法，定义都非常简单。</p>
+<script src="https://gist.github.com/dcoliversun/c389ec0bf5d23ee40738bc40cd134559.js"></script>
+<h2 id="catalogmanager" class="headerLink"><a href="#catalogmanager" class="header-mark"></a>CatalogManager</h2><p>前期配置的时候出现配置 <code>spark.sql.catalog.&lt;catalog-name&gt;=&lt;YourCatalogClass&gt;</code>，我们可以合理怀疑所有的 Catalog 都是通过一个 Map 映射关系来管理的，这个管理的 Class 就是 <code>CatalogManager</code>。</p>
+<script src="https://gist.github.com/dcoliversun/e7d0055627de6dbac7a7079e447865f4.js"></script>
+<p>从 <code>CatalogManager</code> 的注释中我们可以看出这就是一个 <code>CatalogPlugin</code> 的管理者，并且是线程安全的。</p>
+<ul>
+<li>catalogs：一个 <code>map: mutable.HashMap[String, CatalogPlugin]</code>，保存 catalog 名字和 Class 的隐射关系</li>
+<li>catalog(String)：用来查找特定名字的 Catalog，返回 CatalogPlugin 接口。</li>
+</ul>
+<h2 id="catalogextension--delegatingcatalogextension" class="headerLink"><a href="#catalogextension--delegatingcatalogextension" class="header-mark"></a>CatalogExtension &amp; DelegatingCatalogExtension</h2><script src="https://gist.github.com/dcoliversun/334bd73f7da7577caaa3be238fad935f.js"></script>
+<p><code>CatalogExtension</code> 继承了 <code>TableCatalog</code>，通过 <code>setDelegateCatalog()</code> 方法代理 <code>V2SessionCatalog</code>。</p>
+<script src="https://gist.github.com/dcoliversun/eb06d04f6f3887e7970a4eef8aaa5687.js"></script>
+<p><code>DelegatingCatalogExtension</code> 实现了上面抽象类的所有默认方法，其 subClass 可以通过 <code>super.func(ident)</code> 调用默认实现。如果要对现有的 catalog 进行功能扩展，可以直接继承实现对应的逻辑。具体可参考 Delta 的 <a href="https://github.com/delta-io/delta/blob/master/core/src/main/scala/org/apache/spark/sql/delta/catalog/DeltaCatalog.scala" target="_blank" rel="noopener noreffer">DeltaCatalog</a></p>
+<h2 id="catalog-plugin-全链路流程" class="headerLink"><a href="#catalog-plugin-%e5%85%a8%e9%93%be%e8%b7%af%e6%b5%81%e7%a8%8b" class="header-mark"></a>Catalog Plugin 全链路流程</h2><ol>
+<li>SparkSession 在创建的选项中可以使用 enableHiveSupport() 启动 Hive 作为 catalog 实现，在这个方法内会设置参数 <code>spark.sql.catalogImplementation = hive</code>；</li>
+<li>根据 <code>spark.sql.catalogImplementation</code> 创建 <code>HiveSessionStateBuilder</code> 对象，<code>HiveSessionStateBuilder</code> 会创建 catalog 对象，<code>BaseSessionStateBuilder</code> 再根据 catalog 创建 v2SessionCatalog 对象；</li>
+<li>根据 catalog 和 v2SessionCatalog 创建 <code>CatalogManager</code> 实例。<code>CatalogManager</code> 通过 catalogs 来管理多个 catalog，CatalogMannager 的 defaultSessionCatalog 就是上面的 v2SessionCatalog；</li>
+<li><code>catalog(name: String)#CatalogManager</code> 通过 catalog 的 name 返回 catalog 实例，如果没有该实例，通过 <code>Catalogs.load(name: String, ...)</code> 方法进行实例化；</li>
+<li><code>Catalogs.load(name: String, ...)</code> 方法加载 conf 中配置的 <code>spark.sql.catalog.&lt;catalog-name&gt;</code> 类，并实例化/初始化 CatalogPlugin 对象；</li>
+<li>有一个特殊的 catalog——spark_catalog。如果 <code>spark.sql.catalog.spark_catalog</code> 参数为空时，返回 CatalogManager 中的 defaultSessionCatalog；</li>
+<li>如果 <code>spark.sql.catalog.spark_catalog</code> 参数已经配置，对上面的 Catalogs.load() 出来的实例进行判断，如果发现上面加载的是 CatalogExtension 子类，自动调用其 <code>setDelegateCatalog</code> 方法，将 defaultSessionCatalog 设置为其内部代理对象；</li>
+<li>调用元数据相关操作时，实例化 HiveClient，调用 Hive MetaStore 提供的接口，完成元数据的相关操作，Hive MetaStore 具体操作由 <code>ThriftHiveMetastore.Iface</code> 实现。</li>
+</ol>
+</div><footer>
+                        <div class="post">
+
+
+<div class="post-share"><div class="share-link">
+        <a class="share-icon share-twitter" href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://dcoliversun.github.io/spark-catalog-plugin/" data-title="Spark Catalog Plugin机制浅析" data-hashtags="Spark,Metadata,Catalog"><span class="svg-social-icon icon-twitter"></span></a>
+    </div><div class="share-link">
+        <a class="share-icon share-facebook" href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://dcoliversun.github.io/spark-catalog-plugin/" data-hashtag="Spark"><span class="svg-social-icon icon-facebook"></span></a>
+    </div><div class="share-link">
+        <a class="share-icon share-linkedin" href="javascript:void(0);" title="分享到 Linkedin" data-sharer="linkedin" data-url="https://dcoliversun.github.io/spark-catalog-plugin/"><span class="svg-social-icon icon-linkedin"></span></a>
+    </div></div>
+
+
+
+
+<div class="block-author">
+    <div class="author-avatar"><a href="https://dcoliversun.github.io" target="_blank"><img alt="Qian Sun -- Coder💻 | Blogger📝 | Swimmer🏊‍♀️" src="https://dcoliversun.github.io/images/me/avatar.png"></a></div>
+    <div class="author-info">
+        <div class="name"><a href="https://dcoliversun.github.io" target="_blank"></a></div>
+        <div class="number-posts">Qian Sun -- Coder💻 | Blogger📝 | Swimmer🏊‍♀️</span></div>
+    </div>
+</div>
+
+
+<div class="post-tags"><a href="/tags/spark/" class="tag">Spark</a><a href="/tags/metadata/" class="tag">Metadata</a><a href="/tags/catalog/" class="tag">Catalog</a></div></div>
+                </footer></div>
+
+        <div id="toc-final"></div>
+        </div>
+
+    
+    </article>
+    <section class="page single comments content-block-position">
+        <h1 class="display-hidden">Комментарии</h1><div id="comments"></div></section></div>
+
+</main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.88.1">Hugo</a> 强力驱动 | 主题 - <a href="https://ublogger.netlify.app/?utm_source=https://dcoliversun.github.io&utm_medium=footer&utm_campaign=config&utm_term=2.0.1" target="_blank" title="uBlogger 2.0.1">uBlogger</a>
+                </div><div class="footer-line"><i class="svg-icon icon-copyright"></i><span>2020 - 2022</span><span class="author">&nbsp;<a href="https://dcoliversun.github.io" target="_blank">Qian Sun</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <aside id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="svg-icon icon-arrow-up"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="svg-icon icon-comments-fixed"></i>
+            </a>
+        </aside><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/katex/copy-tex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/smooth-scroll/smooth-scroll.min.js"></script><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lunr/lunr.stemmer.support.min.js"></script><script src="/lib/lunr/lunr.zh.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/prismjs/prism.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/auto-render.min.js"></script><script src="/lib/katex/copy-tex.min.js"></script><script src="/lib/katex/mhchem.min.js"></script><script src="/lib/cookieconsent/cookieconsent.min.js"></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{},"cookieconsent":{"content":{"dismiss":"同意","link":"了解更多","message":"本网站使用 Cookies 来改善您的浏览体验."},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":30,"type":"lunr"}};</script><script src="/js/theme.min.js"></script><script>
+                window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());
+                gtag('config', 'G-K2QWGME5NC', { 'anonymize_ip': true });
+            </script><script src="https://www.googletagmanager.com/gtag/js?id=G-K2QWGME5NC" async></script></body>
+</html>

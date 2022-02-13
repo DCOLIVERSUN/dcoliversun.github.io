@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Catalog - 标签 - @Qian Sun</title>
+        <link>https://dcoliversun.github.io/tags/catalog/</link>
+        <description>Catalog - 标签 - @Qian Sun</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Sun, 13 Feb 2022 14:44:51 &#43;0800</lastBuildDate><atom:link href="https://dcoliversun.github.io/tags/catalog/" rel="self" type="application/rss+xml" /><item>
+    <title>Spark Catalog Plugin机制浅析</title>
+    <link>https://dcoliversun.github.io/spark-catalog-plugin/</link>
+    <pubDate>Sun, 13 Feb 2022 14:44:51 &#43;0800</pubDate>
+    <author>author</author>
+    <guid>https://dcoliversun.github.io/spark-catalog-plugin/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/202202/spark-catalog-plugin/preview.png" referrerpolicy="no-referrer">
+            </div>本文介绍了 Spark Catalog Plugin 发展背景以及实现方式，对全链路梳理一通，可以帮助读者对 Spark 元数据服务形成初步认识。]]></description>
+</item></channel>
+</rss>
